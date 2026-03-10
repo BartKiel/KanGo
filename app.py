@@ -29,32 +29,14 @@ PASSWORD_HASH = os.environ.get(
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("kango")
 
-BUCKETS_ORDER = [
-    "auto-recommended",
-    "manually-recommended",
-    "for-production",
-    "for-tests-confirm",
-    "delivered",
-    "done",
+DEFAULT_COLUMNS = [
+    {"id": "auto-recommended",    "title": "\U0001f916 Auto-Recommended",      "color": "#6366f1"},
+    {"id": "manually-recommended","title": "\U0001f4dd Manually Recommended",   "color": "#3b82f6"},
+    {"id": "for-production",      "title": "\U0001f680 For Production",         "color": "#f59e0b"},
+    {"id": "for-tests-confirm",   "title": "\U0001f9ea For Tests \u2014 Confirm","color": "#8b5cf6"},
+    {"id": "delivered",           "title": "\U0001f4e6 Delivered",              "color": "#10b981"},
+    {"id": "done",                "title": "\u2705 Done",                       "color": "#6b7280"},
 ]
-
-BUCKET_LABELS = {
-    "auto-recommended": "\U0001f916 Auto-Recommended",
-    "manually-recommended": "\U0001f4dd Manually Recommended",
-    "for-production": "\U0001f680 For Production",
-    "for-tests-confirm": "\U0001f9ea For Tests \u2014 Confirm",
-    "delivered": "\U0001f4e6 Delivered",
-    "done": "\u2705 Done",
-}
-
-BUCKET_COLORS = {
-    "auto-recommended": "#6366f1",
-    "manually-recommended": "#3b82f6",
-    "for-production": "#f59e0b",
-    "for-tests-confirm": "#8b5cf6",
-    "delivered": "#10b981",
-    "done": "#6b7280",
-}
 
 DEFAULT_APPS = [
     "StratosX", "GeoCatch", "CriteriaBuilder", "MindCloud",
@@ -77,15 +59,23 @@ def _gcs():
     return _storage_client
 
 
+def _migrate_columns(data):
+    """Ensure the data has a 'columns' list; migrate from legacy bucket fields."""
+    if "columns" not in data:
+        data["columns"] = [dict(c) for c in DEFAULT_COLUMNS]
+    return data
+
+
 def load_tasks():
     try:
         bucket = _gcs().bucket(GCS_BUCKET)
         blob = bucket.blob("tasks.json")
         if blob.exists():
-            return json.loads(blob.download_as_text())
+            data = json.loads(blob.download_as_text())
+            return _migrate_columns(data)
     except Exception as exc:
         log.error("GCS read error: %s", exc)
-    return {"tasks": [], "apps": list(DEFAULT_APPS)}
+    return {"tasks": [], "apps": list(DEFAULT_APPS), "columns": [dict(c) for c in DEFAULT_COLUMNS]}
 
 
 def save_tasks(data):
@@ -237,22 +227,93 @@ def api_add_app():
 
 
 # ──────────────────────────────────────────────
+# Column (list) API
+# ──────────────────────────────────────────────
+@app.route("/api/columns", methods=["GET"])
+@login_required
+def api_get_columns():
+    data = load_tasks()
+    return jsonify({"columns": data.get("columns", [])})
+
+
+@app.route("/api/columns", methods=["POST"])
+@login_required
+def api_add_column():
+    data = load_tasks()
+    body = request.get_json(force=True)
+    title = body.get("title", "").strip()
+    if not title:
+        return jsonify({"error": "title required"}), 400
+    col = {
+        "id": str(uuid.uuid4())[:12],
+        "title": title,
+        "color": body.get("color", "#64748b"),
+    }
+    data.setdefault("columns", []).append(col)
+    save_tasks(data)
+    return jsonify(col), 201
+
+
+@app.route("/api/columns/<col_id>", methods=["PUT"])
+@login_required
+def api_update_column(col_id):
+    data = load_tasks()
+    body = request.get_json(force=True)
+    for col in data.get("columns", []):
+        if col["id"] == col_id:
+            if "title" in body:
+                col["title"] = body["title"].strip() or col["title"]
+            if "color" in body:
+                col["color"] = body["color"]
+            save_tasks(data)
+            return jsonify(col)
+    return jsonify({"error": "not found"}), 404
+
+
+@app.route("/api/columns/<col_id>", methods=["DELETE"])
+@login_required
+def api_delete_column(col_id):
+    data = load_tasks()
+    data["columns"] = [c for c in data.get("columns", []) if c["id"] != col_id]
+    # Move orphaned tasks to the first remaining column (or delete them)
+    remaining_ids = {c["id"] for c in data["columns"]}
+    if remaining_ids:
+        first_id = data["columns"][0]["id"]
+        for t in data["tasks"]:
+            if t.get("bucket") == col_id:
+                t["bucket"] = first_id
+    else:
+        data["tasks"] = [t for t in data["tasks"] if t.get("bucket") != col_id]
+    save_tasks(data)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/columns/reorder", methods=["POST"])
+@login_required
+def api_reorder_columns():
+    data = load_tasks()
+    body = request.get_json(force=True)
+    order = body.get("order", [])  # list of column ids in new order
+    col_map = {c["id"]: c for c in data.get("columns", [])}
+    reordered = [col_map[cid] for cid in order if cid in col_map]
+    # Append any columns not in the order list (safety)
+    seen = set(order)
+    for c in data.get("columns", []):
+        if c["id"] not in seen:
+            reordered.append(c)
+    data["columns"] = reordered
+    save_tasks(data)
+    return jsonify({"ok": True})
+
+
+# ──────────────────────────────────────────────
 # Board page  — plain string replacement, NO Jinja
 # ──────────────────────────────────────────────
 @app.route("/")
 @login_required
 def index():
     log.info("Serving board page...")
-    bucket_options = "".join(
-        '<option value="{b}">{l}</option>'.format(b=b, l=BUCKET_LABELS[b])
-        for b in BUCKETS_ORDER
-    )
     html = BOARD_PAGE
-    html = html.replace("__BUCKETS_JSON__", json.dumps(BUCKETS_ORDER))
-    html = html.replace("__LABELS_JSON__", json.dumps(BUCKET_LABELS, ensure_ascii=False))
-    html = html.replace("__COLORS_JSON__", json.dumps(BUCKET_COLORS))
-    html = html.replace("__BUCKET_OPTIONS__", bucket_options)
-
     resp = make_response(html)
     resp.headers["Content-Type"] = "text/html; charset=utf-8"
     log.info("Board page served, %d bytes", len(html))
@@ -369,12 +430,15 @@ tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{outfit:['Outfit','s
 body{font-family:'Outfit',sans-serif}
 .drag-over{background:rgba(59,130,246,0.04) !important;border-color:rgba(59,130,246,0.3) !important}
 .card-drag{opacity:.4;transform:scale(.97)}
+.col-drag-over{opacity:.6;outline:2px dashed #3b82f6;outline-offset:2px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .fade-card{animation:fadeIn .25s ease-out}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 ::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+.col-title-input{background:transparent;border:none;outline:none;font-weight:600;font-size:.875rem;color:#334155;width:100%}
+.col-title-input:focus{background:#f1f5f9;border-radius:.5rem;padding:0 .25rem}
 </style></head>
 <body class="bg-slate-50 font-outfit min-h-screen">
 
@@ -436,8 +500,8 @@ body{font-family:'Outfit',sans-serif}
         </select>
       </div>
       <div>
-        <label class="block text-sm font-semibold text-slate-500 mb-1.5">Bucket</label>
-        <select id="fBucket" class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition">__BUCKET_OPTIONS__</select>
+        <label class="block text-sm font-semibold text-slate-500 mb-1.5">Lista</label>
+        <select id="fBucket" class="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"></select>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -486,10 +550,7 @@ body{font-family:'Outfit',sans-serif}
 </div></div>
 
 <script>
-var S={tasks:[],apps:[]};
-var BUCKETS=__BUCKETS_JSON__;
-var LABELS=__LABELS_JSON__;
-var COLORS=__COLORS_JSON__;
+var S={tasks:[],apps:[],columns:[]};
 
 var PRIO_CFG={
   critical:{label:'Critical',icon:'\ud83d\udd34',bg:'bg-red-50',text:'text-red-600',border:'border-red-100',ring:'ring-red-500/20'},
@@ -498,49 +559,124 @@ var PRIO_CFG={
   low:{label:'Low',icon:'\ud83d\udfe2',bg:'bg-emerald-50',text:'text-emerald-600',border:'border-emerald-100',ring:'ring-emerald-500/20'}
 };
 
+var PALETTE=['#6366f1','#3b82f6','#f59e0b','#8b5cf6','#10b981','#ef4444','#ec4899','#14b8a6','#f97316','#6b7280'];
+
 function load(){
-  fetch('/api/tasks').then(function(r){return r.json()}).then(function(d){S=d;render()}).catch(function(e){console.error(e);render()});
+  fetch('/api/tasks').then(function(r){return r.json()}).then(function(d){
+    S.tasks=d.tasks||[];S.apps=d.apps||[];
+    S.columns=d.columns||[];
+    render();
+  }).catch(function(e){console.error(e);render()});
 }
 
 function render(){
   var b=document.getElementById('board');b.innerHTML='';
   var allTasks=S.tasks||[];
   var total=allTasks.length;
-  var doneCnt=allTasks.filter(function(t){return t.bucket==='done'}).length;
-  var critCnt=allTasks.filter(function(t){return t.priority==='critical'&&t.bucket!=='done'}).length;
-  var prodCnt=allTasks.filter(function(t){return t.bucket==='for-production'}).length;
+  var doneCols=(S.columns||[]).filter(function(c){return c.id==='done'}).map(function(c){return c.id});
+  var doneCnt=allTasks.filter(function(t){return doneCols.indexOf(t.bucket)>=0}).length;
+  var critCnt=allTasks.filter(function(t){return t.priority==='critical'&&doneCols.indexOf(t.bucket)<0}).length;
   var bar=document.getElementById('statsBar');
   bar.innerHTML='<div class="flex items-center gap-1.5 text-xs font-medium text-slate-400"><span class="w-2 h-2 rounded-full bg-slate-300"></span>'+total+' tasks</div>'
     +'<div class="flex items-center gap-1.5 text-xs font-medium text-emerald-500"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>'+doneCnt+' done</div>'
-    +(critCnt?'<div class="flex items-center gap-1.5 text-xs font-medium text-red-500"><span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>'+critCnt+' critical</div>':'')
-    +(prodCnt?'<div class="flex items-center gap-1.5 text-xs font-medium text-amber-500"><span class="w-2 h-2 rounded-full bg-amber-400"></span>'+prodCnt+' in production</div>':'');
+    +(critCnt?'<div class="flex items-center gap-1.5 text-xs font-medium text-red-500"><span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>'+critCnt+' critical</div>':'');
 
-  BUCKETS.forEach(function(bk){
-    var tasks=allTasks.filter(function(t){return t.bucket===bk}).sort(function(a,b){return(a.order||999)-(b.order||999)});
-    var col=document.createElement('div');
-    col.className='min-w-[290px] max-w-[320px] flex-1 flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm max-h-[calc(100vh-8rem)]';
+  (S.columns||[]).forEach(function(col,colIdx){
+    var bk=col.id;
+    var tasks=allTasks.filter(function(t){return t.bucket===bk}).sort(function(ta,tb){return(ta.order||999)-(tb.order||999)});
+    var colEl=document.createElement('div');
+    colEl.className='min-w-[290px] max-w-[320px] flex-1 flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm max-h-[calc(100vh-8rem)]';
+    colEl.draggable=true;
+    colEl.setAttribute('data-col-id',bk);
 
-    var color=COLORS[bk]||'#64748b';
+    // Column drag (reorder columns)
+    colEl.addEventListener('dragstart',function(e){
+      if(e.target!==colEl&&!e.target.closest('.col-drag-handle'))return;
+      e.dataTransfer.setData('col-drag',bk);
+      e.dataTransfer.effectAllowed='move';
+    });
+    colEl.addEventListener('dragover',function(e){
+      if(e.dataTransfer.types.indexOf('col-drag')>=0){e.preventDefault();colEl.classList.add('col-drag-over')}
+    });
+    colEl.addEventListener('dragleave',function(){colEl.classList.remove('col-drag-over')});
+    colEl.addEventListener('drop',function(e){
+      colEl.classList.remove('col-drag-over');
+      var srcId=e.dataTransfer.getData('col-drag');
+      if(srcId&&srcId!==bk){reorderColumns(srcId,bk)}
+      else if(!srcId){
+        e.preventDefault();
+        var cardId=e.dataTransfer.getData('text/plain');
+        if(cardId)onDrop(e,bk);
+      }
+    });
+
+    var color=col.color||'#64748b';
     var hd=document.createElement('div');
-    hd.className='px-4 py-3.5 border-b border-slate-100 flex items-center justify-between';
-    hd.innerHTML='<div class="flex items-center gap-2.5"><span class="w-2.5 h-2.5 rounded-full shadow-sm" style="background:'+color+'"></span><span class="text-sm font-semibold text-slate-700">'+LABELS[bk]+'</span></div><span class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">'+tasks.length+'</span>';
-    col.appendChild(hd);
+    hd.className='px-3 py-3.5 border-b border-slate-100 flex items-center gap-2 col-drag-handle cursor-grab';
+    hd.innerHTML='<span class="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-sm" style="background:'+color+'"></span>'
+      +'<input class="col-title-input flex-1 min-w-0" value="'+esc(col.title)+'" title="Kliknij aby edytowa\u0107 nazw\u0119 listy" data-col-id="'+bk+'">'
+      +'<span class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 flex-shrink-0">'+tasks.length+'</span>'
+      +'<button onclick="delColumn(\''+bk+'\')" class="w-6 h-6 rounded-lg hover:bg-red-50 hover:text-red-500 flex items-center justify-center text-slate-300 transition flex-shrink-0" title="Usu\u0144 list\u0119">'
+      +'<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+
+    // Inline rename on Enter/blur
+    var inp=hd.querySelector('input.col-title-input');
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){inp.blur()}});
+    inp.addEventListener('blur',function(){
+      var newTitle=inp.value.trim();
+      if(newTitle&&newTitle!==col.title){renameColumn(bk,newTitle)}
+    });
+    // Prevent column drag when clicking input
+    inp.addEventListener('mousedown',function(e){e.stopPropagation()});
+
+    colEl.appendChild(hd);
 
     var body=document.createElement('div');
     body.className='p-2.5 flex-1 overflow-y-auto space-y-2 min-h-[60px] rounded-b-2xl transition-colors duration-200';
     body.setAttribute('data-bucket',bk);
-    body.addEventListener('dragover',function(e){e.preventDefault();body.classList.add('drag-over')});
+    body.addEventListener('dragover',function(e){
+      if(e.dataTransfer.types.indexOf('col-drag')<0){e.preventDefault();body.classList.add('drag-over')}
+    });
     body.addEventListener('dragleave',function(){body.classList.remove('drag-over')});
-    body.addEventListener('drop',function(e){e.preventDefault();body.classList.remove('drag-over');onDrop(e,bk)});
+    body.addEventListener('drop',function(e){
+      body.classList.remove('drag-over');
+      if(e.dataTransfer.types.indexOf('col-drag')>=0)return;
+      e.preventDefault();onDrop(e,bk);
+    });
+
+    // "Add card" button at bottom
+    var addCardBtn=document.createElement('button');
+    addCardBtn.className='w-full mt-1 py-2 text-xs font-medium text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl flex items-center justify-center gap-1 transition';
+    addCardBtn.innerHTML='<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Dodaj kart\u0119';
+    addCardBtn.onclick=function(){openModal(null,bk)};
 
     if(!tasks.length){
-      body.innerHTML='<div class="text-center py-8 text-slate-300 text-xs font-medium">Przeci&#x105;gnij tutaj...</div>';
+      body.innerHTML='<div class="text-center py-8 text-slate-300 text-xs font-medium">Przeci\u0105gnij tutaj...</div>';
     } else {
       tasks.forEach(function(t){body.appendChild(mkCard(t))});
     }
-    col.appendChild(body);b.appendChild(col);
+    body.appendChild(addCardBtn);
+    colEl.appendChild(body);
+    b.appendChild(colEl);
   });
+
+  // "Add list" button
+  var addCol=document.createElement('div');
+  addCol.className='min-w-[230px] flex-shrink-0 flex flex-col';
+  addCol.innerHTML='<div id="addColForm" class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-3">'
+    +'<div id="addColPrompt" class="flex items-center gap-2 cursor-pointer text-slate-400 hover:text-blue-600 transition px-1" onclick="showAddColForm()">'
+    +'<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>'
+    +'<span class="text-sm font-medium">Dodaj list\u0119</span></div>'
+    +'<div id="addColInput" class="hidden space-y-2">'
+    +'<input id="newColTitle" placeholder="Nazwa listy..." class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">'
+    +'<div class="flex gap-2">'
+    +'<button onclick="addColumn()" class="flex-1 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition">Dodaj list\u0119</button>'
+    +'<button onclick="hideAddColForm()" class="py-2 px-3 text-xs text-slate-400 hover:bg-slate-100 rounded-xl transition">&times;</button>'
+    +'</div></div></div>';
+  b.appendChild(addCol);
+
   updAppSel();
+  updBucketSel();
 }
 
 function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
@@ -588,8 +724,52 @@ function onDrop(e,bucket){
   fetch('/api/reorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({updates:ups})});
 }
 
-function openModal(id){
+// ── Column management ──
+function showAddColForm(){
+  document.getElementById('addColPrompt').classList.add('hidden');
+  document.getElementById('addColInput').classList.remove('hidden');
+  document.getElementById('newColTitle').focus();
+}
+function hideAddColForm(){
+  document.getElementById('addColPrompt').classList.remove('hidden');
+  document.getElementById('addColInput').classList.add('hidden');
+  document.getElementById('newColTitle').value='';
+}
+function addColumn(){
+  var title=document.getElementById('newColTitle').value.trim();
+  if(!title)return;
+  var color=PALETTE[S.columns.length%PALETTE.length];
+  fetch('/api/columns',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:title,color:color})})
+    .then(function(r){return r.json()}).then(function(){load()});
+}
+function renameColumn(colId,newTitle){
+  fetch('/api/columns/'+colId,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:newTitle})})
+    .then(function(){load()});
+}
+function delColumn(colId){
+  var col=S.columns.find(function(c){return c.id===colId});
+  var taskCount=S.tasks.filter(function(t){return t.bucket===colId}).length;
+  var msg='Usun\u0105\u0107 list\u0119'+(col?' "'+col.title+'"':'')+' ?';
+  if(taskCount>0)msg+='\n\nListy zawiera '+taskCount+' kart(y) \u2014 zostan\u0105 przeniesione do pierwszej dost\u0119pnej listy.';
+  if(!confirm(msg))return;
+  fetch('/api/columns/'+colId,{method:'DELETE'}).then(load);
+}
+function reorderColumns(srcId,targetId){
+  var cols=S.columns.slice();
+  var si=cols.findIndex(function(c){return c.id===srcId});
+  var ti=cols.findIndex(function(c){return c.id===targetId});
+  if(si<0||ti<0)return;
+  var moved=cols.splice(si,1)[0];
+  cols.splice(ti,0,moved);
+  S.columns=cols;
+  render();
+  fetch('/api/columns/reorder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:cols.map(function(c){return c.id})})});
+}
+
+// ── Task modal ──
+function openModal(id,defaultBucket){
   var m=document.getElementById('taskModal');m.classList.remove('hidden');m.classList.add('flex');
+  updBucketSel();
   if(id){
     var t=S.tasks.find(function(x){return x.id===id});if(!t)return;
     document.getElementById('mTitle').textContent='Edytuj Task';
@@ -597,7 +777,7 @@ function openModal(id){
     document.getElementById('fTitle').value=t.title||'';
     document.getElementById('fDesc').value=t.description||'';
     document.getElementById('fPriority').value=t.priority||'medium';
-    document.getElementById('fBucket').value=t.bucket||'manually-recommended';
+    document.getElementById('fBucket').value=t.bucket||(S.columns[0]&&S.columns[0].id)||'';
     document.getElementById('fApp').value=t.app||'';
     document.getElementById('fTime').value=t.estimated_time||'';
     document.getElementById('fDir').value=t.app_directory||'';
@@ -607,7 +787,7 @@ function openModal(id){
     document.getElementById('mTitle').textContent='Nowy Task';
     ['taskId','fTitle','fDesc','fTime','fDir','fTags','fComment'].forEach(function(x){document.getElementById(x).value=''});
     document.getElementById('fPriority').value='medium';
-    document.getElementById('fBucket').value='manually-recommended';
+    document.getElementById('fBucket').value=defaultBucket||(S.columns[0]&&S.columns[0].id)||'';
     document.getElementById('fApp').value='';
   }
 }
@@ -620,6 +800,12 @@ function saveTask(){
   var url=id?'/api/tasks/'+id:'/api/tasks';
   var method=id?'PUT':'POST';
   fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(){closeModal();load()});
+}
+function updBucketSel(){
+  var s=document.getElementById('fBucket');if(!s)return;
+  var v=s.value;
+  s.innerHTML='';
+  (S.columns||[]).forEach(function(col){var o=document.createElement('option');o.value=col.id;o.textContent=col.title;if(col.id===v)o.selected=true;s.appendChild(o)});
 }
 function updAppSel(){
   var s=document.getElementById('fApp');var v=s.value;
@@ -635,7 +821,10 @@ function addApp(){var i=document.getElementById('newAppName');var n=i.value.trim
 document.getElementById('taskModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 document.getElementById('appModal').addEventListener('click',function(e){if(e.target===this)closeAppModal()});
 // ESC key
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();closeAppModal()}});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeModal();closeAppModal();hideAddColForm();}
+  if(e.key==='Enter'){var ac=document.getElementById('addColInput');if(ac&&!ac.classList.contains('hidden')){addColumn();}}
+});
 
 load();
 </script></body></html>"""
