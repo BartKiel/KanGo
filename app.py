@@ -245,6 +245,74 @@ def api_add_app():
 
 
 # ──────────────────────────────────────────────
+# Export / Import
+# ──────────────────────────────────────────────
+@app.route("/api/export", methods=["GET"])
+@login_required
+def api_export():
+    """Export all tasks + apps as a downloadable JSON file."""
+    data = load_tasks()
+    export = {
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "version": "1.0",
+        "tasks": data.get("tasks", []),
+        "apps": data.get("apps", []),
+    }
+    payload = json.dumps(export, ensure_ascii=False, indent=2)
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    resp = make_response(payload)
+    resp.headers["Content-Type"] = "application/json"
+    resp.headers["Content-Disposition"] = (
+        'attachment; filename="kango_export_%s.json"' % ts
+    )
+    return resp
+
+
+@app.route("/api/import", methods=["POST"])
+@login_required
+def api_import():
+    """Import tasks from a JSON file (merge or replace)."""
+    mode = request.args.get("mode", "merge")  # merge | replace
+    if "file" in request.files:
+        raw = request.files["file"].read()
+    else:
+        raw = request.get_data()
+    try:
+        incoming = json.loads(raw)
+    except Exception:
+        return jsonify({"error": "invalid JSON"}), 400
+
+    incoming_tasks = incoming.get("tasks", [])
+    incoming_apps = incoming.get("apps", [])
+
+    if mode == "replace":
+        data = {"tasks": incoming_tasks,
+                "apps": incoming_apps or list(DEFAULT_APPS)}
+    else:
+        data = load_tasks()
+        existing_ids = {t["id"] for t in data["tasks"]}
+        for t in incoming_tasks:
+            if t["id"] not in existing_ids:
+                data["tasks"].append(t)
+            else:
+                for i, et in enumerate(data["tasks"]):
+                    if et["id"] == t["id"]:
+                        data["tasks"][i] = t
+                        break
+        for a in incoming_apps:
+            if a not in data.get("apps", []):
+                data.setdefault("apps", []).append(a)
+
+    save_tasks(data)
+    return jsonify({
+        "ok": True,
+        "mode": mode,
+        "tasks": len(data["tasks"]),
+        "apps": len(data.get("apps", [])),
+    })
+
+
+# ──────────────────────────────────────────────
 # File Management (GCS "files/" prefix)
 # ──────────────────────────────────────────────
 FILES_PREFIX = "files/"
@@ -645,6 +713,10 @@ body{font-family:'Outfit',sans-serif}
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
         Files
       </button>
+      <a href="/api/export" class="inline-flex items-center gap-1.5 px-3 py-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 text-sm font-medium rounded-xl border border-slate-200 transition-all" title="Export all tasks as JSON">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        Export
+      </a>
       <a href="/logout" class="inline-flex items-center gap-1.5 px-3 py-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 text-sm font-medium rounded-xl border border-slate-200 transition-all">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
       </a>
