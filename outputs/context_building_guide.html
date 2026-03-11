@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How AI Context Works — A Practical Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{outfit:['Outfit','sans-serif']}}}}</script>
+<style>
+body{font-family:'Outfit',sans-serif}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeIn .6s ease-out both}
+.fade-in-d1{animation-delay:.1s}
+.fade-in-d2{animation-delay:.2s}
+.fade-in-d3{animation-delay:.3s}
+.fade-in-d4{animation-delay:.4s}
+</style>
+</head>
+<body class="bg-slate-50 font-outfit">
+
+<!-- HERO -->
+<div class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white">
+  <div class="absolute inset-0">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl"></div>
+    <div class="absolute inset-0" style="background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);background-size:32px 32px"></div>
+  </div>
+  <div class="relative z-10 max-w-4xl mx-auto px-8 py-24 text-center">
+    <p class="text-blue-300 text-sm font-semibold uppercase tracking-widest mb-4 fade-in">StratosX Ecosystem &bull; Knowledge Base</p>
+    <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 fade-in fade-in-d1">How AI Context Works</h1>
+    <p class="text-xl text-blue-200/80 max-w-2xl mx-auto leading-relaxed fade-in fade-in-d2">Why does the chat "forget" things? Why does it sometimes edit the wrong file? This guide explains how context windows work and how to get better results.</p>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="max-w-4xl mx-auto px-8 py-16 space-y-20">
+
+  <!-- Section 1: What IS Context? -->
+  <section class="fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-xl">🧠</span>
+      <h2 class="text-3xl font-bold text-slate-900">What IS Context?</h2>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-4">
+      <p class="text-slate-600 leading-relaxed">When you talk to an AI (ChatGPT, Copilot, Claude), it doesn't have a <em>memory</em> in the human sense. Instead, every message you send — and every response the AI gives — is packed into a <strong>context window</strong>.</p>
+      <p class="text-slate-600 leading-relaxed">Think of it like a whiteboard with a fixed size. Every new message is written on the whiteboard. When the whiteboard is full, the oldest content gets <strong>erased from the top</strong>.</p>
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+        <h3 class="font-semibold text-blue-900 mb-2">📏 Typical Context Window Sizes</h3>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="text-2xl font-bold text-blue-600">4K–8K</div>
+            <div class="text-xs text-slate-500">tokens — older models</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-blue-600">128K</div>
+            <div class="text-xs text-slate-500">tokens — GPT-4o, Claude 3</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-blue-600">1M+</div>
+            <div class="text-xs text-slate-500">tokens — Gemini 1.5 Pro</div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-3 text-center">1 token ≈ 4 characters in English, ≈ 2–3 characters in Polish</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Why Does It Forget? -->
+  <section class="fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-xl">😤</span>
+      <h2 class="text-3xl font-bold text-slate-900">Why Does It "Forget" Things?</h2>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-6">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="p-5 bg-red-50 rounded-xl border border-red-100">
+          <h4 class="font-bold text-red-800 mb-2">🗑️ Token Overflow</h4>
+          <p class="text-sm text-red-700/80">When conversation exceeds the context window, the <em>earliest</em> messages are silently dropped. The AI literally can't see them anymore.</p>
+        </div>
+        <div class="p-5 bg-amber-50 rounded-xl border border-amber-100">
+          <h4 class="font-bold text-amber-800 mb-2">🌫️ Attention Dilution</h4>
+          <p class="text-sm text-amber-700/80">Even within the window, AI models have limited <em>attention</em>. Info in the middle of a long conversation gets less focus than the beginning or end.</p>
+        </div>
+        <div class="p-5 bg-orange-50 rounded-xl border border-orange-100">
+          <h4 class="font-bold text-orange-800 mb-2">📂 Wrong Project?</h4>
+          <p class="text-sm text-orange-700/80">If you reference multiple apps/files, the AI can confuse which project you mean — especially if early messages about Project A got truncated.</p>
+        </div>
+        <div class="p-5 bg-violet-50 rounded-xl border border-violet-100">
+          <h4 class="font-bold text-violet-800 mb-2">🔄 No Persistent Memory</h4>
+          <p class="text-sm text-violet-700/80">Each new chat session starts from zero. Previous conversations are <strong>not</strong> carried over unless explicitly pasted back in.</p>
+        </div>
+      </div>
+      <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
+        <h4 class="font-bold text-slate-800 mb-2">📊 The "Lost in the Middle" Effect</h4>
+        <p class="text-sm text-slate-600">Research shows AI models recall the <strong>beginning</strong> and <strong>end</strong> of context best, but information in the <strong>middle</strong> is often "lost." This is called the <em>Lost in the Middle</em> phenomenon (Liu et al., 2023).</p>
+        <div class="mt-3 flex items-center gap-1 h-8">
+          <div class="flex-1 h-full bg-emerald-400 rounded-l-lg opacity-90" title="High recall — start"></div>
+          <div class="flex-1 h-full bg-emerald-300 opacity-70"></div>
+          <div class="flex-1 h-full bg-amber-200 opacity-60"></div>
+          <div class="flex-1 h-full bg-red-200 opacity-50" title="Low recall — middle"></div>
+          <div class="flex-1 h-full bg-red-200 opacity-50"></div>
+          <div class="flex-1 h-full bg-amber-200 opacity-60"></div>
+          <div class="flex-1 h-full bg-emerald-300 opacity-70"></div>
+          <div class="flex-1 h-full bg-emerald-400 rounded-r-lg opacity-90" title="High recall — end"></div>
+        </div>
+        <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+          <span>← Start (high recall)</span>
+          <span>Middle (low recall) →</span>
+          <span>End (high recall) →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: How VS Code / Copilot Agents Build Context -->
+  <section class="fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-xl">🔧</span>
+      <h2 class="text-3xl font-bold text-slate-900">How VS Code Copilot Builds Context</h2>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-6">
+      <p class="text-slate-600 leading-relaxed">When you use Copilot in VS Code (Agent mode), it's smarter than plain ChatGPT — it <strong>actively gathers context</strong> using tools:</p>
+      <div class="space-y-3">
+        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+          <span class="text-xl mt-0.5">📁</span>
+          <div>
+            <h4 class="font-semibold text-slate-800">File Reading</h4>
+            <p class="text-sm text-slate-500">The agent reads specific files/lines from your workspace into its context window.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+          <span class="text-xl mt-0.5">🔍</span>
+          <div>
+            <h4 class="font-semibold text-slate-800">Semantic Search</h4>
+            <p class="text-sm text-slate-500">It searches your codebase for relevant code snippets using meaning-based search.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+          <span class="text-xl mt-0.5">🖥️</span>
+          <div>
+            <h4 class="font-semibold text-slate-800">Terminal Commands</h4>
+            <p class="text-sm text-slate-500">It runs commands (curl, grep, git, etc.) and reads their output into context.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+          <span class="text-xl mt-0.5">📋</span>
+          <div>
+            <h4 class="font-semibold text-slate-800">Conversation Summary</h4>
+            <p class="text-sm text-slate-500">When a conversation gets very long, VS Code automatically creates a <code class="bg-slate-200 px-1.5 py-0.5 rounded text-xs">conversation-summary</code> that compresses earlier context into a structured recap.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-yellow-50 rounded-xl p-5 border border-yellow-200">
+        <h4 class="font-bold text-yellow-800 mb-2">⚠️ But It Still Has Limits!</h4>
+        <p class="text-sm text-yellow-700/80">Even with all these tools, the context window is finite. When you have a very long conversation spanning many projects, the agent may lose track of which project is which, or forget specific file paths.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Best Practices -->
+  <section class="fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center text-xl">✅</span>
+      <h2 class="text-3xl font-bold text-slate-900">Best Practices for Building Context</h2>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div class="space-y-4">
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">1</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Start New Chats for New Tasks</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">Don't continue a 2-hour conversation for a new topic. Fresh chat = clean context = better accuracy.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">2</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Be Explicit About Which Project/File</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">Instead of <em>"fix the bug"</em>, say <em>"in KanGo/app.py, fix the bug in the render() function."</em> Absolute paths reduce ambiguity.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">3</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Write Clear Prompts in Tasks</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">In KanGo, use the <strong>Prompt</strong> field to write exactly what the AI should do. Include file paths, expected behavior, and constraints.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">4</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Use @workspace and @file References</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">In Copilot Chat, use <code class="bg-emerald-200 px-1 rounded">@workspace</code> to search across all files, or <code class="bg-emerald-200 px-1 rounded">#file:path</code> to explicitly include a file.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">5</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Front-Load Important Info</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">Put the most critical instructions at the <strong>beginning</strong> of your message. Due to the "lost in the middle" effect, the start and end get the most attention.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">6</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Batch Similar Work Together</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">If you need 5 changes to KanGo, do them all in one session. Switching between projects in one chat leads to confusion.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <span class="w-8 h-8 bg-emerald-200 rounded-lg flex items-center justify-center text-sm font-bold text-emerald-700 flex-shrink-0">7</span>
+          <div>
+            <h4 class="font-bold text-emerald-900">Keep a RUNBOOK / README</h4>
+            <p class="text-sm text-emerald-700/80 mt-1">Maintain a <code class="bg-emerald-200 px-1 rounded">RUNBOOK.md</code> in each project. The AI can read it to quickly understand architecture, deploy commands, and constraints.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 5: Visual Diagram -->
+  <section class="fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-xl">📊</span>
+      <h2 class="text-3xl font-bold text-slate-900">How Context Flows</h2>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div class="flex flex-col md:flex-row items-center gap-4 text-center">
+        <div class="p-4 bg-blue-50 rounded-xl border border-blue-200 flex-1">
+          <div class="text-2xl mb-2">💬</div>
+          <h4 class="font-bold text-blue-900 text-sm">Your Message</h4>
+          <p class="text-xs text-blue-600 mt-1">"Fix the render bug in KanGo"</p>
+        </div>
+        <svg class="w-6 h-6 text-slate-300 flex-shrink-0 rotate-90 md:rotate-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        <div class="p-4 bg-purple-50 rounded-xl border border-purple-200 flex-1">
+          <div class="text-2xl mb-2">🔧</div>
+          <h4 class="font-bold text-purple-900 text-sm">Agent Gathers</h4>
+          <p class="text-xs text-purple-600 mt-1">Reads files, searches, checks errors</p>
+        </div>
+        <svg class="w-6 h-6 text-slate-300 flex-shrink-0 rotate-90 md:rotate-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 flex-1">
+          <div class="text-2xl mb-2">🧠</div>
+          <h4 class="font-bold text-amber-900 text-sm">Context Window</h4>
+          <p class="text-xs text-amber-600 mt-1">All info packed into ~128K tokens</p>
+        </div>
+        <svg class="w-6 h-6 text-slate-300 flex-shrink-0 rotate-90 md:rotate-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-200 flex-1">
+          <div class="text-2xl mb-2">✏️</div>
+          <h4 class="font-bold text-emerald-900 text-sm">Response</h4>
+          <p class="text-xs text-emerald-600 mt-1">Code edit, answer, terminal command</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Common Mistakes -->
+  <section class="fade-in">
+    <div class="flex items-center gap-3 mb-6">
+      <span class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-xl">🚫</span>
+      <h2 class="text-3xl font-bold text-slate-900">Common Mistakes to Avoid</h2>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div class="space-y-3">
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-red-50 transition">
+          <span class="text-red-500 font-bold">✗</span>
+          <div>
+            <p class="text-sm text-slate-700"><strong>Mixing many projects in one conversation.</strong> After 30+ messages, the AI can't tell KanGo from WQD from StratosX.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-red-50 transition">
+          <span class="text-red-500 font-bold">✗</span>
+          <div>
+            <p class="text-sm text-slate-700"><strong>Vague references.</strong> "Fix that bug" → which bug? In which file? Be specific.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-red-50 transition">
+          <span class="text-red-500 font-bold">✗</span>
+          <div>
+            <p class="text-sm text-slate-700"><strong>Expecting memory across sessions.</strong> The AI doesn't remember yesterday's chat. Paste key decisions or use a runbook.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-red-50 transition">
+          <span class="text-red-500 font-bold">✗</span>
+          <div>
+            <p class="text-sm text-slate-700"><strong>Not providing constraints.</strong> "Deploy this" without specifying project, region, or service name leads to guessing.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-red-50 transition">
+          <span class="text-red-500 font-bold">✗</span>
+          <div>
+            <p class="text-sm text-slate-700"><strong>Running background + foreground in same terminal.</strong> This aborts running deploys — use separate processes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TL;DR -->
+  <section class="fade-in">
+    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-10 text-white text-center shadow-xl">
+      <h2 class="text-3xl font-bold mb-4">TL;DR</h2>
+      <p class="text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed">AI context is a <strong>fixed-size window</strong>. It forgets because old messages fall off. Be specific, start fresh chats, write good prompts, and keep runbooks. The better your input, the better the output.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center py-8 text-sm text-slate-400 border-t border-slate-200">
+  <p>Generated by KanGo Agent &bull; StratosX Ecosystem &bull; 2026</p>
+</footer>
+
+</body>
+</html>

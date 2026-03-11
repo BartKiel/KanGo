@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StratosX Security Scan Report</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8fafc;color:#1e293b;padding:2rem}
+.container{max-width:960px;margin:0 auto}
+h1{font-size:1.8rem;margin-bottom:.5rem}
+.subtitle{color:#64748b;margin-bottom:2rem;font-size:.95rem}
+.section{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:1.5rem;overflow:hidden}
+.section-header{padding:1rem 1.5rem;font-weight:700;font-size:1.05rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:.5rem}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:.65rem 1rem;background:#f1f5f9;color:#475569;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+td{padding:.65rem 1rem;border-top:1px solid #f1f5f9;font-size:.9rem}
+.pass{color:#059669;font-weight:700}
+.fail{color:#dc2626;font-weight:700}
+.warn{color:#d97706;font-weight:700}
+.tag{display:inline-block;padding:.15rem .5rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.tag-pass{background:#d1fae5;color:#059669}
+.tag-fail{background:#fee2e2;color:#dc2626}
+.tag-warn{background:#fef3c7;color:#d97706}
+.summary-bar{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.summary-card{background:#fff;border-radius:10px;padding:1rem 1.5rem;box-shadow:0 1px 3px rgba(0,0,0,.08);flex:1;min-width:140px;text-align:center}
+.summary-card .num{font-size:2rem;font-weight:800}
+.summary-card .label{font-size:.8rem;color:#64748b;margin-top:.25rem}
+.note{font-size:.8rem;color:#94a3b8;padding:.5rem 1rem}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔒 StratosX Ecosystem — Security Scan</h1>
+<p class="subtitle">Automated scan — generated 2026-03-10 · Project: stratosx-test-esj · Region: europe-west1</p>
+
+<div class="summary-bar">
+  <div class="summary-card"><div class="num pass">15</div><div class="label">Passed</div></div>
+  <div class="summary-card"><div class="num fail">4</div><div class="label">Failed</div></div>
+  <div class="summary-card"><div class="num warn">1</div><div class="label">Warnings</div></div>
+</div>
+
+<!-- (1) GCS Bucket Permissions -->
+<div class="section">
+<div class="section-header">🪣 GCS Bucket Permissions — allUsers / allAuthenticatedUsers</div>
+<table>
+<tr><th>Bucket</th><th>Public Access</th><th>Result</th></tr>
+<tr><td>gs://geocatch2-state/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://kango-tasks-esj/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://stratosx-backups-esj/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://stratosx-criteria-builder/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://stratosx-data-esj/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://stratosx-mind-cloud/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://stratosx-test-esj_cloudbuild/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>gs://run-sources-stratosx-test-esj-europe-west1/</td><td>None</td><td><span class="tag tag-pass">PASS</span></td></tr>
+</table>
+<div class="note">✅ No buckets expose allUsers or allAuthenticatedUsers bindings. All buckets private.</div>
+</div>
+
+<!-- (2) Response Headers -->
+<div class="section">
+<div class="section-header">🛡️ Security Response Headers</div>
+<table>
+<tr><th>URL</th><th>X-Content-Type-Options</th><th>X-Frame-Options</th><th>Strict-Transport-Security</th></tr>
+<tr>
+  <td>stratosx.com</td>
+  <td><span class="tag tag-fail">MISSING</span></td>
+  <td><span class="tag tag-fail">MISSING</span></td>
+  <td><span class="tag tag-warn">MISSING</span></td>
+</tr>
+<tr>
+  <td>app.stratosx.com</td>
+  <td><span class="tag tag-fail">MISSING</span></td>
+  <td><span class="tag tag-fail">MISSING</span></td>
+  <td><span class="tag tag-pass">GFE handles</span></td>
+</tr>
+<tr>
+  <td>kango (Cloud Run)</td>
+  <td><span class="tag tag-fail">MISSING</span></td>
+  <td><span class="tag tag-fail">MISSING</span></td>
+  <td><span class="tag tag-pass">GFE handles</span></td>
+</tr>
+</table>
+<div class="note">⚠️ Cloud Run via Google Frontend provides HSTS at load-balancer level, but <code>X-Content-Type-Options: nosniff</code> and <code>X-Frame-Options: DENY</code> should be added at app level. Recommendation: add these headers to Flask response middleware.</div>
+</div>
+
+<!-- (3) CORS -->
+<div class="section">
+<div class="section-header">🌐 CORS — Cross-Origin Requests</div>
+<table>
+<tr><th>Service</th><th>Evil Origin Test</th><th>Result</th></tr>
+<tr><td>stratosx</td><td>No Access-Control-Allow-Origin returned</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>kango</td><td>No Access-Control-Allow-Origin returned</td><td><span class="tag tag-pass">PASS</span></td></tr>
+<tr><td>criteria-builder</td><td>No Access-Control-Allow-Origin returned</td><td><span class="tag tag-pass">PASS</span></td></tr>
+</table>
+<div class="note">✅ No services respond with CORS headers to cross-origin requests from untrusted domains.</div>
+</div>
+
+<!-- (4) Brute-Force -->
+<div class="section">
+<div class="section-header">🔑 Brute-Force Protection — /login</div>
+<table>
+<tr><th>Service</th><th>15 rapid wrong-password attempts</th><th>Rate Limiting</th><th>Result</th></tr>
+<tr><td>kango /login</td><td>All 15 returned HTTP 200 (login page re-render)</td><td>None detected</td><td><span class="tag tag-fail">FAIL</span></td></tr>
+</table>
+<div class="note">⚠️ No rate limiting on login endpoint. Recommendation: add IP-based rate limiting (e.g., Flask-Limiter) — max 5 attempts per minute per IP, then 429 Too Many Requests.</div>
+</div>
+
+<!-- Summary & Recommendations -->
+<div class="section">
+<div class="section-header">📋 Recommendations</div>
+<table>
+<tr><th>#</th><th>Finding</th><th>Severity</th><th>Fix</th></tr>
+<tr><td>1</td><td>Missing X-Content-Type-Options header</td><td><span class="tag tag-warn">MEDIUM</span></td><td>Add <code>@app.after_request</code> middleware with <code>X-Content-Type-Options: nosniff</code></td></tr>
+<tr><td>2</td><td>Missing X-Frame-Options header</td><td><span class="tag tag-warn">MEDIUM</span></td><td>Add <code>X-Frame-Options: DENY</code> or <code>SAMEORIGIN</code> to responses</td></tr>
+<tr><td>3</td><td>No brute-force login protection</td><td><span class="tag tag-fail">HIGH</span></td><td>Add Flask-Limiter or custom rate limiter: 5 attempts/min/IP on /login</td></tr>
+<tr><td>4</td><td>All GCS buckets private</td><td><span class="tag tag-pass">OK</span></td><td>No action needed</td></tr>
+<tr><td>5</td><td>No wildcard CORS</td><td><span class="tag tag-pass">OK</span></td><td>No action needed</td></tr>
+</table>
+</div>
+
+</div>
+</body>
+</html>

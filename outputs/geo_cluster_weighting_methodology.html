@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO-Catch 2 — Metodologia ważenia clusterów embeddingowych</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.7}
+.container{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem}
+h1{font-size:2rem;font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{color:#94a3b8;font-size:.95rem;margin-bottom:2.5rem}
+h2{font-size:1.3rem;font-weight:700;margin:2.5rem 0 1rem;color:#f8fafc;display:flex;align-items:center;gap:.5rem}
+h3{font-size:1.05rem;font-weight:600;margin:1.5rem 0 .75rem;color:#cbd5e1}
+h4{font-size:.95rem;font-weight:600;margin:1rem 0 .5rem;color:#94a3b8}
+p,li{font-size:.9rem;color:#94a3b8}
+ul,ol{padding-left:1.5rem;margin-bottom:1rem}
+li{margin-bottom:.4rem}
+strong{color:#e2e8f0}
+.card{background:#1e293b;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;border:1px solid #334155}
+.card-blue{border-left:4px solid #3b82f6}
+.card-purple{border-left:4px solid #8b5cf6}
+.card-amber{border-left:4px solid #f59e0b}
+.card-green{border-left:4px solid #10b981}
+.card-red{border-left:4px solid #ef4444}
+code{background:#334155;padding:.15rem .4rem;border-radius:4px;font-size:.82rem;color:#a5b4fc;font-weight:500}
+pre{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:1rem;border-radius:8px;overflow-x:auto;font-size:.8rem;margin:.75rem 0;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+th{text-align:left;padding:.6rem .75rem;background:#334155;color:#cbd5e1;font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+td{padding:.6rem .75rem;border-top:1px solid #1e293b;color:#94a3b8}
+.tag{display:inline-block;padding:.15rem .5rem;border-radius:5px;font-size:.72rem;font-weight:700;margin-right:.25rem}
+.tag-blue{background:#1e3a5f;color:#60a5fa}
+.tag-purple{background:#2e1065;color:#a78bfa}
+.tag-amber{background:#451a03;color:#fbbf24}
+.tag-green{background:#052e16;color:#4ade80}
+.tag-red{background:#450a0a;color:#f87171}
+.emoji{font-size:1.1em}
+.formula{background:#1e293b;border:1px solid #3b82f6;border-radius:8px;padding:1.25rem;margin:1rem 0;text-align:center;font-size:1rem;color:#a5b4fc;font-family:'Courier New',monospace;letter-spacing:.5px}
+.formula .main{font-size:1.2rem;color:#f8fafc;font-weight:700}
+.step-grid{display:grid;grid-template-columns:50px 1fr;gap:.25rem 1rem;margin:.75rem 0}
+.step-num{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff}
+.step-content{padding-top:.4rem}
+.diagram{background:#0f172a;border:2px solid #334155;border-radius:12px;padding:1.5rem;margin:1rem 0;font-family:'Courier New',monospace;font-size:.75rem;color:#94a3b8;line-height:1.8;overflow-x:auto}
+.toc{background:#1e293b;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:2rem;border:1px solid #334155}
+.toc a{color:#60a5fa;text-decoration:none;font-size:.85rem;font-weight:500}
+.toc a:hover{text-decoration:underline}
+.toc ol{padding-left:1.25rem}
+.toc li{margin-bottom:.3rem}
+.highlight{background:#1e3a5f;border-radius:6px;padding:.75rem 1rem;margin:.75rem 0}
+.highlight p{color:#93c5fd}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>⚖️ GEO-Catch 2 — Ważenie clusterów embeddingowych</h1>
+<p class="subtitle">Metodologia wykorzystania DataForSEO keywords do nadawania wag clusterom semantycznym. Propozycja myślenia — nie implementacja.</p>
+
+<div class="toc">
+<strong style="color:#f8fafc">Spis treści</strong>
+<ol>
+<li><a href="#problem">Problem — dlaczego potrzebujemy wag</a></li>
+<li><a href="#zrodla">Źródła danych — co mamy</a></li>
+<li><a href="#metryki">Metryki DataForSEO do ważenia</a></li>
+<li><a href="#formula">Formuła ważenia — Cluster Weight Score</a></li>
+<li><a href="#pipeline">Pipeline obliczeniowy</a></li>
+<li><a href="#normalizacja">Normalizacja i skalowanie</a></li>
+<li><a href="#wizualizacja">Wizualizacja na mapie</a></li>
+<li><a href="#edge-cases">Edge cases i pułapki</a></li>
+<li><a href="#next-steps">Kolejne kroki</a></li>
+</ol>
+</div>
+
+<!-- 1 -->
+<h2 id="problem"><span class="emoji">🎯</span> 1. Problem</h2>
+<div class="card card-blue">
+<p>GEO-Catch 2 generuje <strong>clustery embeddingowe</strong> — grupy semantycznie powiązanych fraz/entitetów z wyników AI (np. ChatGPT, Perplexity). Ale nie wszystkie clustery mają taką samą wartość biznesową:</p>
+<ul style="margin-top:.75rem">
+<li>Cluster „karma dla psów premium" może mieć <strong>15 000 MSV</strong> i CPC $2.50</li>
+<li>Cluster „karma dla psów z grzybami reishi" może mieć <strong>40 MSV</strong> i CPC $0.10</li>
+</ul>
+<p style="margin-top:.75rem">Bez ważenia oba clustery mają taką samą „wielkość" na mapie embeddingowej — co jest mylące. <strong>Potrzebujemy systemu wag opartego o realne dane rynkowe.</strong></p>
+</div>
+
+<!-- 2 -->
+<h2 id="zrodla"><span class="emoji">📊</span> 2. Źródła danych</h2>
+<div class="card">
+<table>
+<tr><th>Źródło</th><th>Dane</th><th>Rola</th></tr>
+<tr><td><span class="tag tag-purple">Embeddingi</span></td><td>Wektory 768/1536-dim z OpenAI</td><td>Tworzy clustery (HDBSCAN/K-Means)</td></tr>
+<tr><td><span class="tag tag-blue">DataForSEO Keywords</span></td><td>MSV, CPC, Competition, SERP features</td><td>Nadaje wagi clusterom</td></tr>
+<tr><td><span class="tag tag-green">AI Responses</span></td><td>Frazy/brany z ChatGPT, Perplexity</td><td>Definiuje elementy clusterów</td></tr>
+<tr><td><span class="tag tag-amber">Brand data</span></td><td>Obecność marki w AI wynikach</td><td>Określa brand visibility per cluster</td></tr>
+</table>
+</div>
+
+<!-- 3 -->
+<h2 id="metryki"><span class="emoji">📈</span> 3. Metryki DataForSEO</h2>
+<div class="card card-purple">
+<h3>Metryki keywords-level (per keyword w clusterze)</h3>
+<table>
+<tr><th>Metryka</th><th>Typ</th><th>Opis</th><th>Wpływ na wagę</th></tr>
+<tr><td><code>search_volume</code></td><td>int</td><td>Miesięczny wolumen wyszukiwań</td><td><span class="tag tag-green">WYSOKI</span> — ruch</td></tr>
+<tr><td><code>cpc</code></td><td>float</td><td>Średni koszt za klik (Google Ads)</td><td><span class="tag tag-green">WYSOKI</span> — wartość $</td></tr>
+<tr><td><code>competition</code></td><td>float 0-1</td><td>Stopień konkurencji</td><td><span class="tag tag-amber">ŚREDNI</span> — trudność</td></tr>
+<tr><td><code>competition_level</code></td><td>str</td><td>LOW / MEDIUM / HIGH</td><td><span class="tag tag-amber">INFORMACYJNY</span></td></tr>
+<tr><td><code>keyword_difficulty</code></td><td>int 0-100</td><td>SEO difficulty</td><td><span class="tag tag-amber">ŚREDNI</span> — organic szanse</td></tr>
+</table>
+
+<h3 style="margin-top:1.5rem">Metryki cluster-level (agregowane)</h3>
+<table>
+<tr><th>Metryka</th><th>Agregacja</th><th>Opis</th></tr>
+<tr><td><code>cluster_msv</code></td><td>SUM(msv per keyword)</td><td>Łączny potencjał ruchu</td></tr>
+<tr><td><code>cluster_avg_cpc</code></td><td>WEIGHTED_AVG(cpc, msv)</td><td>Średni CPC ważony wolumenem</td></tr>
+<tr><td><code>cluster_density</code></td><td>COUNT(keywords)</td><td>Ile keywords w clusterze</td></tr>
+<tr><td><code>cluster_opportunity</code></td><td>SUM(msv × (1 - competition))</td><td>Potencjał nisko-konkurencyjny</td></tr>
+<tr><td><code>cluster_value</code></td><td>SUM(msv × cpc)</td><td>Łączna wartość pieniężna</td></tr>
+</table>
+</div>
+
+<!-- 4 -->
+<h2 id="formula"><span class="emoji">🧮</span> 4. Formuła ważenia — Cluster Weight Score</h2>
+<div class="card card-green">
+<p>Proponuję <strong>Cluster Weight Score (CWS)</strong> — złożoną wagę łączącą wolumen, wartość i szansę:</p>
+
+<div class="formula">
+<div class="main">CWS = α · V_norm + β · $V_norm + γ · Opp_norm</div>
+<br>
+gdzie α + β + γ = 1.0
+</div>
+
+<h3>Składniki</h3>
+<table>
+<tr><th>Symbol</th><th>Metryka</th><th>Formuła per cluster</th></tr>
+<tr><td><code>V</code></td><td>Volume Score</td><td><code>log₂(1 + SUM(msv))</code></td></tr>
+<tr><td><code>$V</code></td><td>Value Score</td><td><code>log₂(1 + SUM(msv × cpc))</code></td></tr>
+<tr><td><code>Opp</code></td><td>Opportunity Score</td><td><code>SUM(msv × (1 - competition) × (1 - kd/100))</code></td></tr>
+</table>
+
+<div class="highlight">
+<p>💡 <strong>Logarytm (log₂)</strong> jest kluczowy — bez niego dominujące clustery (np. „karma dla psów" z MSV 100k) miałyby wagę 1000x większą niż long-tail, co czyniłoby mapę nieczytelną.</p>
+</div>
+
+<h3>Domyślne wagi</h3>
+<table>
+<tr><th>Profil</th><th>α (Volume)</th><th>β (Value)</th><th>γ (Opportunity)</th><th>Zastosowanie</th></tr>
+<tr><td><span class="tag tag-blue">Balanced</span></td><td>0.40</td><td>0.35</td><td>0.25</td><td>Domyślne — ogólna analiza</td></tr>
+<tr><td><span class="tag tag-green">Traffic-first</span></td><td>0.60</td><td>0.20</td><td>0.20</td><td>Content marketing, SEO masowe</td></tr>
+<tr><td><span class="tag tag-amber">Revenue-first</span></td><td>0.20</td><td>0.55</td><td>0.25</td><td>E-commerce, konwersje</td></tr>
+<tr><td><span class="tag tag-purple">Opportunity</span></td><td>0.20</td><td>0.25</td><td>0.55</td><td>Startup, niszowe szanse</td></tr>
+</table>
+</div>
+
+<!-- 5 -->
+<h2 id="pipeline"><span class="emoji">⚙️</span> 5. Pipeline obliczeniowy</h2>
+<div class="card">
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│  INPUT: AI Responses (frazy z ChatGPT / Perplexity)        │
+└──────────────────────────┬──────────────────────────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 1: Embeddingi → Clustering (HDBSCAN)                 │
+│  Wynik: clustery C₁, C₂, ... Cₙ z frazami                 │
+└──────────────────────────┬──────────────────────────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 2: Keyword Expansion                                  │
+│  Dla każdego clustera Cᵢ:                                   │
+│    • Weź 3-5 reprezentatywnych fraz (closest to centroid)   │
+│    • Odpytaj DataForSEO Keywords API:                       │
+│      POST /v3/keywords_data/google_ads/search_volume/live   │
+│    • Dodaj metryki: msv, cpc, competition, kd              │
+└──────────────────────────┬──────────────────────────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 3: Agregacja per cluster                              │
+│    cluster_msv       = SUM(msv)                             │
+│    cluster_value     = SUM(msv × cpc)                       │
+│    cluster_opp       = SUM(msv × (1-comp) × (1-kd/100))    │
+│    cluster_density   = COUNT(keywords)                      │
+└──────────────────────────┬──────────────────────────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 4: Normalizacja (min-max → 0..1)                      │
+│    V_norm   = (log₂(1+msv) - min) / (max - min)            │
+│    $V_norm  = (log₂(1+val) - min) / (max - min)            │
+│    Opp_norm = (opp - min) / (max - min)                     │
+└──────────────────────────┬──────────────────────────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  STEP 5: Cluster Weight Score                               │
+│    CWS = α·V_norm + β·$V_norm + γ·Opp_norm                 │
+│    Wagi: profil Balanced / Traffic / Revenue / Opportunity   │
+└──────────────────────────┬──────────────────────────────────┘
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│  OUTPUT: Mapa embeddingowa z weighted clusters              │
+│  • Rozmiar bąbla = CWS                                     │
+│  • Kolor = dominujący profil (brand vs non-brand)           │
+│  • Opacity = confidence (% keywords z DataForSEO data)      │
+└─────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+<!-- 6 -->
+<h2 id="normalizacja"><span class="emoji">📐</span> 6. Normalizacja i skalowanie</h2>
+<div class="card card-amber">
+<h3>Problem rozkładu</h3>
+<p>Dane keyword mają <strong>power-law distribution</strong> — kilka head terms ma MSV 100k+, większość long-tail ma MSV &lt; 500. Bez transformacji mapa byłaby zdominowana przez 2-3 clustery.</p>
+
+<h3 style="margin-top:1rem">Rozwiązanie: Log + Min-Max</h3>
+<pre><code>import numpy as np
+
+def normalize_cws(clusters):
+    # 1. Log-transform surowych wartości
+    for c in clusters:
+        c['v_log']   = np.log2(1 + c['total_msv'])
+        c['val_log'] = np.log2(1 + c['total_value'])
+    
+    # 2. Min-Max normalizacja do [0, 1]
+    for key in ['v_log', 'val_log', 'opportunity']:
+        vals = [c[key] for c in clusters]
+        mn, mx = min(vals), max(vals)
+        rng = mx - mn if mx != mn else 1
+        for c in clusters:
+            c[f'{key}_norm'] = (c[key] - mn) / rng
+    
+    # 3. CWS z wagami profilu
+    alpha, beta, gamma = 0.40, 0.35, 0.25
+    for c in clusters:
+        c['cws'] = (alpha * c['v_log_norm'] + 
+                    beta  * c['val_log_norm'] + 
+                    gamma * c['opportunity_norm'])
+    return clusters</code></pre>
+
+<h3 style="margin-top:1rem">Skalowanie wizualne</h3>
+<table>
+<tr><th>Element wizualny</th><th>Mapowanie</th><th>Zakres</th></tr>
+<tr><td>Rozmiar bąbla (r)</td><td><code>r = 15 + CWS × 85</code></td><td>15px — 100px</td></tr>
+<tr><td>Opacity</td><td><code>confidence = matched_kw / total_kw</code></td><td>0.3 — 1.0</td></tr>
+<tr><td>Kolor</td><td>Gradient: brand% → 🔵niski ↔ 🟢wysoki</td><td>Hue 220–140</td></tr>
+<tr><td>Border grubość</td><td><code>border = 1 + competition × 4</code></td><td>1px — 5px</td></tr>
+</table>
+</div>
+
+<!-- 7 -->
+<h2 id="wizualizacja"><span class="emoji">🗺️</span> 7. Wizualizacja na mapie</h2>
+<div class="card">
+<h3>Wariant A: Bubble chart na 2D UMAP</h3>
+<p>Jak teraz, ale z wagami:</p>
+<ul>
+<li><strong>Pozycja (x, y)</strong> — z UMAP redukcji embeddingów centroidu clustera</li>
+<li><strong>Rozmiar bąbla</strong> — CWS (zamiast count elementów)</li>
+<li><strong>Hover tooltip:</strong> nazwa clustera, CWS, MSV, CPC, keywords count</li>
+</ul>
+
+<h3 style="margin-top:1rem">Wariant B: Treemap (alternatywa)</h3>
+<p>Płaski treemap gdzie:</p>
+<ul>
+<li><strong>Rozmiar prostokąta</strong> = CWS</li>
+<li><strong>Kolor</strong> = opportunity score (zielony = duża szansa)</li>
+<li>Łatwiejszy do czytania dla klientów (nie wymaga rozumienia embeddingów)</li>
+</ul>
+
+<h3 style="margin-top:1rem">Wariant C: Hybrid (rekomendacja)</h3>
+<p>Mapa UMAP + sidebar z treemap + filtr profilów (Balanced/Traffic/Revenue/Opportunity). Użytkownik przełącza profil wagowy i widzi jak zmienia się mapa — clustery „nabierają" lub „tracą" rozmiar.</p>
+</div>
+
+<!-- 8 -->
+<h2 id="edge-cases"><span class="emoji">⚠️</span> 8. Edge cases i pułapki</h2>
+<div class="card card-red">
+<table>
+<tr><th>Problem</th><th>Rozwiązanie</th></tr>
+<tr><td>Frazy bez danych DataForSEO (0 MSV)</td><td>Użyj <code>estimated_msv = median(cluster_msv) × 0.1</code> jako fallback</td></tr>
+<tr><td>Cluster z 1 keywords</td><td>Oznacz jako <span class="tag tag-amber">LOW_CONFIDENCE</span>, opacity 0.3</td></tr>
+<tr><td>Cluster z MSV &gt; 1M</td><td>Cap na 99 percentylu (winsoryzacja)</td></tr>
+<tr><td>CPC = 0 (informational)</td><td>Nie odrzucaj — wartość content-owa istnieje. Użyj <code>cpc_adj = max(cpc, 0.05)</code></td></tr>
+<tr><td>Różne języki/kraje</td><td>Normalizuj per-market (nie mieszaj PL z US w jednej normalizacji)</td></tr>
+<tr><td>Sezonowość (kw. letnie vs zimowe)</td><td>Użyj <code>avg_monthly</code> z DataForSEO zamiast last-month</td></tr>
+<tr><td>Brand vs non-brand clustery</td><td>Osobna warstwa — brand clustery mają inne CPC dynamics</td></tr>
+</table>
+</div>
+
+<!-- 9 -->
+<h2 id="next-steps"><span class="emoji">🚀</span> 9. Kolejne kroki (implementacja)</h2>
+<div class="card card-green">
+<p><strong>Ta propozycja to myślenie — poniżej roadmap implementacji:</strong></p>
+
+<div class="step-grid" style="margin-top:1rem">
+<div><div class="step-num">1</div></div>
+<div class="step-content"><strong>DataForSEO Integration</strong> — Endpoint do pobierania MSV/CPC per lista fraz. Batch API call (max 700 keywords/request). Estymacja: 2h.</div>
+
+<div><div class="step-num">2</div></div>
+<div class="step-content"><strong>Cluster Aggregator</strong> — Moduł w GEO-Catch 2 backend: po clusteringu → auto-enrich z DataForSEO. Oblicz V, $V, Opp per cluster. Estymacja: 3h.</div>
+
+<div><div class="step-num">3</div></div>
+<div class="step-content"><strong>CWS Calculator</strong> — Normalizacja + formuła CWS z wyborem profilu (dropdown). Cache wyników (keywords data rzadko się zmienia). Estymacja: 1h.</div>
+
+<div><div class="step-num">4</div></div>
+<div class="step-content"><strong>Frontend — Weighted Bubbles</strong> — Modyfikacja Plotly/D3 chart: rozmiar bąbla = CWS, tooltip z metrykami. Profile switcher. Estymacja: 3h.</div>
+
+<div><div class="step-num">5</div></div>
+<div class="step-content"><strong>Testing</strong> — Unit tests dla normalizacji (edge cases z zerami, single-kw clusters). Visual QA na 3+ datasetach. Estymacja: 2h.</div>
+</div>
+
+<div class="highlight" style="margin-top:1.5rem">
+<p>📌 <strong>Łączna estymacja:</strong> ~11h dev time. Większość to integracja DataForSEO + frontend.</p>
+<p>📌 <strong>DataForSEO API cost:</strong> ~$0.01 per 100 keywords → nawet przy 5000 fraz = $0.50/run.</p>
+</div>
+</div>
+
+<div style="margin-top:3rem;padding:1.5rem;background:#1e293b;border-radius:12px;text-align:center;font-size:.85rem;color:#475569;border:1px solid #334155">
+⚖️ GEO-Catch 2 Cluster Weighting Methodology · Propozycja myślenia · 2026-03-10 · by GitHub Copilot
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allegro Autopilot — MVP Feasibility Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{outfit:['Outfit','sans-serif']}}}}</script>
+<style>body{font-family:'Outfit',sans-serif}</style>
+</head>
+<body class="bg-slate-50 font-outfit">
+
+<!-- HERO -->
+<div class="bg-gradient-to-br from-orange-600 via-red-600 to-pink-700 text-white">
+  <div class="max-w-6xl mx-auto px-8 py-16">
+    <p class="text-orange-200 text-sm font-semibold uppercase tracking-widest mb-3">Feasibility Analysis &bull; Confidential</p>
+    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4">Allegro Autopilot</h1>
+    <p class="text-xl text-orange-100/80 max-w-3xl">MVP Product Brief — feasibility, module breakdown, risk analysis, roadmap & effort estimation</p>
+    <div class="flex items-center gap-4 mt-8">
+      <span class="px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium">Prepared: March 2026</span>
+      <span class="px-4 py-1.5 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium">Status: Draft for Review</span>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-8 py-12 space-y-16">
+
+  <!-- ══════════════════════ EXECUTIVE SUMMARY ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-sm">📋</span>
+      Executive Summary
+    </h2>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <p class="text-slate-600 leading-relaxed mb-4">
+        <strong>Allegro Autopilot</strong> is an automated advertising engine for the Allegro marketplace. The core job: <em>increase units sold</em> using Featured placements, protect daily spend &amp; inventory, and gradually shift to organic revenue.
+      </p>
+      <div class="grid md:grid-cols-4 gap-4 mt-6">
+        <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+          <div class="text-2xl font-bold text-blue-700">6</div>
+          <div class="text-xs text-blue-600 font-medium">Core Modules</div>
+        </div>
+        <div class="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+          <div class="text-2xl font-bold text-emerald-700">~16 wks</div>
+          <div class="text-xs text-emerald-600 font-medium">MVP Timeline</div>
+        </div>
+        <div class="text-center p-4 bg-amber-50 rounded-xl border border-amber-100">
+          <div class="text-2xl font-bold text-amber-700">2–3</div>
+          <div class="text-xs text-amber-600 font-medium">Developers Needed</div>
+        </div>
+        <div class="text-center p-4 bg-red-50 rounded-xl border border-red-100">
+          <div class="text-2xl font-bold text-red-700">Medium</div>
+          <div class="text-xs text-red-600 font-medium">Overall Risk</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ WHAT IS IT? ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-sm">🎯</span>
+      What Is Allegro Autopilot?
+    </h2>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-4">
+      <p class="text-slate-600 leading-relaxed">An automated <strong>Featured bidding &amp; inventory management system</strong> for Allegro sellers. It abstracts bid/budget management into a single "Featured Intensity" control, provides guardrails to protect against overspend, and classifies SKUs to optimize allocation.</p>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="p-4 bg-slate-50 rounded-xl">
+          <h4 class="font-bold text-sm text-slate-800 mb-1">Primary KPI</h4>
+          <p class="text-sm text-slate-500">Units sold (absolute increase)</p>
+        </div>
+        <div class="p-4 bg-slate-50 rounded-xl">
+          <h4 class="font-bold text-sm text-slate-800 mb-1">Secondary KPIs</h4>
+          <p class="text-sm text-slate-500">ACoS / ROAS, conversion rate, organic uplift</p>
+        </div>
+        <div class="p-4 bg-slate-50 rounded-xl">
+          <h4 class="font-bold text-sm text-slate-800 mb-1">Architecture</h4>
+          <p class="text-sm text-slate-500">Multi-tenant SaaS, one Allegro account per tenant</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ MODULE BREAKDOWN ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-sm">🧩</span>
+      Module Breakdown (MVP)
+    </h2>
+    <div class="space-y-4">
+
+      <!-- Module 1 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-slate-900">1. Featured Intensity Engine</h3>
+          <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">CRITICAL PATH</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-3">Single "intensity dial" abstraction over Allegro's Featured API. Manages bids/budgets automatically with daily cadence (configurable).</p>
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Effort:</span> <span class="text-blue-600 font-semibold">4–5 weeks</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Complexity:</span> <span class="text-red-600 font-semibold">High</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Dependency:</span> <span class="text-amber-600 font-semibold">Allegro API access</span></div>
+        </div>
+      </div>
+
+      <!-- Module 2 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-slate-900">2. Guardrails & Anomaly Detection</h3>
+          <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">CRITICAL PATH</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-3">Hard max daily spend, stock-level pause, automatic taper, global kill switch, spend spike / conversion drop detection.</p>
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Effort:</span> <span class="text-blue-600 font-semibold">3–4 weeks</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Complexity:</span> <span class="text-amber-600 font-semibold">Medium-High</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Dependency:</span> <span class="text-emerald-600 font-semibold">Module 1</span></div>
+        </div>
+      </div>
+
+      <!-- Module 3 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-slate-900">3. SKU Classification Engine (Rules-Based)</h3>
+          <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">IMPORTANT</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-3">Classify SKUs as Growth, Profitable-Steady, Underperformer, Dead-Weight, or Seasonal. Rules-based for MVP (AI-based in Phase 2).</p>
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Effort:</span> <span class="text-blue-600 font-semibold">2–3 weeks</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Complexity:</span> <span class="text-amber-600 font-semibold">Medium</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Dependency:</span> <span class="text-emerald-600 font-semibold">Sales data access</span></div>
+        </div>
+      </div>
+
+      <!-- Module 4 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-slate-900">4. Dashboard & Reporting</h3>
+          <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">MVP CORE</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-3">Live dashboard with date range selector, weekly PDF/email reports, exportable summaries, "What Changed" automation log.</p>
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Effort:</span> <span class="text-blue-600 font-semibold">3–4 weeks</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Complexity:</span> <span class="text-amber-600 font-semibold">Medium</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Dependency:</span> <span class="text-emerald-600 font-semibold">All data modules</span></div>
+        </div>
+      </div>
+
+      <!-- Module 5 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-slate-900">5. Multi-Tenant Framework</h3>
+          <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">MVP CORE</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-3">Tenant switcher, role-based permissions (Admin/Operator/Viewer), full audit log of automated decisions.</p>
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Effort:</span> <span class="text-blue-600 font-semibold">2–3 weeks</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Complexity:</span> <span class="text-amber-600 font-semibold">Medium</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Dependency:</span> <span class="text-emerald-600 font-semibold">Auth framework</span></div>
+        </div>
+      </div>
+
+      <!-- Module 6 -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-slate-900">6. Basic Voice Control</h3>
+          <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full">NICE TO HAVE</span>
+        </div>
+        <p class="text-sm text-slate-500 mb-3">Push-to-talk, query metrics conversationally, execute actions with confirmation. Can be trimmed from MVP if time-pressured.</p>
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Effort:</span> <span class="text-blue-600 font-semibold">2 weeks</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Complexity:</span> <span class="text-emerald-600 font-semibold">Low-Medium</span></div>
+          <div class="p-2 bg-slate-50 rounded-lg"><span class="font-bold text-slate-700">Dependency:</span> <span class="text-emerald-600 font-semibold">Speech API</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════ WHAT DO WE HAVE / WHAT'S MISSING ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-sm">⚖️</span>
+      What We Have vs. What's Missing
+    </h2>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl border border-emerald-200 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-emerald-700 mb-4">✅ We Already Have</h3>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>Cloud Run infrastructure (GCP, multi-service deploy)</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>GCS for persistent storage / state</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>KanGo for project management / task tracking</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>Python/Flask microservice patterns</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>TailwindCSS / Tailadmin UI competence</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>Copilot-assisted rapid development pipeline</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-emerald-500 mt-0.5">✓</span>Secret Manager / IAM patterns</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-2xl border border-red-200 p-6 shadow-sm">
+        <h3 class="text-lg font-bold text-red-700 mb-4">❌ Missing / To Build</h3>
+        <ul class="space-y-2">
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>Allegro API integration</strong> — need partner access, OAuth, Featured endpoints</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>Bidding algorithm</strong> — intensity → actual bid/budget mapping</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>Anomaly detection engine</strong> — statistical baselines, alerting</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>Multi-tenant auth</strong> — RBAC, tenant isolation, audit logging</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>PDF report generation</strong> — automated weekly reports</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>Voice control</strong> — speech-to-text, NLU for metric queries</li>
+          <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-red-500 mt-0.5">✗</span><strong>Competitor tracking infrastructure</strong> — scraping/API for top-10</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ RISK ANALYSIS ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center text-sm">⚠️</span>
+      Risk Analysis
+    </h2>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Risk</th>
+              <th class="text-left py-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Impact</th>
+              <th class="text-left py-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Likelihood</th>
+              <th class="text-left py-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Mitigation</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Allegro API access delay / restrictions</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">High</span></td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Medium</span></td>
+              <td class="py-3 px-4 text-slate-500">Apply for partner API early; build mock API layer for dev</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Bidding algorithm accuracy (burn money)</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">Critical</span></td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Medium</span></td>
+              <td class="py-3 px-4 text-slate-500">Guardrails-first approach; low intensity start; manual override</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Allegro rate limits / throttling</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Medium</span></td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Medium</span></td>
+              <td class="py-3 px-4 text-slate-500">Queue-based architecture; batch operations; retry with backoff</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Competitor scraping blocked</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Medium</span></td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">High</span></td>
+              <td class="py-3 px-4 text-slate-500">Move to Phase 2; use manual input initially</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Scope creep (voice, community, AI)</td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Medium</span></td>
+              <td class="py-3 px-4"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">High</span></td>
+              <td class="py-3 px-4 text-slate-500">Strict MVP scope; all extras deferred to Phase 2+</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ CHALLENGES ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center text-sm">🏔️</span>
+      Key Technical Challenges
+    </h2>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm space-y-4">
+      <div class="p-4 bg-red-50 rounded-xl border border-red-100">
+        <h4 class="font-bold text-red-800 mb-1">1. Allegro Featured API Integration</h4>
+        <p class="text-sm text-red-700/80">The Featured (Oferty Promowane) API requires partner-level access. Documentation is partly in Polish, and bid mechanics change. We need a sandbox environment and real account for testing.</p>
+      </div>
+      <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+        <h4 class="font-bold text-amber-800 mb-1">2. Safe Bidding Without Burning Budget</h4>
+        <p class="text-sm text-amber-700/80">Automating spend is inherently risky. The system needs robust circuit breakers: hard spend caps, anomaly detection (Z-score on hourly spend), and graceful degradation to manual mode.</p>
+      </div>
+      <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+        <h4 class="font-bold text-blue-800 mb-1">3. Multi-Tenant Data Isolation</h4>
+        <p class="text-sm text-blue-700/80">Each tenant manages real money. Cross-tenant data leakage is unacceptable. Need proper tenant-scoped DB schemas, API-key isolation, and audit logging from day 1.</p>
+      </div>
+      <div class="p-4 bg-purple-50 rounded-xl border border-purple-100">
+        <h4 class="font-bold text-purple-800 mb-1">4. Organic Lift Measurement</h4>
+        <p class="text-sm text-purple-700/80">Attributing sales to "organic lift from Featured" is inherently noisy. Need clean baseline measurement, controlled taper experiments, and statistical significance checks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ EFFORT & TIMELINE ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center text-sm">📅</span>
+      Effort Estimation & Timeline
+    </h2>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-xs font-bold text-slate-400 uppercase">Module</th>
+              <th class="text-center py-3 px-4 text-xs font-bold text-slate-400 uppercase">Effort</th>
+              <th class="text-center py-3 px-4 text-xs font-bold text-slate-400 uppercase">People</th>
+              <th class="text-center py-3 px-4 text-xs font-bold text-slate-400 uppercase">Can Parallel?</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Featured Intensity Engine</td>
+              <td class="py-3 px-4 text-center"><span class="font-bold text-blue-600">4–5 wks</span></td>
+              <td class="py-3 px-4 text-center">1–2 BE devs</td>
+              <td class="py-3 px-4 text-center">—</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Guardrails & Anomaly Detection</td>
+              <td class="py-3 px-4 text-center"><span class="font-bold text-blue-600">3–4 wks</span></td>
+              <td class="py-3 px-4 text-center">1 BE dev</td>
+              <td class="py-3 px-4 text-center">Partially (after core API)</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">SKU Classification (Rules)</td>
+              <td class="py-3 px-4 text-center"><span class="font-bold text-blue-600">2–3 wks</span></td>
+              <td class="py-3 px-4 text-center">1 dev</td>
+              <td class="py-3 px-4 text-center">✅ Yes (parallel)</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Dashboard & Reporting</td>
+              <td class="py-3 px-4 text-center"><span class="font-bold text-blue-600">3–4 wks</span></td>
+              <td class="py-3 px-4 text-center">1 FE dev</td>
+              <td class="py-3 px-4 text-center">✅ Yes (parallel)</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Multi-Tenant Framework</td>
+              <td class="py-3 px-4 text-center"><span class="font-bold text-blue-600">2–3 wks</span></td>
+              <td class="py-3 px-4 text-center">1 BE dev</td>
+              <td class="py-3 px-4 text-center">✅ Yes (early start)</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-medium text-slate-800">Voice Control (basic)</td>
+              <td class="py-3 px-4 text-center"><span class="font-bold text-blue-600">2 wks</span></td>
+              <td class="py-3 px-4 text-center">1 dev</td>
+              <td class="py-3 px-4 text-center">✅ Yes (end)</td>
+            </tr>
+            <tr class="bg-slate-50 font-bold">
+              <td class="py-3 px-4 text-slate-900">TOTAL (with 2–3 devs parallel)</td>
+              <td class="py-3 px-4 text-center text-blue-700">~14–18 wks</td>
+              <td class="py-3 px-4 text-center">2–3</td>
+              <td class="py-3 px-4 text-center">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ ROADMAP ══════════════════════ -->
+  <section>
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+      <span class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center text-sm">🗺️</span>
+      Roadmap
+    </h2>
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div class="space-y-6">
+        <!-- Phase 0 -->
+        <div class="flex items-start gap-4">
+          <div class="w-24 flex-shrink-0 text-right">
+            <span class="text-xs font-bold text-slate-400">Wk 0–2</span>
+          </div>
+          <div class="w-4 flex flex-col items-center">
+            <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+            <div class="w-0.5 h-full bg-blue-200 mt-1"></div>
+          </div>
+          <div class="flex-1 pb-6">
+            <h4 class="font-bold text-slate-800">Phase 0 — Setup & Access</h4>
+            <p class="text-sm text-slate-500 mt-1">Apply for Allegro Partner API. Set up GCP project, Cloud SQL, multi-tenant schema. Initialize repo with CI/CD.</p>
+          </div>
+        </div>
+        <!-- Phase 1 -->
+        <div class="flex items-start gap-4">
+          <div class="w-24 flex-shrink-0 text-right">
+            <span class="text-xs font-bold text-slate-400">Wk 2–8</span>
+          </div>
+          <div class="w-4 flex flex-col items-center">
+            <div class="w-4 h-4 bg-amber-500 rounded-full"></div>
+            <div class="w-0.5 h-full bg-amber-200 mt-1"></div>
+          </div>
+          <div class="flex-1 pb-6">
+            <h4 class="font-bold text-slate-800">Phase 1 — Core Engine</h4>
+            <p class="text-sm text-slate-500 mt-1">Featured Intensity Engine + Guardrails + SKU Classification. This is the beating heart of the product.</p>
+          </div>
+        </div>
+        <!-- Phase 2 -->
+        <div class="flex items-start gap-4">
+          <div class="w-24 flex-shrink-0 text-right">
+            <span class="text-xs font-bold text-slate-400">Wk 6–12</span>
+          </div>
+          <div class="w-4 flex flex-col items-center">
+            <div class="w-4 h-4 bg-emerald-500 rounded-full"></div>
+            <div class="w-0.5 h-full bg-emerald-200 mt-1"></div>
+          </div>
+          <div class="flex-1 pb-6">
+            <h4 class="font-bold text-slate-800">Phase 2 — Dashboard & Multi-Tenant</h4>
+            <p class="text-sm text-slate-500 mt-1">Operator dashboard, tenant framework, reporting & exports. Can start in parallel with Phase 1 (FE/BE split).</p>
+          </div>
+        </div>
+        <!-- Phase 3 -->
+        <div class="flex items-start gap-4">
+          <div class="w-24 flex-shrink-0 text-right">
+            <span class="text-xs font-bold text-slate-400">Wk 12–16</span>
+          </div>
+          <div class="w-4 flex flex-col items-center">
+            <div class="w-4 h-4 bg-purple-500 rounded-full"></div>
+            <div class="w-0.5 h-full bg-purple-200 mt-1"></div>
+          </div>
+          <div class="flex-1 pb-6">
+            <h4 class="font-bold text-slate-800">Phase 3 — Polish & Ship</h4>
+            <p class="text-sm text-slate-500 mt-1">Voice control, organic lift tracking, integration testing, security audit, first tenant onboarding.</p>
+          </div>
+        </div>
+        <!-- Phase 4 -->
+        <div class="flex items-start gap-4">
+          <div class="w-24 flex-shrink-0 text-right">
+            <span class="text-xs font-bold text-slate-400">Post-MVP</span>
+          </div>
+          <div class="w-4 flex flex-col items-center">
+            <div class="w-4 h-4 bg-slate-400 rounded-full"></div>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-bold text-slate-800">Phase 4+ — Advanced Features</h4>
+            <p class="text-sm text-slate-500 mt-1">AI-based bidding models, pricing automation, deep competitor intelligence scraping, community/retention layer, cross-marketplace expansion.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ RECOMMENDATION ══════════════════════ -->
+  <section>
+    <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-10 text-white shadow-xl">
+      <h2 class="text-3xl font-bold mb-4">💡 Recommendation</h2>
+      <p class="text-lg text-emerald-100 leading-relaxed mb-6">The project is <strong>feasible</strong> with the team's current stack. The biggest unknowns are Allegro API access and bidding algorithm safety.</p>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+          <h4 class="font-bold text-white mb-1">Immediate Next Step</h4>
+          <p class="text-sm text-emerald-100">Apply for Allegro Partner API access — this is on the critical path and has the longest lead time.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+          <h4 class="font-bold text-white mb-1">Start Building</h4>
+          <p class="text-sm text-emerald-100">Multi-tenant framework + mock API can begin immediately while waiting for real API access.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+          <h4 class="font-bold text-white mb-1">Cut Scope If Needed</h4>
+          <p class="text-sm text-emerald-100">Voice control and competitor intelligence are the first candidates to defer to Phase 2.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="text-center py-8 text-sm text-slate-400 border-t border-slate-200">
+  <p>Allegro Autopilot — Feasibility Analysis &bull; Generated by KanGo Agent &bull; StratosX Ecosystem &bull; March 2026</p>
+</footer>
+
+</body>
+</html>

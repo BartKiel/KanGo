@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kancelaria Gospodarcza Kiełbińscy — Redesign Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1a2744;--deep:#243b60;--gold:#c8a050;--goldL:#e0c070;--cream:#faf8f2;--white:#ffffff;--text:#2c3e50;--muted:#6b7b8d;--border:#e8e2d6;--bg:#f5f2eb}
+html{font-family:'DM Sans',sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{overflow-x:hidden;background:var(--cream)}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(26,39,68,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(200,160,80,.15)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:16px 32px}
+.nav-logo{display:flex;align-items:center;gap:14px}
+.nav-logo svg{flex-shrink:0}
+.nav-logo-text{display:flex;flex-direction:column;line-height:1.2}
+.nav-logo-name{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);letter-spacing:.5px}
+.nav-logo-sub{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:2px;text-transform:uppercase;font-weight:500}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-size:13px;color:rgba(255,255,255,.65);text-decoration:none;font-weight:500;transition:color .2s;letter-spacing:.3px}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{padding:10px 24px;background:var(--gold);color:var(--navy);font-size:13px;font-weight:700;border-radius:6px;text-decoration:none;transition:all .25s;letter-spacing:.3px}
+.nav-cta:hover{background:var(--goldL);transform:translateY(-1px)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;background:linear-gradient(145deg,var(--navy) 0%,#1e3a5f 50%,#243b60 100%);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(200,160,80,.08) 0%,transparent 60%)}
+.hero-pattern{position:absolute;inset:0;opacity:.03;background-image:repeating-linear-gradient(90deg,transparent,transparent 100px,rgba(255,255,255,.5) 100px,rgba(255,255,255,.5) 101px),repeating-linear-gradient(0deg,transparent,transparent 100px,rgba(255,255,255,.5) 100px,rgba(255,255,255,.5) 101px)}
+.hero-inner{max-width:1100px;margin:0 auto;padding:120px 32px 80px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-text h1{font-family:'DM Serif Display',serif;font-size:clamp(36px,5vw,56px);color:var(--white);line-height:1.15;margin-bottom:20px}
+.hero-text h1 span{color:var(--gold)}
+.hero-text p{font-size:17px;color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:32px;max-width:480px}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;border-radius:8px;text-decoration:none;transition:all .25s;letter-spacing:.3px}
+.hero-btn:hover{background:var(--goldL);transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,160,80,.25)}
+.hero-visual{display:flex;justify-content:center;align-items:center}
+.hero-card{background:rgba(255,255,255,.04);border:1px solid rgba(200,160,80,.15);border-radius:20px;padding:40px;backdrop-filter:blur(10px);max-width:380px;text-align:center}
+.hero-card .big-num{font-family:'DM Serif Display',serif;font-size:72px;color:var(--gold);line-height:1}
+.hero-card .big-label{font-size:14px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:3px;margin-top:8px;font-weight:600}
+.hero-card .trust-row{display:flex;justify-content:center;gap:24px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}
+.hero-card .trust-item{text-align:center}
+.hero-card .trust-num{font-family:'DM Serif Display',serif;font-size:28px;color:var(--white)}
+.hero-card .trust-label{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+
+/* SECTIONS */
+.section{padding:80px 0}
+.section-inner{max-width:1100px;margin:0 auto;padding:0 32px}
+.section-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,3.5vw,40px);color:var(--navy);line-height:1.2;margin-bottom:16px}
+.section-sub{font-size:16px;color:var(--muted);max-width:560px;line-height:1.7;margin-bottom:48px}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.about-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .3s}
+.about-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(26,39,68,.08);border-color:var(--gold)}
+.about-card .ico{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--navy),var(--deep));display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
+.about-card h3{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--navy)}
+.about-card p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* SERVICES */
+.services-section{background:var(--navy);color:var(--white);padding:80px 0}
+.services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.service-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;transition:all .3s}
+.service-card:hover{background:rgba(200,160,80,.08);border-color:rgba(200,160,80,.2)}
+.service-card h3{font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gold);display:flex;align-items:center;gap:10px}
+.service-card ul{list-style:none;margin:0;padding:0}
+.service-card li{font-size:13px;color:rgba(255,255,255,.55);line-height:2;padding-left:16px;position:relative}
+.service-card li::before{content:'›';position:absolute;left:0;color:var(--gold);font-weight:700}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.contact-info{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:36px}
+.contact-info h3{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:24px}
+.contact-item{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px}
+.contact-item .ico2{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--goldL));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.contact-item .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:2px}
+.contact-item .value{font-size:15px;color:var(--navy);font-weight:600}
+.contact-item a{color:var(--navy);text-decoration:none}
+.contact-item a:hover{color:var(--gold)}
+.contact-map{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;height:380px}
+.contact-map iframe{width:100%;height:100%;border:0}
+
+/* FOOTER */
+.footer{background:var(--navy);padding:40px 0;text-align:center}
+.footer p{font-size:12px;color:rgba(255,255,255,.35)}
+.footer .f-logo{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);margin-bottom:8px}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr;text-align:center;padding:100px 24px 60px}
+  .hero-text p{margin:0 auto 32px}
+  .hero-visual{margin-top:20px}
+  .about-grid{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <!-- NEW LOGO — Balanced scales + K monogram -->
+      <svg width="44" height="44" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#c8a050"/>
+            <stop offset="100%" style="stop-color:#e0c070"/>
+          </linearGradient>
+        </defs>
+        <!-- Shield shape -->
+        <path d="M50 8 L88 24 L88 52 C88 72 72 88 50 96 C28 88 12 72 12 52 L12 24 Z" fill="none" stroke="url(#lg)" stroke-width="2.5"/>
+        <!-- K letter -->
+        <text x="50" y="62" text-anchor="middle" font-family="DM Serif Display, serif" font-size="42" font-weight="700" fill="url(#lg)">K</text>
+        <!-- Small balance line -->
+        <line x1="30" y1="78" x2="70" y2="78" stroke="url(#lg)" stroke-width="1.5" opacity=".4"/>
+      </svg>
+      <div class="nav-logo-text">
+        <span class="nav-logo-name">Kiełbińscy</span>
+        <span class="nav-logo-sub">Kancelaria Gospodarcza</span>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#about">O nas</a>
+      <a href="#services">Usługi</a>
+      <a href="#contact">Kontakt</a>
+      <a href="#contact" class="nav-cta">Napisz do nas</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>Pomocna dłoń<br>w <span>Twoim biznesie</span></h1>
+      <p>Renomowane biuro rachunkowe w Zielonej Górze. Od 1990 roku pomagamy przedsiębiorcom w prowadzeniu księgowości, kadr i doradztwie gospodarczym.</p>
+      <a href="#services" class="hero-btn">
+        Poznaj nasze usługi
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="big-num">30+</div>
+        <div class="big-label">lat doświadczenia</div>
+        <div class="trust-row">
+          <div class="trust-item">
+            <div class="trust-num">500+</div>
+            <div class="trust-label">Klientów</div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-num">100%</div>
+            <div class="trust-label">Polecenia</div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-num">∞</div>
+            <div class="trust-label">Zaangażowania</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <span class="section-tag">O nas</span>
+    <h2 class="section-title">Dlaczego Kiełbińscy?</h2>
+    <p class="section-sub">Znakomita większość klientów trafiła do nas z polecenia. To najlepsza rekomendacja, jaką możemy otrzymać.</p>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="ico">📅</div>
+        <h3>Od 1990 roku</h3>
+        <p>Przez ponad 30 lat zebraliśmy ogromne doświadczenie, wspierając przedsiębiorstwa z różnych dziedzin gospodarki w całej Polsce.</p>
+      </div>
+      <div class="about-card">
+        <div class="ico">🏢</div>
+        <h3>Kompleksowa obsługa</h3>
+        <p>Obsługujemy firmy z całego kraju — osoby fizyczne, spółki prawa handlowego, w tym spółki z kapitałem zagranicznym.</p>
+      </div>
+      <div class="about-card">
+        <div class="ico">⭐</div>
+        <h3>Najwyższa jakość</h3>
+        <p>Nasi klienci polecają nas dalej — to świadectwo zaufania i jakości usług, z którego jesteśmy szczególnie dumni.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-inner">
+    <span class="section-tag" style="color:var(--gold)">Usługi</span>
+    <h2 class="section-title" style="color:var(--white)">Czym się zajmujemy</h2>
+    <p class="section-sub" style="color:rgba(255,255,255,.5)">Kompleksowa obsługa księgowa, kadrowa i doradztwo gospodarcze dla firm każdej wielkości.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <h3>📒 Dokumentacja księgowa</h3>
+        <ul>
+          <li>Prowadzenie Ksiąg Handlowych</li>
+          <li>Księga Przychodów i Rozchodów</li>
+          <li>Ewidencja Przychodów — ryczałt</li>
+          <li>Ewidencja VAT</li>
+          <li>Rozliczenia VAT, PIT, CIT</li>
+          <li>Roczne deklaracje podatkowe</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <h3>👥 Dokumentacja kadrowa</h3>
+        <ul>
+          <li>Prowadzenie kartotek kadrowych</li>
+          <li>Sporządzanie list płac</li>
+          <li>Rejestracja pracowników w ZUS</li>
+          <li>Miesięczne rozliczenia ZUS</li>
+          <li>Zaświadczenia pracownicze</li>
+          <li>Roczne informacje kadrowe</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <h3>💼 Doradztwo gospodarcze</h3>
+        <ul>
+          <li>Minimalizacja obciążeń podatkowych</li>
+          <li>Wsparcie w wyborze formy działalności</li>
+          <li>Rejestracja spółek</li>
+          <li>Konsultacje podatkowe</li>
+          <li>Doradztwo — prawo pracy i wynagrodzenia</li>
+          <li>Analiza umów handlowych</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <h3>📄 Usługi dodatkowe</h3>
+        <ul>
+          <li>Dokumentacja dla instytucji i urzędów</li>
+          <li>Roczne deklaracje podatkowe</li>
+          <li>Wnioski kredytowe</li>
+          <li>Obsługa kontroli podatkowych</li>
+          <li>Zwroty VAT z zagranicy</li>
+          <li>Odpowiedzi na pisma i wnioski</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <span class="section-tag">Kontakt</span>
+    <h2 class="section-title">Porozmawiajmy</h2>
+    <p class="section-sub">Zapraszamy do kontaktu — chętnie odpowiemy na Państwa pytania i przygotujemy indywidualną ofertę.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Kancelaria Gospodarcza Kiełbińscy</h3>
+        <div class="contact-item">
+          <div class="ico2">📍</div>
+          <div>
+            <div class="label">Adres</div>
+            <div class="value">ul. Towarowa 16<br>65-114 Zielona Góra<br><span style="font-size:12px;color:var(--muted);font-weight:400">(obok przychodni Aldemed Zastal)</span></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ico2">📞</div>
+          <div>
+            <div class="label">Telefon</div>
+            <div class="value"><a href="tel:+48693506873">+48 693 506 873</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ico2">✉️</div>
+          <div>
+            <div class="label">E-mail</div>
+            <div class="value"><a href="mailto:kontakt@kielbinscy.pl">kontakt@kielbinscy.pl</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ico2">🕐</div>
+          <div>
+            <div class="label">Godziny pracy</div>
+            <div class="value">Pon — Pt: 8:00 – 16:00</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2492.5!2d15.5!3d51.94!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDU2JzI0LjAiTiAxNcKwMzAnMDAuMCJF!5e0!3m2!1spl!2spl!4v1" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="f-logo">Kiełbińscy</div>
+  <p>&copy; 2026 Kancelaria Gospodarcza Kiełbińscy. Wszystkie prawa zastrzeżone.</p>
+</footer>
+
+</body>
+</html>

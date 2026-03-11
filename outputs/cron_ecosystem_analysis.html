@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cron Jobs w Ekosystemie StratosX — Analiza Złożoności</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f172a;--surface:#1e293b;--surface2:#334155;--border:#475569;--text:#e2e8f0;--muted:#94a3b8;--accent:#3b82f6;--accent2:#8b5cf6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--cyan:#06b6d4}
+html{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+h1{font-size:clamp(28px,4vw,42px);font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;margin-bottom:8px}
+.subtitle{font-size:18px;color:var(--muted);margin-bottom:40px;font-weight:300}
+h2{font-size:24px;font-weight:700;margin:48px 0 16px;color:var(--text);display:flex;align-items:center;gap:12px}
+h2 .num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;flex-shrink:0}
+h3{font-size:18px;font-weight:600;margin:24px 0 12px;color:var(--cyan)}
+p{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:16px}
+strong{color:var(--text)}
+code{font-family:'JetBrains Mono',monospace;background:var(--surface);padding:2px 8px;border-radius:4px;font-size:13px;color:var(--cyan)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;overflow-x:auto;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;color:var(--green)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin:20px 0}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:20px 0}
+.mini-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.mini-card .icon{font-size:28px;margin-bottom:8px}
+.mini-card h4{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.mini-card p{font-size:13px;line-height:1.6;margin:0}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.5px}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green)}
+.badge-amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
+.badge-blue{background:rgba(59,130,246,.15);color:var(--accent)}
+.table-wrap{overflow-x:auto;margin:20px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:12px 16px;background:var(--surface2);color:var(--text);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid rgba(71,85,105,.3);color:var(--muted)}
+tr:hover td{background:rgba(59,130,246,.05)}
+.verdict{margin:40px 0;padding:32px;border-radius:16px;border-left:4px solid var(--green);background:rgba(16,185,129,.08)}
+.verdict h3{color:var(--green);margin-top:0}
+.timeline{position:relative;padding-left:32px;margin:20px 0}
+.timeline::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline .step{position:relative;margin-bottom:24px}
+.timeline .step::before{content:'';position:absolute;left:-24px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.timeline .step h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.timeline .step p{font-size:13px;margin:0}
+.header-meta{display:flex;gap:12px;align-items:center;margin-bottom:32px;flex-wrap:wrap}
+.footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:60px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="header-meta">
+  <span class="badge badge-blue">📊 Research</span>
+  <span class="badge badge-green">StratosX Ecosystem</span>
+  <span style="font-size:12px;color:var(--muted)">Wygenerowano: Marzec 2026</span>
+</div>
+
+<h1>Czy napisanie cron'a jest skomplikowane w naszym ekosystemie?</h1>
+<p class="subtitle">Analiza techniczna opcji schedulera w GCP × StratosX — od prostego Cloud Scheduler po zaawansowane Cloud Functions.</p>
+
+<!-- ─── SEKCJA 1: KONTEKST ─── -->
+<h2><span class="num">1</span> Nasz ekosystem — co mamy</h2>
+
+<div class="card-grid">
+  <div class="mini-card">
+    <div class="icon">☁️</div>
+    <h4>10 Cloud Run Services</h4>
+    <p>Flask/Python apps na europe-west1. Każdy serwis to kontener z Dockerfile, deploy z <code>gcloud run deploy</code>.</p>
+  </div>
+  <div class="mini-card">
+    <div class="icon">🪣</div>
+    <h4>8 GCS Buckets</h4>
+    <p>JSON state, dane audytów, backupy, pliki. Główne: <code>stratosx-data-esj</code>, <code>kango-tasks-esj</code>.</p>
+  </div>
+  <div class="mini-card">
+    <div class="icon">🔐</div>
+    <h4>Secret Manager</h4>
+    <p>6 sekretów: klucze API (OpenAI, DataForSEO), hasła, FLASK_SECRET_KEY.</p>
+  </div>
+  <div class="mini-card">
+    <div class="icon">📋</div>
+    <h4>KanGo Board</h4>
+    <p>Task management z GCS backend. Brak bazy danych SQL/NoSQL — wszystko to JSON na GCS.</p>
+  </div>
+</div>
+
+<p>Kluczowy fakt: <strong>nie mamy żadnej bazy danych</strong> (Firestore, Cloud SQL etc.) — tylko pliki JSON na GCS. Nie mamy też żadnego istniejącego schedulera, cron joba czy Cloud Function.</p>
+
+<!-- ─── SEKCJA 2: OPCJE ─── -->
+<h2><span class="num">2</span> Trzy opcje implementacji cron'a</h2>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Opcja</th><th>Złożoność</th><th>Koszt</th><th>Czas wdrożenia</th><th>Wymagane umiejętności</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>A) Cloud Scheduler → Cloud Run</strong></td>
+  <td><span class="badge badge-green">Niska</span></td>
+  <td>~$0/mies. (free tier)</td>
+  <td>15–30 min</td>
+  <td>gcloud CLI, HTTP endpoints</td>
+</tr>
+<tr>
+  <td><strong>B) Cloud Scheduler → Cloud Functions</strong></td>
+  <td><span class="badge badge-amber">Średnia</span></td>
+  <td>~$0/mies. (free tier)</td>
+  <td>1–2h</td>
+  <td>Cloud Functions v2, Python</td>
+</tr>
+<tr>
+  <td><strong>C) Cloud Scheduler → Pub/Sub → Cloud Run</strong></td>
+  <td><span class="badge badge-red">Wyższa</span></td>
+  <td>~$0/mies. (free tier)</td>
+  <td>2–4h</td>
+  <td>Pub/Sub, IAM, retry logic</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- ─── OPCJA A ─── -->
+<h3>Opcja A: Cloud Scheduler → bezpośrednio Cloud Run (REKOMENDOWANA)</h3>
+
+<div class="card">
+<p>Najprostsza opcja. Cloud Scheduler wywołuje HTTP endpoint na istniejącym serwisie Cloud Run. <strong>Nie potrzebujemy nowej infrastruktury</strong> — wystarczy dodać endpoint <code>/cron/&lt;task_name&gt;</code> do istniejącej Flask app i skonfigurować scheduler.</p>
+
+<pre>
+# Krok 1: Dodaj endpoint do app.py (np. KanGo)
+@app.route("/cron/daily-backup", methods=["POST"])
+def cron_daily_backup():
+    token = request.headers.get("X-Cron-Token")
+    if token != os.environ.get("CRON_SECRET"):
+        return "Unauthorized", 403
+    # --- tutaj logika cron'a ---
+    do_backup()
+    return "OK", 200
+
+# Krok 2: Utwórz Cloud Scheduler job (jednorazowo)
+# gcloud scheduler jobs create http daily-backup \
+#   --schedule="0 3 * * *" \
+#   --uri="https://kango-969597502498.europe-west1.run.app/cron/daily-backup" \
+#   --http-method=POST \
+#   --headers="X-Cron-Token=SECRET_VALUE" \
+#   --location=europe-west1 \
+#   --time-zone="Europe/Warsaw"
+</pre>
+
+<p><strong>Zalety:</strong> zero nowej infrastruktury, reuse istniejących serwisów, łatwe testowanie (curl endpoint), monitoring w Cloud Run logs.</p>
+<p><strong>Wady:</strong> endpoint musi odpowiedzieć w &lt;30 min (limit Cloud Run), serwis musi być aktywny.</p>
+</div>
+
+<!-- ─── OPCJA B ─── -->
+<h3>Opcja B: Cloud Scheduler → Cloud Function</h3>
+
+<div class="card">
+<p>Cloud Function to samodzielny kawałek kodu Python, który uruchamia się na żądanie. Przydatne gdy logika cron'a jest <strong>niezwiązana z żadnym serwisem</strong> lub gdy chcemy izolację.</p>
+
+<pre>
+# functions/daily_report/main.py
+import functions_framework
+from google.cloud import storage
+
+@functions_framework.http
+def daily_report(request):
+    client = storage.Client()
+    bucket = client.bucket("stratosx-data-esj")
+    # ... logika raportu ...
+    return "Report generated", 200
+
+# Deploy:
+# gcloud functions deploy daily-report \
+#   --gen2 --runtime=python312 --region=europe-west1 \
+#   --source=. --entry-point=daily_report \
+#   --trigger-http --no-allow-unauthenticated
+
+# Scheduler:
+# gcloud scheduler jobs create http daily-report \
+#   --schedule="0 8 * * 1" \
+#   --uri="FUNCTION_URL" \
+#   --oidc-service-account-email="SA@PROJECT.iam.gserviceaccount.com"
+</pre>
+
+<p><strong>Zalety:</strong> izolacja, nie obciąża Cloud Run, auto-scaling, do 60 min timeout.</p>
+<p><strong>Wady:</strong> nowy typ zasobu do zarządzania, cold starts (~2-5s), osobny deploy.</p>
+</div>
+
+<!-- ─── OPCJA C ─── -->
+<h3>Opcja C: Cloud Scheduler → Pub/Sub → Cloud Run</h3>
+
+<div class="card">
+<p>Najbardziej rozbudowana opcja. Przydatna przy <strong>łańcuchach zadań</strong> (task A → task B → task C) lub gdy potrzebujemy retry logic i dead-letter queue. <strong>Overkill na nasze obecne potrzeby.</strong></p>
+<p><strong>Wady:</strong> Pub/Sub topics, subscriptions, IAM permissions, push endpoints — dużo moving parts.</p>
+</div>
+
+<!-- ─── SEKCJA 3: KROK PO KROKU ─── -->
+<h2><span class="num">3</span> Krok po kroku — jak to wdrożyć (Opcja A)</h2>
+
+<div class="timeline">
+  <div class="step">
+    <h4>1. Włącz Cloud Scheduler API</h4>
+    <p><code>gcloud services enable cloudscheduler.googleapis.com</code> — jednorazowo, 10 sekund.</p>
+  </div>
+  <div class="step">
+    <h4>2. Dodaj endpoint /cron/* do Flask app</h4>
+    <p>Prosty endpoint z autoryzacją tokenem. ~15 linijek kodu. Testuj lokalnie z <code>curl -X POST</code>.</p>
+  </div>
+  <div class="step">
+    <h4>3. Dodaj CRON_SECRET do Secret Manager</h4>
+    <p><code>gcloud secrets create cron-secret</code> + update Cloud Run env var. ~2 min.</p>
+  </div>
+  <div class="step">
+    <h4>4. Deploy Cloud Run z nowym endpointem</h4>
+    <p>Standardowy <code>gcloud run deploy</code> — jak zawsze. ~3 min.</p>
+  </div>
+  <div class="step">
+    <h4>5. Utwórz Cloud Scheduler job</h4>
+    <p>Jedna komenda <code>gcloud scheduler jobs create http</code>. ~1 min. Gotowe!</p>
+  </div>
+</div>
+
+<!-- ─── SEKCJA 4: TYPOWE USE CASES ─── -->
+<h2><span class="num">4</span> Typowe use cases dla cron'a w naszym ekosystemie</h2>
+
+<div class="card-grid">
+  <div class="mini-card">
+    <div class="icon">💾</div>
+    <h4>Dzienny backup GCS</h4>
+    <p>Kopiowanie kluczowych bucketów do <code>stratosx-backups-esj</code> z prefixem daty. Codziennie o 3:00.</p>
+  </div>
+  <div class="mini-card">
+    <div class="icon">🧹</div>
+    <h4>Cleanup starych rewizji</h4>
+    <p>Usuwanie starych Cloud Run revisions (stratosx ma 147!). Raz w tygodniu.</p>
+  </div>
+  <div class="mini-card">
+    <div class="icon">📊</div>
+    <h4>Raport tygodniowy</h4>
+    <p>Podsumowanie zadań z KanGo, statystyki audytów, health check serwisów. Poniedziałek 8:00.</p>
+  </div>
+  <div class="mini-card">
+    <div class="icon">🔄</div>
+    <h4>Rotacja sekretów</h4>
+    <p>Automatyczna regeneracja kluczy API co 90 dni. Secret Manager + notification.</p>
+  </div>
+</div>
+
+<!-- ─── SEKCJA 5: KOSZTY ─── -->
+<h2><span class="num">5</span> Koszty</h2>
+
+<div class="card">
+<div class="table-wrap">
+<table>
+<thead><tr><th>Usługa</th><th>Free Tier</th><th>Nasz szacunek</th><th>Koszt</th></tr></thead>
+<tbody>
+<tr><td>Cloud Scheduler</td><td>3 joby za darmo</td><td>2-4 joby</td><td><strong>$0.00</strong> (lub $0.10/job powyżej 3)</td></tr>
+<tr><td>Cloud Run (dodatkowe requesty)</td><td>2M requestów/mies.</td><td>~120 requestów/mies.</td><td><strong>$0.00</strong></td></tr>
+<tr><td>Cloud Functions (jeśli opcja B)</td><td>2M invocations/mies.</td><td>~30 invocations/mies.</td><td><strong>$0.00</strong></td></tr>
+<tr><td><strong>SUMA</strong></td><td></td><td></td><td><strong>$0.00 / miesiąc</strong></td></tr>
+</tbody>
+</table>
+</div>
+<p>Przy naszym wolumenie <strong>cron jest kompletnie za darmo</strong>. Free tier pokrywa nasze potrzeby z ogromnym zapasem.</p>
+</div>
+
+<!-- ─── WERDYKT ─── -->
+<div class="verdict">
+<h3>🎯 Werdykt: NIE, to nie jest skomplikowane</h3>
+<p style="font-size:16px;color:var(--text);line-height:1.8;margin-bottom:16px">
+Wdrożenie cron'a w naszym ekosystemie jest <strong>zaskakująco proste</strong>. Opcja A (Cloud Scheduler → Cloud Run endpoint) wymaga:
+</p>
+<ul style="color:var(--text);margin-left:20px;margin-bottom:16px;line-height:2">
+  <li>~15 linii kodu w Flask app</li>
+  <li>1 komenda gcloud do utworzenia schedulera</li>
+  <li>1 sekret w Secret Manager</li>
+  <li><strong>15-30 minut pracy</strong> na pierwszy cron job</li>
+  <li><strong>$0.00 / miesiąc</strong> kosztów</li>
+</ul>
+<p style="font-size:15px;color:var(--muted)">Każdy kolejny cron job to ~5 minut (dodaj endpoint + scheduler job). Nie potrzebujemy żadnej nowej infrastruktury — reuse'ujemy istniejące Cloud Run services.</p>
+</div>
+
+<!-- ─── SEKCJA 6: REKOMENDACJA ─── -->
+<h2><span class="num">6</span> Rekomendacja kolejnych kroków</h2>
+
+<div class="card">
+<ol style="color:var(--muted);margin-left:20px;line-height:2.2">
+  <li>Zacząć od <strong>daily GCS backup</strong> — najwyższy priorytet, niskie ryzyko</li>
+  <li>Dodać <strong>weekly revision cleanup</strong> — porządkuje Cloud Run</li>
+  <li>Opcjonalnie: <strong>weekly KanGo summary</strong> — raport wysyłany mailem</li>
+  <li>W przyszłości rozważyć Cloud Functions dla zadań niezwiązanych z serwisami</li>
+</ol>
+</div>
+
+<div class="footer">
+  <p>Analiza: StratosX Ecosystem — Copilot Agent | Marzec 2026</p>
+  <p style="margin-top:4px">Dokument wygenerowany automatycznie dla KanGo Board</p>
+</div>
+
+</body>
+</html>

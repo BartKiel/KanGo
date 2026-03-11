@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JanX — Matematyka klasy 6-8 (program polski)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f8fafc;color:#1e293b;line-height:1.7}
+
+/* Header */
+.hero{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 50%,#7c3aed 100%);color:#fff;padding:3rem 2rem;text-align:center}
+.hero h1{font-size:2.5rem;font-weight:900;letter-spacing:-1px;margin-bottom:.5rem}
+.hero p{font-size:1.1rem;opacity:.85;max-width:700px;margin:0 auto}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:.35rem 1.2rem;font-size:.8rem;font-weight:600;margin-top:1rem;backdrop-filter:blur(4px)}
+
+/* Navigation */
+.nav-bar{background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.nav-bar .container{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.nav-btn{padding:.4rem 1rem;border-radius:999px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+.nav-btn:hover,.nav-btn.active{background:#2563eb;color:#fff;border-color:#2563eb}
+
+/* Container */
+.container{max-width:1100px;margin:0 auto;padding:2rem}
+
+/* Grade Section */
+.grade-section{margin-bottom:3rem}
+.grade-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;padding-bottom:1rem;border-bottom:2px solid #e2e8f0}
+.grade-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;flex-shrink:0}
+.grade-6 .grade-icon{background:linear-gradient(135deg,#2563eb,#3b82f6)}
+.grade-7 .grade-icon{background:linear-gradient(135deg,#7c3aed,#8b5cf6)}
+.grade-8 .grade-icon{background:linear-gradient(135deg,#059669,#10b981)}
+.grade-header h2{font-size:1.6rem;font-weight:800;letter-spacing:-.5px}
+.grade-header p{font-size:.85rem;color:#64748b}
+
+/* Topic Card */
+.topic{background:#fff;border-radius:16px;border:1px solid #e2e8f0;margin-bottom:2rem;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.topic-header{padding:1.5rem 2rem;cursor:pointer;display:flex;align-items:center;justify-content:between;gap:1rem;transition:background .2s}
+.topic-header:hover{background:#f1f5f9}
+.topic-num{width:36px;height:36px;border-radius:10px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0}
+.topic-title{font-size:1.05rem;font-weight:700;flex:1}
+.topic-toggle{width:28px;height:28px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.9rem;transition:transform .3s}
+.topic.open .topic-toggle{transform:rotate(180deg)}
+.topic-body{display:none;padding:0 2rem 2rem}
+.topic.open .topic-body{display:block}
+
+/* Intro */
+.intro{background:linear-gradient(135deg,#eff6ff,#f5f3ff);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;border-left:4px solid #2563eb}
+.intro h4{font-size:.85rem;font-weight:700;color:#2563eb;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px}
+.intro p{font-size:.9rem;color:#475569}
+
+/* Exercise */
+.exercise{padding:1rem 0;border-bottom:1px solid #f1f5f9}
+.exercise:last-child{border-bottom:none}
+.ex-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.ex-level{font-size:.65rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
+.lvl-1{background:#dcfce7;color:#16a34a}
+.lvl-2{background:#dbeafe;color:#2563eb}
+.lvl-3{background:#fef3c7;color:#d97706}
+.lvl-4{background:#fce7f3;color:#db2777}
+.lvl-5{background:#fee2e2;color:#dc2626}
+.ex-num{font-weight:700;color:#475569;font-size:.85rem}
+.ex-text{font-size:.95rem;color:#1e293b;padding-left:.5rem}
+.ex-text .math{font-family:'Cambria Math','Times New Roman',serif;font-style:italic}
+
+/* Answer Key */
+.answer-key{background:#fff;border-radius:16px;border:2px solid #10b981;margin-top:3rem;overflow:hidden}
+.answer-key-header{background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:1.5rem 2rem;text-align:center}
+.answer-key-header h2{font-size:1.3rem;font-weight:800}
+.answer-key-body{padding:2rem}
+.ak-grade{margin-bottom:2rem}
+.ak-grade h3{font-size:1rem;font-weight:700;color:#059669;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid #d1fae5}
+.ak-topic{margin-bottom:1rem}
+.ak-topic h4{font-size:.85rem;font-weight:600;color:#475569;margin-bottom:.5rem}
+.ak-answers{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.5rem}
+.ak-item{font-size:.8rem;padding:.4rem .75rem;background:#f0fdf4;border-radius:8px;color:#166534}
+.ak-item strong{color:#059669}
+
+/* Print */
+@media print{
+  .nav-bar,.hero .badge{display:none}
+  .topic-body{display:block!important}
+  .topic{break-inside:avoid}
+  body{font-size:11pt}
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero h1{font-size:1.8rem}
+  .container{padding:1rem}
+  .topic-body{padding:0 1rem 1rem}
+  .ak-answers{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📐 Matematyka — Klasy 6-8</h1>
+  <p>Zestaw ćwiczeń diagnostycznych oparty na polskim programie nauczania.<br>Sprawdź, gdzie jesteś względem polskiego systemu edukacji.</p>
+  <div class="badge">🇵🇱 Program polski · 5 zadań na dział · Klucz odpowiedzi</div>
+</div>
+
+<div class="nav-bar">
+  <div class="container" style="padding:0">
+    <a href="#klasa6" class="nav-btn">Klasa 6</a>
+    <a href="#klasa7" class="nav-btn">Klasa 7</a>
+    <a href="#klasa8" class="nav-btn">Klasa 8</a>
+    <a href="#answers" class="nav-btn" style="background:#10b981;color:#fff;border-color:#10b981">🔑 Klucz odpowiedzi</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- KLASA 6                                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="grade-section grade-6" id="klasa6">
+  <div class="grade-header">
+    <div class="grade-icon">6</div>
+    <div>
+      <h2>Klasa 6 — Szkoła Podstawowa</h2>
+      <p>Wiek: 11-12 lat · Arytmetyka, ułamki, geometria, procenty</p>
+    </div>
+  </div>
+
+  <!-- 6.1 Ułamki zwykłe i dziesiętne -->
+  <div class="topic open" id="t6-1">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">6.1</div>
+      <div class="topic-title">Ułamki zwykłe i dziesiętne</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Ułamek zwykły to zapis a/b, gdzie a to licznik, b to mianownik (b ≠ 0). Ułamek dziesiętny to inna forma zapisu — np. 3/4 = 0,75. Uczeń powinien umieć dodawać, odejmować, mnożyć i dzielić ułamki, zamieniać ułamki zwykłe na dziesiętne i odwrotnie, oraz porównywać ułamki.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Zamień ułamek <span class="math">3/5</span> na ułamek dziesiętny.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Oblicz: <span class="math">2/3 + 5/6</span>. Wynik podaj w postaci ułamka zwykłego w najprostszej postaci.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Oblicz: <span class="math">3 1/4 − 1 2/3</span>. Wynik podaj jako ułamek zwykły lub liczbę mieszaną.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Oblicz: <span class="math">2/5 × 3/8 + 1/4</span>. Wynik uprość do najprostszej postaci.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Janek zjadł 2/5 pizzy, a Kasia zjadła 1/3 tej samej pizzy. Ile pizzy zostało? Jeśli reszta waży 520 g, ile ważyła cała pizza?</div></div>
+    </div>
+  </div>
+
+  <!-- 6.2 Procenty -->
+  <div class="topic" id="t6-2">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">6.2</div>
+      <div class="topic-title">Procenty</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Procent to setna część całości. 1% = 1/100 = 0,01. Uczeń powinien umieć zamieniać procenty na ułamki i odwrotnie, obliczać procent danej liczby, oraz rozwiązywać zadania tekstowe z procentami (np. rabaty, podwyżki).</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Ile to jest 25% z 240?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Zamień na procent: <span class="math">3/8</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Cena kurtki wynosiła 180 zł. Po rabacie 15% ile wynosi nowa cena?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Liczba uczniów w klasie wzrosła z 24 do 30. O ile procent wzrosła liczba uczniów?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Sklep obniżył cenę produktu o 20%, a następnie podwyższył nową cenę o 20%. Czy cena końcowa jest taka sama jak początkowa? Uzasadnij odpowiedź na przykładzie produktu kosztującego 500 zł.</div></div>
+    </div>
+  </div>
+
+  <!-- 6.3 Liczby całkowite -->
+  <div class="topic" id="t6-3">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">6.3</div>
+      <div class="topic-title">Liczby całkowite — dodawanie, odejmowanie, oś liczbowa</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Liczby całkowite to zbiór {..., −3, −2, −1, 0, 1, 2, 3, ...}. Uczeń powinien umieć porównywać liczby całkowite, zaznaczać je na osi liczbowej, dodawać i odejmować liczby ujemne, obliczać wartość bezwzględną.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Uporządkuj od najmniejszej do największej: −7, 3, −2, 0, 5, −5.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Oblicz: (−8) + 12 + (−5) + 3.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Oblicz wartość bezwzględną: |−13| + |7| − |−4|.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Temperatura rano wynosiła −8°C, do południa wzrosła o 13°C, a wieczorem spadła o 9°C. Jaka była temperatura wieczorem?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Znajdź wszystkie liczby całkowite <span class="math">x</span>, dla których: |x| ≤ 4 i x > −3.</div></div>
+    </div>
+  </div>
+
+  <!-- 6.4 Geometria — pola i obwody -->
+  <div class="topic" id="t6-4">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">6.4</div>
+      <div class="topic-title">Geometria — pola i obwody figur płaskich</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Uczeń powinien znać wzory na pola i obwody prostokąta, kwadratu, trójkąta, trapezu i równoległoboku. Obwód to suma długości boków. Pole trójkąta = (a × h)/2, pole trapezu = ((a + b) × h)/2, pole równoległoboku = a × h.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz obwód i pole prostokąta o bokach 8 cm i 5 cm.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Oblicz pole trójkąta o podstawie 12 cm i wysokości 7 cm.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Pole równoległoboku wynosi 54 cm². Podstawa ma 9 cm. Oblicz wysokość.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Oblicz pole trapezu, którego podstawy mają 10 cm i 6 cm, a wysokość to 4 cm. Ile m² ma 200 takich trapezów?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Ogród w kształcie prostokąta o wymiarach 20 m × 15 m ma wewnątrz okrągły staw o promieniu 3 m. Oblicz pole ogrodu bez stawu (π ≈ 3,14).</div></div>
+    </div>
+  </div>
+
+  <!-- 6.5 Wyrażenia algebraiczne -->
+  <div class="topic" id="t6-5">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">6.5</div>
+      <div class="topic-title">Wstęp do wyrażeń algebraicznych</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Wyrażenie algebraiczne to zapis z użyciem liter (zmiennych) i liczb, np. 3x + 5. Uczeń powinien umieć zapisywać wyrażenia algebraiczne na podstawie opisu słownego, obliczać ich wartość dla danej wartości zmiennej, upraszczać wyrażenia przez redukcję wyrazów podobnych.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz wartość wyrażenia <span class="math">3x + 7</span> dla x = 4.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Uprość wyrażenie: <span class="math">5a + 3b − 2a + b</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Zapisz wyrażenie algebraiczne: „Trzy razy pewna liczba, powiększona o 8, jest równa podwojonej tej liczby pomniejszonej o 1".</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Oblicz wartość wyrażenia <span class="math">2x² − 3x + 1</span> dla x = −2.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Uprość i oblicz dla a = 3, b = −1: <span class="math">4(2a − b) − 3(a + 2b)</span>.</div></div>
+    </div>
+  </div>
+
+  <!-- 6.6 Figury przestrzenne -->
+  <div class="topic" id="t6-6">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">6.6</div>
+      <div class="topic-title">Figury przestrzenne — prostopadłościan i sześcian</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Prostopadłościan to bryła o 6 ścianach prostokątnych. Sześcian to prostopadłościan o równych krawędziach. Objętość prostopadłościanu V = a × b × c. Pole powierzchni całkowitej: Pc = 2(ab + bc + ac). Uczeń powinien umieć obliczać objętość i pole powierzchni, rysować siatki.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz objętość prostopadłościanu o wymiarach 5 cm × 3 cm × 4 cm.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Oblicz pole powierzchni całkowitej sześcianu o krawędzi 6 cm.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Akwarium w kształcie prostopadłościanu ma wymiary: 60 cm × 30 cm × 35 cm. Ile litrów wody zmieści się w akwarium? (1 l = 1000 cm³)</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Objętość prostopadłościanu wynosi 360 cm³. Podstawa ma wymiary 10 cm × 6 cm. Oblicz wysokość i pole powierzchni całkowitej.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Z bloku drewna w kształcie sześcianu o krawędzi 10 cm wycięto mniejszy sześcian o krawędzi 4 cm. Oblicz objętość pozostałego kawałka drewna.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- KLASA 7                                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="grade-section grade-7" id="klasa7">
+  <div class="grade-header">
+    <div class="grade-icon">7</div>
+    <div>
+      <h2>Klasa 7 — Szkoła Podstawowa</h2>
+      <p>Wiek: 12-13 lat · Równania, potęgi, proporcje, geometria, statystyka</p>
+    </div>
+  </div>
+
+  <!-- 7.1 Potęgi i pierwiastki -->
+  <div class="topic" id="t7-1">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">7.1</div>
+      <div class="topic-title">Potęgi i pierwiastki</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Potęga to wielokrotne mnożenie: aⁿ = a × a × ... × a (n razy). Pierwiastek kwadratowy √a to liczba, którą podniesiona do kwadratu daje a. Działania na potęgach: aⁿ × aᵐ = aⁿ⁺ᵐ, aⁿ / aᵐ = aⁿ⁻ᵐ, (aⁿ)ᵐ = aⁿˣᵐ.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz: 2⁵ i 3⁴.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Uprość: <span class="math">2³ × 2⁴</span> i <span class="math">5⁶ / 5²</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Oblicz: <span class="math">√144 + √81 − √25</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Zapisz jako jedną potęgę: <span class="math">(3²)³ × 3⁴ / 3⁵</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Które jest większe: 2¹⁰ czy 10³? Uzasadnij. Oblicz 2¹⁰ − 10³.</div></div>
+    </div>
+  </div>
+
+  <!-- 7.2 Równania i nierówności -->
+  <div class="topic" id="t7-2">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">7.2</div>
+      <div class="topic-title">Równania i nierówności z jedną niewiadomą</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Równanie to zdanie matematyczne z niewiadomą, np. 2x + 3 = 11. Rozwiązanie to wartość x, która czyni równanie prawdziwym. Aby rozwiązać — przenosimy wyrazy ze zmienną na jedną stronę, a liczby na drugą, pamiętając o zmianie znaku. Nierówność działa podobnie, ale rozwiązaniem jest zbiór wartości.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Rozwiąż: <span class="math">x + 7 = 15</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Rozwiąż: <span class="math">3x − 5 = 16</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Rozwiąż: <span class="math">2(x + 4) = 5x − 7</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Rozwiąż nierówność i zaznacz rozwiązanie na osi: <span class="math">3x − 2 > 4x + 5</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Tata jest 3 razy starszy od syna. Za 12 lat będzie 2 razy starszy. Ile lat ma teraz syn? Zapisz równanie i rozwiąż.</div></div>
+    </div>
+  </div>
+
+  <!-- 7.3 Proporcje i skala -->
+  <div class="topic" id="t7-3">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">7.3</div>
+      <div class="topic-title">Proporcje, proporcjonalność i skala</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Proporcja to równość dwóch stosunków: a/b = c/d. W proporcji iloczyn skrajnych równa się iloczynowi środkowych: a × d = b × c. Skala mapy to stosunek odległości na mapie do odległości rzeczywistej. Proporcjonalność prosta: y = k × x (jeśli x rośnie, y też rośnie).</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Rozwiąż proporcję: <span class="math">x/6 = 5/3</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Na mapie w skali 1:50 000 odległość między miastami wynosi 8 cm. Jaka jest odległość rzeczywista w km?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">5 robotników wykonuje pracę w 12 dni. Ilu robotników wykona tę samą pracę w 4 dni?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Podziel 180 zł w stosunku 2:3:4. Ile dostanie każda osoba?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Samochód jedzie ze stałą prędkością. W 2,5 godziny przejechał 175 km. Ile czasu potrzebuje na przejechanie 350 km? Czy to proporcjonalność prosta czy odwrotna?</div></div>
+    </div>
+  </div>
+
+  <!-- 7.4 Kąty i wielokąty -->
+  <div class="topic" id="t7-4">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">7.4</div>
+      <div class="topic-title">Kąty, trójkąty i wielokąty</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Suma kątów w trójkącie = 180°. Suma kątów w czworokącie = 360°. Typy trójkątów: równoboczny (3 równe boki), równoramienny (2 równe boki), prostokątny (1 kąt prosty). Kąty przyległe sumują się do 180°, kąty wierzchołkowe są równe.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">W trójkącie dwa kąty mają 45° i 65°. Oblicz trzeci kąt.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Kąt przy podstawie trójkąta równoramiennego wynosi 72°. Oblicz kąt przy wierzchołku.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Dwie proste przecięły się. Jeden z kątów wynosi 35°. Podaj miary wszystkich czterech kątów.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Suma kątów wewnętrznych wielokąta wynosi 720°. Ile boków ma ten wielokąt?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">W trójkącie prostokątnym jeden z kątów ostrych jest 3 razy większy od drugiego. Oblicz miary wszystkich kątów tego trójkąta.</div></div>
+    </div>
+  </div>
+
+  <!-- 7.5 Statystyka -->
+  <div class="topic" id="t7-5">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">7.5</div>
+      <div class="topic-title">Statystyka — średnia, mediana, dominanta</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Średnia arytmetyczna = suma wszystkich wartości / ich liczba. Mediana to wartość środkowa po uporządkowaniu danych. Dominanta (moda) to wartość występująca najczęściej. Uczeń powinien umieć je obliczać i interpretować wykresy (słupkowe, kołowe).</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz średnią arytmetyczną: 4, 8, 6, 10, 7.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Znajdź medianę: 12, 5, 8, 15, 3, 9, 7.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Znajdź dominantę: 2, 5, 3, 5, 7, 2, 5, 8, 3.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Średnia z 4 ocen wynosi 4,5. Jaką ocenę trzeba dostać na piątym sprawdzianie, aby średnia wzrosła do 4,6?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Mamy 10 liczb. Średnia to 7, mediana to 6. Dodajemy liczbę 20. Jaka będzie nowa średnia? Czy mediana może się zmienić? Uzasadnij.</div></div>
+    </div>
+  </div>
+
+  <!-- 7.6 Przekształcenia geometryczne -->
+  <div class="topic" id="t7-6">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">7.6</div>
+      <div class="topic-title">Symetrie i przekształcenia geometryczne</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Symetria osiowa — odbicie figury względem prostej (osi). Symetria środkowa — obrót o 180° wokół punktu. Przesunięcie (translacja) — przesunięcie figury o wektor. Uczeń powinien umieć rysować obrazy figur w symetriach i rozpoznawać figury symetryczne.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Ile osi symetrii ma kwadrat? A trójkąt równoboczny?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Punkt A(3, 5). Podaj współrzędne obrazu A' w symetrii względem osi OX.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Punkt B(2, −4). Podaj współrzędne obrazu B' w symetrii środkowej względem początku układu (0, 0).</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Trójkąt o wierzchołkach A(1,2), B(4,2), C(2,5) przesunięto o wektor [3, −2]. Podaj współrzędne nowych wierzchołków.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Które wielkie litery alfabetu łacińskiego mają oś symetrii pionową? A które poziomą? Podaj po 5 przykładów.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- KLASA 8                                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="grade-section grade-8" id="klasa8">
+  <div class="grade-header">
+    <div class="grade-icon">8</div>
+    <div>
+      <h2>Klasa 8 — Szkoła Podstawowa</h2>
+      <p>Wiek: 13-14 lat · Twierdzenie Pitagorasa, układy równań, potęgi, wykresy, bryły</p>
+    </div>
+  </div>
+
+  <!-- 8.1 Twierdzenie Pitagorasa -->
+  <div class="topic" id="t8-1">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">8.1</div>
+      <div class="topic-title">Twierdzenie Pitagorasa</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>W trójkącie prostokątnym suma kwadratów przyprostokątnych równa się kwadratowi przeciwprostokątnej: a² + b² = c². Twierdzenie pozwala obliczać brakujący bok trójkąta prostokątnego. Odwrotne twierdzenie: jeśli a² + b² = c², to trójkąt jest prostokątny.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Przyprostokątne trójkąta prostokątnego mają 3 cm i 4 cm. Oblicz przeciwprostokątną.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Przeciwprostokątna wynosi 13 cm, jedna przyprostokątna = 5 cm. Oblicz drugą przyprostokątną.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Sprawdź, czy trójkąt o bokach 7, 24, 25 jest prostokątny.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Drabina o długości 5 m opiera się o ścianę. Podstawa drabiny jest 3 m od ściany. Na jakiej wysokości drabina dotyka ściany?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Przekątna prostokąta wynosi 10 cm. Jeden bok jest o 2 cm dłuższy od drugiego. Oblicz wymiary prostokąta.</div></div>
+    </div>
+  </div>
+
+  <!-- 8.2 Potęgi o wykładniku całkowitym, notacja wykładnicza -->
+  <div class="topic" id="t8-2">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">8.2</div>
+      <div class="topic-title">Potęgi o wykładniku całkowitym i notacja wykładnicza</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Potęga o wykładniku ujemnym: a⁻ⁿ = 1/aⁿ. Notacja wykładnicza: liczba × 10ⁿ, gdzie 1 ≤ liczba < 10. Np. 5 600 000 = 5,6 × 10⁶. Uczeń powinien umieć porównywać i wykonywać działania na liczbach w notacji wykładniczej.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Zapisz w notacji wykładniczej: 3 200 000 i 0,00045.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Oblicz: <span class="math">2⁻³</span> i <span class="math">10⁻⁴</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Oblicz: <span class="math">(3 × 10⁴) × (2 × 10⁵)</span>. Wynik podaj w notacji wykładniczej.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Uprość: <span class="math">(2⁻² × 3³) / (2³ × 3⁻¹)</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Odległość od Ziemi do Słońca to ok. 1,5 × 10⁸ km. Światło pokonuje 3 × 10⁵ km/s. Ile sekund potrzebuje światło na dotarcie od Słońca do Ziemi? Podaj wynik w notacji wykładniczej i w minutach.</div></div>
+    </div>
+  </div>
+
+  <!-- 8.3 Układy równań -->
+  <div class="topic" id="t8-3">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">8.3</div>
+      <div class="topic-title">Układy równań liniowych</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Układ równań to dwa (lub więcej) równań z tymi samymi niewiadomymi. Metody rozwiązywania: podstawiania (wyrażamy jedną zmienną i wstawiamy do drugiego równania), przeciwnych współczynników (dodajemy równania, aby wyeliminować zmienną), graficzna (punkt przecięcia prostych).</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Rozwiąż: <span class="math">x + y = 10, x − y = 4</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Rozwiąż metodą podstawiania: <span class="math">2x + y = 7, x = y + 1</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Rozwiąż: <span class="math">3x + 2y = 12, 2x − y = 1</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Suma dwóch liczb wynosi 48, a ich różnica to 12. Znajdź te liczby (zapisz układ i rozwiąż).</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Bilet ulgowy kosztuje o 8 zł mniej niż normalny. Za 3 bilety normalne i 5 ulgowych zapłacono 104 zł. Ile kosztuje bilet normalny, a ile ulgowy?</div></div>
+    </div>
+  </div>
+
+  <!-- 8.4 Funkcje i wykresy -->
+  <div class="topic" id="t8-4">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">8.4</div>
+      <div class="topic-title">Funkcje liniowe i wykresy</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Funkcja liniowa: y = ax + b, gdzie a to współczynnik kierunkowy (nachylenie), b to wyraz wolny (punkt przecięcia z osią Y). Jeśli a > 0 → rosnąca, a < 0 → malejąca, a = 0 → stała. Wykres to prosta. Miejsce zerowe: x₀ = −b/a (punkt, w którym y = 0).</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz wartość funkcji <span class="math">f(x) = 2x − 3</span> dla x = 4.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Wyznacz miejsce zerowe funkcji <span class="math">f(x) = 3x + 9</span>.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Czy funkcja <span class="math">f(x) = −2x + 5</span> jest rosnąca czy malejąca? W jakim punkcie przecina oś Y?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Znajdź wzór funkcji liniowej, która przechodzi przez punkty A(1, 3) i B(3, 7).</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Proste y = 2x + 1 i y = −x + 7 przecinają się. Znajdź punkt przecięcia. Oblicz pole trójkąta, który te proste tworzą z osią OX.</div></div>
+    </div>
+  </div>
+
+  <!-- 8.5 Bryły obrotowe -->
+  <div class="topic" id="t8-5">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">8.5</div>
+      <div class="topic-title">Graniastosłupy, ostrosłupy i bryły obrotowe</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Graniastosłup — bryła o dwóch równoległych podstawach (wielokątach) i ścianach bocznych prostokątnych. Ostrosłup — bryła o jednej podstawie i ścianach bocznych trójkątnych. Walec: V = πr²h, Pc = 2πr(r+h). Stożek: V = (1/3)πr²h. Kula: V = (4/3)πr³, Pole = 4πr².</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Oblicz objętość walca o promieniu 5 cm i wysokości 10 cm (π ≈ 3,14).</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">Oblicz objętość ostrosłupa o podstawie kwadratowej 6 cm × 6 cm i wysokości 9 cm.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Oblicz pole powierzchni całkowitej walca o r = 4 cm i h = 10 cm.</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Kula ma objętość 904,32 cm³. Oblicz jej promień (π ≈ 3,14).</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Stożek ma promień podstawy 6 cm i tworzącą 10 cm. Oblicz jego objętość i pole powierzchni bocznej (π ≈ 3,14).</div></div>
+    </div>
+  </div>
+
+  <!-- 8.6 Prawdopodobieństwo -->
+  <div class="topic" id="t8-6">
+    <div class="topic-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="topic-num">8.6</div>
+      <div class="topic-title">Prawdopodobieństwo i kombinatoryka</div>
+      <div class="topic-toggle">▼</div>
+    </div>
+    <div class="topic-body">
+      <div class="intro">
+        <h4>📖 Wprowadzenie</h4>
+        <p>Prawdopodobieństwo = liczba zdarzeń sprzyjających / liczba wszystkich zdarzeń elementarnych. P(A) ∈ [0, 1]. P = 0 → zdarzenie niemożliwe, P = 1 → zdarzenie pewne. Drzewo zdarzeń pomaga liczyć prawdopodobieństwo zdarzeń złożonych.</p>
+      </div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-1">Łatwe</span><span class="ex-num">Zad. 1</span></div><div class="ex-text">Rzucamy kostką do gry. Jakie jest prawdopodobieństwo wyrzucenia 6?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-2">Średnie</span><span class="ex-num">Zad. 2</span></div><div class="ex-text">W worku jest 5 kul czerwonych, 3 niebieskie i 2 zielone. Losujemy jedną. Jakie jest P(niebieska)?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-3">Trudniejsze</span><span class="ex-num">Zad. 3</span></div><div class="ex-text">Rzucamy dwiema kostkami. Jakie jest prawdopodobieństwo, że suma oczek wyniesie 7?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-4">Trudne</span><span class="ex-num">Zad. 4</span></div><div class="ex-text">Z talii 52 kart losujemy jedną. Jakie jest prawdopodobieństwo wylosowania asa lub króla?</div></div>
+      <div class="exercise"><div class="ex-head"><span class="ex-level lvl-5">Bardzo trudne</span><span class="ex-num">Zad. 5</span></div><div class="ex-text">Na ile sposobów można ustawić 4 uczniów w rzędzie? Jeśli losowo ustawiono rząd, jakie jest prawdopodobieństwo, że Ania i Bartek stoją obok siebie?</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- KLUCZ ODPOWIEDZI                           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="answer-key" id="answers">
+  <div class="answer-key-header">
+    <h2>🔑 Klucz odpowiedzi</h2>
+  </div>
+  <div class="answer-key-body">
+
+    <!-- Klasa 6 -->
+    <div class="ak-grade">
+      <h3>📘 Klasa 6</h3>
+
+      <div class="ak-topic">
+        <h4>6.1 Ułamki zwykłe i dziesiętne</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 0,6</div>
+          <div class="ak-item"><strong>2.</strong> 3/2 = 1 1/2</div>
+          <div class="ak-item"><strong>3.</strong> 1 7/12</div>
+          <div class="ak-item"><strong>4.</strong> 2/5 × 3/8 = 6/40 = 3/20; 3/20 + 1/4 = 3/20 + 5/20 = 8/20 = 2/5</div>
+          <div class="ak-item"><strong>5.</strong> Zostało 4/15 pizzy; cała pizza = 1950 g</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>6.2 Procenty</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 60</div>
+          <div class="ak-item"><strong>2.</strong> 37,5%</div>
+          <div class="ak-item"><strong>3.</strong> 153 zł</div>
+          <div class="ak-item"><strong>4.</strong> 25%</div>
+          <div class="ak-item"><strong>5.</strong> Nie — cena końcowa = 480 zł (96% początkowej)</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>6.3 Liczby całkowite</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> −7, −5, −2, 0, 3, 5</div>
+          <div class="ak-item"><strong>2.</strong> 2</div>
+          <div class="ak-item"><strong>3.</strong> 16</div>
+          <div class="ak-item"><strong>4.</strong> −4°C</div>
+          <div class="ak-item"><strong>5.</strong> {−2, −1, 0, 1, 2, 3, 4}</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>6.4 Geometria — pola i obwody</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> Obw. = 26 cm, P = 40 cm²</div>
+          <div class="ak-item"><strong>2.</strong> 42 cm²</div>
+          <div class="ak-item"><strong>3.</strong> h = 6 cm</div>
+          <div class="ak-item"><strong>4.</strong> P = 32 cm²; 200 × 32 = 6400 cm² = 0,64 m²</div>
+          <div class="ak-item"><strong>5.</strong> 300 − 28,26 = 271,74 m²</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>6.5 Wyrażenia algebraiczne</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 19</div>
+          <div class="ak-item"><strong>2.</strong> 3a + 4b</div>
+          <div class="ak-item"><strong>3.</strong> 3x + 8 = 2x − 1</div>
+          <div class="ak-item"><strong>4.</strong> 15</div>
+          <div class="ak-item"><strong>5.</strong> 5a − 10b = 5(3) − 10(−1) = 15 + 10 = 25</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>6.6 Figury przestrzenne</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 60 cm³</div>
+          <div class="ak-item"><strong>2.</strong> 216 cm²</div>
+          <div class="ak-item"><strong>3.</strong> 63 l</div>
+          <div class="ak-item"><strong>4.</strong> h = 6 cm; Pc = 2(60 + 36 + 60) = 312 cm²</div>
+          <div class="ak-item"><strong>5.</strong> 1000 − 64 = 936 cm³</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Klasa 7 -->
+    <div class="ak-grade">
+      <h3>📗 Klasa 7</h3>
+
+      <div class="ak-topic">
+        <h4>7.1 Potęgi i pierwiastki</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 2⁵ = 32; 3⁴ = 81</div>
+          <div class="ak-item"><strong>2.</strong> 2⁷ = 128; 5⁴ = 625</div>
+          <div class="ak-item"><strong>3.</strong> 12 + 9 − 5 = 16</div>
+          <div class="ak-item"><strong>4.</strong> 3⁶ × 3⁴ / 3⁵ = 3⁵ = 243</div>
+          <div class="ak-item"><strong>5.</strong> 2¹⁰ = 1024 > 10³ = 1000; różnica = 24</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>7.2 Równania i nierówności</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> x = 8</div>
+          <div class="ak-item"><strong>2.</strong> x = 7</div>
+          <div class="ak-item"><strong>3.</strong> x = 5</div>
+          <div class="ak-item"><strong>4.</strong> x < −7</div>
+          <div class="ak-item"><strong>5.</strong> Syn ma 12 lat (3x + 12 = 2(x + 12) → x = 12)</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>7.3 Proporcje i skala</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> x = 10</div>
+          <div class="ak-item"><strong>2.</strong> 4 km</div>
+          <div class="ak-item"><strong>3.</strong> 15 robotników</div>
+          <div class="ak-item"><strong>4.</strong> 40 zł, 60 zł, 80 zł</div>
+          <div class="ak-item"><strong>5.</strong> 5 godzin; proporcjonalność prosta</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>7.4 Kąty i wielokąty</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 70°</div>
+          <div class="ak-item"><strong>2.</strong> 36°</div>
+          <div class="ak-item"><strong>3.</strong> 35°, 145°, 35°, 145°</div>
+          <div class="ak-item"><strong>4.</strong> 6 boków (sześciokąt)</div>
+          <div class="ak-item"><strong>5.</strong> 22,5°; 67,5°; 90°</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>7.5 Statystyka</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 7</div>
+          <div class="ak-item"><strong>2.</strong> 8</div>
+          <div class="ak-item"><strong>3.</strong> 5</div>
+          <div class="ak-item"><strong>4.</strong> 5</div>
+          <div class="ak-item"><strong>5.</strong> Nowa średnia ≈ 8,18; mediana może wzrosnąć do 7 (tak, bo nowa wartość 20 wchodzi na koniec)</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>7.6 Symetrie</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> Kwadrat: 4 osie; trójkąt równoboczny: 3 osie</div>
+          <div class="ak-item"><strong>2.</strong> A'(3, −5)</div>
+          <div class="ak-item"><strong>3.</strong> B'(−2, 4)</div>
+          <div class="ak-item"><strong>4.</strong> A'(4, 0), B'(7, 0), C'(5, 3)</div>
+          <div class="ak-item"><strong>5.</strong> Pionowa: A, M, T, U, V, W, Y; Pozioma: B, C, D, E, K</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Klasa 8 -->
+    <div class="ak-grade">
+      <h3>📙 Klasa 8</h3>
+
+      <div class="ak-topic">
+        <h4>8.1 Twierdzenie Pitagorasa</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> c = 5 cm</div>
+          <div class="ak-item"><strong>2.</strong> b = 12 cm</div>
+          <div class="ak-item"><strong>3.</strong> Tak: 49 + 576 = 625 ✔</div>
+          <div class="ak-item"><strong>4.</strong> h = 4 m</div>
+          <div class="ak-item"><strong>5.</strong> 6 cm × 8 cm</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>8.2 Potęgi i notacja wykładnicza</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 3,2 × 10⁶; 4,5 × 10⁻⁴</div>
+          <div class="ak-item"><strong>2.</strong> 1/8 = 0,125; 0,0001</div>
+          <div class="ak-item"><strong>3.</strong> 6 × 10⁹</div>
+          <div class="ak-item"><strong>4.</strong> 3⁴/2⁵ = 81/32</div>
+          <div class="ak-item"><strong>5.</strong> 5 × 10² s = 500 s ≈ 8 min 20 s</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>8.3 Układy równań</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> x = 7, y = 3</div>
+          <div class="ak-item"><strong>2.</strong> x = 8/3, y = 5/3</div>
+          <div class="ak-item"><strong>3.</strong> x = 2, y = 3</div>
+          <div class="ak-item"><strong>4.</strong> 30 i 18</div>
+          <div class="ak-item"><strong>5.</strong> Normalny: 18 zł, ulgowy: 10 zł</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>8.4 Funkcje liniowe</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> f(4) = 5</div>
+          <div class="ak-item"><strong>2.</strong> x₀ = −3</div>
+          <div class="ak-item"><strong>3.</strong> Malejąca (a = −2 < 0); przecina oś Y w (0, 5)</div>
+          <div class="ak-item"><strong>4.</strong> y = 2x + 1</div>
+          <div class="ak-item"><strong>5.</strong> Punkt (2, 5); P = 12,25 j² (trójkąt z wierz. (−0.5,0), (7,0), (2,5))</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>8.5 Bryły</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 785 cm³</div>
+          <div class="ak-item"><strong>2.</strong> 108 cm³</div>
+          <div class="ak-item"><strong>3.</strong> Pc = 2 × 3,14 × 4 × (4 + 10) = 351,68 cm²</div>
+          <div class="ak-item"><strong>4.</strong> r = 6 cm</div>
+          <div class="ak-item"><strong>5.</strong> h = 8 cm; V = 301,44 cm³; Pb = 188,4 cm²</div>
+        </div>
+      </div>
+
+      <div class="ak-topic">
+        <h4>8.6 Prawdopodobieństwo</h4>
+        <div class="ak-answers">
+          <div class="ak-item"><strong>1.</strong> 1/6</div>
+          <div class="ak-item"><strong>2.</strong> 3/10</div>
+          <div class="ak-item"><strong>3.</strong> 6/36 = 1/6</div>
+          <div class="ak-item"><strong>4.</strong> 8/52 = 2/13</div>
+          <div class="ak-item"><strong>5.</strong> 4! = 24 sposoby; P(obok) = 12/24 = 1/2</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.8rem;border-top:1px solid #e2e8f0;margin-top:2rem">
+  📐 JanX Math Diagnostic · Polski program nauczania kl. 6-8 · Wygenerowano automatycznie
+</div>
+
+</body>
+</html>
