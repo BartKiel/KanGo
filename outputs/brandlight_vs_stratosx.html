@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Brandlight.ai vs StratosX — Analiza Konkurencyjna</title>
+<style>
+  :root {
+    --bl: #6C3AED;
+    --bl-light: #EDE9FE;
+    --sx: #0EA5E9;
+    --sx-light: #E0F2FE;
+    --green: #10B981;
+    --red: #EF4444;
+    --amber: #F59E0B;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-500: #6B7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* ─── HEADER ─── */
+  .hero {
+    background: linear-gradient(135deg, #1E1B4B 0%, #312E81 40%, #4338CA 100%);
+    color: #fff;
+    padding: 2rem 1.25rem 1.75rem;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+  .hero .vs-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .hero p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0.5rem auto 0;
+  }
+  .meta-strip {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    opacity: 0.65;
+    flex-wrap: wrap;
+  }
+
+  /* ─── CONTAINER ─── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 0.75rem; }
+
+  /* ─── SECTION ─── */
+  .section {
+    margin: 1.25rem 0;
+  }
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    padding: 0.75rem 0 0.5rem;
+    border-bottom: 2px solid var(--gray-200);
+    margin-bottom: 0.75rem;
+  }
+  .section-title .emoji { margin-right: 0.35rem; }
+
+  /* ─── PROFILE CARDS ─── */
+  .profiles {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .profile-card {
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid var(--gray-200);
+  }
+  .profile-card.bl { background: var(--bl-light); border-color: #C4B5FD; }
+  .profile-card.sx { background: var(--sx-light); border-color: #7DD3FC; }
+  .profile-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .profile-card .tagline {
+    font-size: 0.78rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+  .profile-card .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 0.75rem;
+  }
+  .profile-card .stat {
+    font-size: 0.75rem;
+  }
+  .profile-card .stat strong {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gray-500);
+    margin-bottom: 0.1rem;
+  }
+
+  /* ─── COMPARISON TABLE ─── */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .cmp-table th {
+    background: var(--gray-100);
+    font-weight: 700;
+    text-align: left;
+    padding: 0.6rem 0.5rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--gray-500);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .cmp-table td {
+    padding: 0.55rem 0.5rem;
+    border-top: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+  .cmp-table tr:hover td { background: var(--gray-50); }
+  .cmp-table .feat-name {
+    font-weight: 600;
+    color: var(--gray-700);
+    min-width: 100px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge.yes { background: #D1FAE5; color: #065F46; }
+  .badge.no { background: #FEE2E2; color: #991B1B; }
+  .badge.partial { background: #FEF3C7; color: #92400E; }
+  .badge.coming { background: #E0E7FF; color: #3730A3; }
+
+  /* ─── MOBILE TABLE SCROLL ─── */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -0.75rem;
+    padding: 0 0.75rem;
+  }
+  .table-wrap::-webkit-scrollbar { height: 4px; }
+  .table-wrap::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
+
+  /* ─── SWOT CARDS ─── */
+  .swot-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .swot-card {
+    border-radius: 10px;
+    padding: 0.85rem;
+    border-left: 4px solid;
+  }
+  .swot-card.str { background: #ECFDF5; border-color: var(--green); }
+  .swot-card.weak { background: #FEF2F2; border-color: var(--red); }
+  .swot-card.opp { background: #FFFBEB; border-color: var(--amber); }
+  .swot-card.thr { background: #EFF6FF; border-color: #3B82F6; }
+  .swot-card h4 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .swot-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .swot-card li {
+    font-size: 0.75rem;
+    padding: 0.2rem 0;
+    padding-left: 1rem;
+    position: relative;
+    color: var(--gray-700);
+  }
+  .swot-card li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--gray-400);
+  }
+
+  /* ─── SCORE BARS ─── */
+  .score-section { margin: 0.75rem 0; }
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+  }
+  .score-label {
+    width: 110px;
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--gray-700);
+  }
+  .score-bar-wrap {
+    flex: 1;
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .score-bar {
+    height: 22px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+    min-width: 28px;
+    transition: width 0.4s ease;
+  }
+  .score-bar.bl { background: var(--bl); }
+  .score-bar.sx { background: var(--sx); }
+
+  /* ─── VERDICT BOX ─── */
+  .verdict {
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+    border: 1px solid #A7F3D0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1.25rem 0;
+  }
+  .verdict h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #065F46;
+    margin-bottom: 0.5rem;
+  }
+  .verdict p {
+    font-size: 0.78rem;
+    color: var(--gray-700);
+    line-height: 1.65;
+  }
+
+  /* ─── MODULE CARDS (mobile accordion-style) ─── */
+  .module-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .module-card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+  .module-card h4 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .module-card p {
+    font-size: 0.72rem;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+  .module-card .tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    margin-right: 0.2rem;
+    margin-top: 0.3rem;
+  }
+  .module-card .tag.bl-tag { background: var(--bl-light); color: #5B21B6; }
+  .module-card .tag.sx-tag { background: var(--sx-light); color: #0369A1; }
+  .module-card .tag.both-tag { background: #D1FAE5; color: #065F46; }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 0.65rem;
+    color: var(--gray-500);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 1.5rem;
+  }
+
+  /* ─── TABLET+ ─── */
+  @media (min-width: 640px) {
+    html { font-size: 16px; }
+    .hero { padding: 3rem 2rem 2.5rem; }
+    .hero h1 { font-size: 2rem; }
+    .container { padding: 0 1.5rem; }
+    .profiles { grid-template-columns: 1fr 1fr; }
+    .swot-grid { grid-template-columns: 1fr 1fr; }
+    .score-label { width: 140px; }
+  }
+  @media (min-width: 960px) {
+    .hero h1 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero">
+  <div class="vs-badge">Analiza konkurencyjna 2026</div>
+  <h1>Brandlight.ai vs StratosX</h1>
+  <p>Kompleksowe porównanie platform: AI Visibility / AEO Enterprise vs GEO Analytics & Content Intelligence</p>
+  <div class="meta-strip">
+    <span>📅 11 marca 2026</span>
+    <span>📊 WebQuest Digital</span>
+    <span>🔖 Wersja 1.0</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ═══════════════ PROFILE CARDS ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">🏢</span> Profil Firm</div>
+  <div class="profiles">
+    <div class="profile-card bl">
+      <h3>🟣 Brandlight.ai</h3>
+      <div class="tagline">"The #1 AI Search Optimization Platform"</div>
+      <div class="stat-grid">
+        <div class="stat"><strong>Siedziba</strong>Izrael (Tel Aviv)</div>
+        <div class="stat"><strong>Funding</strong>$30M Series A</div>
+        <div class="stat"><strong>CEO</strong>Imri Marcus</div>
+        <div class="stat"><strong>Klienci</strong>Fortune 500 (VW, LG, Estée Lauder)</div>
+        <div class="stat"><strong>Model</strong>Enterprise SaaS, white-glove</div>
+        <div class="stat"><strong>Compliance</strong>SOC 2 Type II, GDPR</div>
+        <div class="stat"><strong>Ranking</strong>#1 AEO (LUMA/CB Insights)</div>
+        <div class="stat"><strong>Agencje</strong>Publicis, Stagwell</div>
+      </div>
+    </div>
+    <div class="profile-card sx">
+      <h3>🔵 StratosX</h3>
+      <div class="tagline">"Generative Engine Optimization & Analytics Platform"</div>
+      <div class="stat-grid">
+        <div class="stat"><strong>Typ</strong>Platforma SaaS (boutique)</div>
+        <div class="stat"><strong>Stack</strong>Python/Flask + GCS + React</div>
+        <div class="stat"><strong>AI Engine</strong>GPT-4o-mini (OpenAI)</div>
+        <div class="stat"><strong>Dane</strong>DataForSEO + własne scraping</div>
+        <div class="stat"><strong>Model</strong>Multi-tenant, per-project</div>
+        <div class="stat"><strong>Hosting</strong>Google Cloud Run</div>
+        <div class="stat"><strong>Focus</strong>FMCG / eCommerce</div>
+        <div class="stat"><strong>Generowanie</strong>Replicate (cover images)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODULES OVERVIEW ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">🧩</span> Moduły Produktowe</div>
+  <div class="module-list">
+    <div class="module-card">
+      <h4>📊 AI Visibility & Brand Monitoring</h4>
+      <p>Śledzenie widoczności marki w odpowiedziach AI (ChatGPT, Gemini, Perplexity, Copilot, Grok). Visibility Score, Sentiment Score, Citation Analysis.</p>
+      <span class="tag bl-tag">Brandlight ✓</span>
+      <span class="tag sx-tag">StratosX — jako Brand Presence/Sentiment w Cross-Tab</span>
+    </div>
+    <div class="module-card">
+      <h4>🔬 GEO Cluster Analysis (Cross-Tab)</h4>
+      <p>Pivot table brand×cluster z metrykami: presence %, sentiment %, negative %, competitor gap. UMAP embedding visualization (Question Map). TF-IDF clustering keywords.</p>
+      <span class="tag sx-tag">StratosX ✓ Core</span>
+      <span class="tag bl-tag">Brandlight — brak (monitoring, nie deep analytics)</span>
+    </div>
+    <div class="module-card">
+      <h4>📝 Content Optimization</h4>
+      <p>Brandlight: analiza treści, rekomendacje tematów, optymalizacja pod AI search. StratosX: Rufus Scorecard (PDP audit), criteria builder, mind cloud expectations.</p>
+      <span class="tag both-tag">Oba ✓ (różne podejścia)</span>
+    </div>
+    <div class="module-card">
+      <h4>🛒 Agentic Commerce / eCommerce</h4>
+      <p>Brandlight: Shopping visibility optimization, trigger keyword targeting, SKU tracking. StratosX: Amazon PDP Audit, product scorecard, ASIN-level competitive analysis.</p>
+      <span class="tag both-tag">Oba ✓ (różne podejścia)</span>
+    </div>
+    <div class="module-card">
+      <h4>🤝 Partnerships & Publisher Intelligence</h4>
+      <p>Monitorowanie wydawców, influence score, investment optimization, citation domains.</p>
+      <span class="tag bl-tag">Brandlight ✓</span>
+      <span class="tag sx-tag">StratosX — Source Domain Drilldown (podobna funkcja)</span>
+    </div>
+    <div class="module-card">
+      <h4>🔧 Technical Analysis</h4>
+      <p>Monitorowanie crawli AI, server log analysis, discoverability score, infrastructure health.</p>
+      <span class="tag bl-tag">Brandlight ✓</span>
+      <span class="tag sx-tag">StratosX ✗</span>
+    </div>
+    <div class="module-card">
+      <h4>📢 AI Ads Analysis</h4>
+      <p>Śledzenie płatnej widoczności w odpowiedziach AI, ad share, competitor spend.</p>
+      <span class="tag bl-tag">Brandlight ✓ (nowy moduł)</span>
+      <span class="tag sx-tag">StratosX ✗</span>
+    </div>
+    <div class="module-card">
+      <h4>🤖 AI Chat / Ask</h4>
+      <p>Konwersacyjny interfejs do analizy danych projektowych z kontekstem (SSE streaming).</p>
+      <span class="tag sx-tag">StratosX ✓ (Ask StratosX)</span>
+      <span class="tag bl-tag">Brandlight ✗ (dashboard-only)</span>
+    </div>
+    <div class="module-card">
+      <h4>🗺️ Question Map (UMAP Embedding)</h4>
+      <p>2D scatter plot z embedding clusters, interaktywne tooltips z pytaniami, źródłami, sentimentem. Wizualizacja krajobrazu AI search.</p>
+      <span class="tag sx-tag">StratosX ✓ Core</span>
+      <span class="tag bl-tag">Brandlight ✗</span>
+    </div>
+    <div class="module-card">
+      <h4>📋 Task Management & Collaboration</h4>
+      <p>Kanban, przypisywanie zadań, notatki, obserwatorzy, email notifications, AI task instruction generator.</p>
+      <span class="tag sx-tag">StratosX ✓</span>
+      <span class="tag bl-tag">Brandlight ✗ (zewnętrzne narzędzia)</span>
+    </div>
+    <div class="module-card">
+      <h4>📈 Configurable Dashboard Builder</h4>
+      <p>Schemas → Pages → Objects (KPI, Chart, Cross-Tab, Scatter Map). Dynamiczne dashboardy z danych Excel/CSV.</p>
+      <span class="tag sx-tag">StratosX ✓ Core</span>
+      <span class="tag bl-tag">Brandlight — pre-built dashboardy (brak builder)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FEATURE COMPARISON TABLE ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">⚖️</span> Porównanie Feature-by-Feature</div>
+  <div class="table-wrap">
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>Funkcja</th>
+          <th style="color:var(--bl)">Brandlight</th>
+          <th style="color:var(--sx)">StratosX</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feat-name">AI Engine Coverage</td>
+          <td><span class="badge yes">5+ silników</span><br>ChatGPT, Gemini, Perplexity, Copilot, Grok</td>
+          <td><span class="badge partial">ChatGPT focus</span><br>Dane z DataForSEO + custom scraping</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Visibility Score</td>
+          <td><span class="badge yes">Tak</span><br>Brandlight Score™, cross-engine</td>
+          <td><span class="badge partial">Pośredni</span><br>Brand presence % w cross-tab</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Sentiment Analysis</td>
+          <td><span class="badge yes">Tak</span><br>Sentiment Score per engine</td>
+          <td><span class="badge yes">Tak</span><br>Per brand×cluster, positive/neutral/negative drill</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Citation / Source Tracking</td>
+          <td><span class="badge yes">Tak</span><br>AI-cited sources, publisher intel</td>
+          <td><span class="badge yes">Tak</span><br>Source domain drilldown, URL-level analysis</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Competitive Intel</td>
+          <td><span class="badge yes">Tak</span><br>Cross-brand visibility compare</td>
+          <td><span class="badge yes">Tak</span><br>Multi-brand cross-tab, competitor gap analysis</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Keyword Clustering</td>
+          <td><span class="badge no">Nie</span></td>
+          <td><span class="badge yes">Tak</span><br>TF-IDF + embedding clusters</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Question Map (2D)</td>
+          <td><span class="badge no">Nie</span></td>
+          <td><span class="badge yes">Tak</span><br>UMAP scatter, interactive</td>
+        </tr>
+        <tr>
+          <td class="feat-name">eCommerce / PDP Audit</td>
+          <td><span class="badge partial">Commerce</span><br>SKU tracking, shopping tiles</td>
+          <td><span class="badge yes">Rufus Scorecard</span><br>Per-criteria audit, expectations, mind cloud</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Content Optimization</td>
+          <td><span class="badge yes">Tak</span><br>Radar chart, recommendations</td>
+          <td><span class="badge partial">Manual</span><br>Criteria-based, AI task instructions</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Technical Health</td>
+          <td><span class="badge yes">Tak</span><br>Crawl monitoring, server logs, discoverability</td>
+          <td><span class="badge no">Nie</span></td>
+        </tr>
+        <tr>
+          <td class="feat-name">AI Ads Tracking</td>
+          <td><span class="badge yes">Tak</span><br>Nowy moduł: ad share, spend</td>
+          <td><span class="badge no">Nie</span></td>
+        </tr>
+        <tr>
+          <td class="feat-name">Partnership Intel</td>
+          <td><span class="badge yes">Tak</span><br>Publisher performance, ROI</td>
+          <td><span class="badge partial">Częściowo</span><br>Domain drilldown</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Conversational AI Chat</td>
+          <td><span class="badge no">Nie</span></td>
+          <td><span class="badge yes">Tak</span><br>Ask StratosX (GPT-4o-mini, SSE stream)</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Dashboard Builder</td>
+          <td><span class="badge no">Pre-built</span></td>
+          <td><span class="badge yes">Tak</span><br>Schema→Page→Object (configurable)</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Data Upload (Excel/CSV)</td>
+          <td><span class="badge no">API/integration</span></td>
+          <td><span class="badge yes">Tak</span><br>Drag-drop, sheet selector, inline edit</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Task Management</td>
+          <td><span class="badge no">Nie</span></td>
+          <td><span class="badge yes">Tak</span><br>Kanban, notes, observers, email alerts</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Multi-user / Roles</td>
+          <td><span class="badge yes">Enterprise</span></td>
+          <td><span class="badge yes">Tak</span><br>Admin/user, org, invite, project ACL</td>
+        </tr>
+        <tr>
+          <td class="feat-name">AI Cover Image Gen</td>
+          <td><span class="badge no">Nie</span></td>
+          <td><span class="badge yes">Tak</span><br>Replicate FLUX, auto-generated</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Global / Multi-geo</td>
+          <td><span class="badge yes">Tak</span><br>Multi-language, multi-region</td>
+          <td><span class="badge partial">Per project</span><br>Geo w konfiguracji projektu</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Attribution</td>
+          <td><span class="badge coming">Coming soon</span></td>
+          <td><span class="badge no">Nie</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ SCORING ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">📏</span> Ocena Wymiarów (0–10)</div>
+  <div class="score-section">
+    <div class="score-row">
+      <div class="score-label">AI Visibility</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:90%">9</div>
+        <div class="score-bar sx" style="width:50%">5</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Deep Analytics</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:50%">5</div>
+        <div class="score-bar sx" style="width:90%">9</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">eCommerce / PDP</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:60%">6</div>
+        <div class="score-bar sx" style="width:85%">8.5</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Content Intel</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:80%">8</div>
+        <div class="score-bar sx" style="width:60%">6</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Technical SEO</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:85%">8.5</div>
+        <div class="score-bar sx" style="width:0%">0</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Customizability</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:30%">3</div>
+        <div class="score-bar sx" style="width:90%">9</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">AI Chat / Ask</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:0%">0</div>
+        <div class="score-bar sx" style="width:80%">8</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Collaboration</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:40%">4</div>
+        <div class="score-bar sx" style="width:80%">8</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Enterprise Ready</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:95%">9.5</div>
+        <div class="score-bar sx" style="width:45%">4.5</div>
+      </div>
+    </div>
+    <div class="score-row">
+      <div class="score-label">Pricing Access</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar bl" style="width:20%">2</div>
+        <div class="score-bar sx" style="width:80%">8</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:1rem;justify-content:center;margin-top:0.5rem;font-size:0.7rem">
+    <span><span style="display:inline-block;width:12px;height:12px;background:var(--bl);border-radius:3px;vertical-align:middle;margin-right:3px"></span>Brandlight</span>
+    <span><span style="display:inline-block;width:12px;height:12px;background:var(--sx);border-radius:3px;vertical-align:middle;margin-right:3px"></span>StratosX</span>
+  </div>
+</div>
+
+<!-- ═══════════════ SWOT — BRANDLIGHT ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">🟣</span> SWOT — Brandlight.ai</div>
+  <div class="swot-grid">
+    <div class="swot-card str">
+      <h4>💪 Silne strony</h4>
+      <ul>
+        <li>Najszersza coverage AI engines (5+): ChatGPT, Gemini, Perplexity, Copilot, Grok</li>
+        <li>$30M Series A — solidne zaplecze finansowe i tempo rozwoju</li>
+        <li>Enterprise-grade: SOC 2 Type II, GDPR, white-glove support</li>
+        <li>Unikalne moduły: Technical Health (crawl monitoring), AI Ads</li>
+        <li>Partnerships intelligence — monitorowanie wydawców i ROI</li>
+        <li>Fortune 500 clientela buduje silną social proof (VW, LG, Estée Lauder)</li>
+        <li>#1 ranking AEO od LUMA/CB Insights</li>
+        <li>Moduł Commerce (Agentic Commerce) — AI shopping visibility</li>
+      </ul>
+    </div>
+    <div class="swot-card weak">
+      <h4>⚠️ Słabe strony</h4>
+      <ul>
+        <li>Brak deep analytics / custom clustering — monitoring, nie analiza</li>
+        <li>Pre-built dashboards — brak konfiguralnego dashboard buildera</li>
+        <li>Brak konwersacyjnego AI (nie można "rozmawiać" z danymi)</li>
+        <li>Enterprise-only pricing — niedostępne dla SMB/agencji średniej wielkości</li>
+        <li>Brak wbudowanego task management — wymaga zewnętrznych narzędzi</li>
+        <li>Brak Question Map / embedding visualization</li>
+        <li>Zamknięty ekosystem — ograniczone możliwości custom data upload</li>
+        <li>Attribution wciąż "coming soon" — kluczowy moduł niedostępny</li>
+      </ul>
+    </div>
+    <div class="swot-card opp">
+      <h4>🌟 Szanse</h4>
+      <ul>
+        <li>Rynek AEO rośnie eksponencjalnie — first-mover advantage</li>
+        <li>AI Ads to nowa kategoria — mogą zdominować ten segment</li>
+        <li>Agencje (Publicis, Stagwell) jako kanał dystrybucji</li>
+        <li>Expansion do mid-market z self-serve tier</li>
+      </ul>
+    </div>
+    <div class="swot-card thr">
+      <h4>🔥 Zagrożenia</h4>
+      <ul>
+        <li>Szybko rosnąca konkurencja (StratosX, Profound, Otterly.ai)</li>
+        <li>AI engines mogą zmienić format odpowiedzi — ciągłe dostosowanie</li>
+        <li>Enterprise sales cycle jest wolny — SMB competitors mogą zbudować bazę</li>
+        <li>Dependence od scrapingu AI engines — ryzyko blokad</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SWOT — STRATOSX ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">🔵</span> SWOT — StratosX</div>
+  <div class="swot-grid">
+    <div class="swot-card str">
+      <h4>💪 Silne strony</h4>
+      <ul>
+        <li>Unikalny GEO Analytics: cross-tab brand×cluster z 5 metrykami (presence, sentiment, negative, comp gap, sentiment%)</li>
+        <li>Question Map (UMAP 2D scatter) — wizualizacja krajobrazu AI search, jedyna taka na rynku</li>
+        <li>Rufus Scorecard — granularne PDP audit per-criteria z expectations</li>
+        <li>Ask StratosX — konwersacyjny AI chat z pełnym kontekstem danych projektu</li>
+        <li>Konfigurowalny dashboard builder (Schema→Page→Object)</li>
+        <li>Wbudowany task management z AI-generated task instructions</li>
+        <li>Flexible data model — upload Excel/CSV, inline edit, multi-sheet</li>
+        <li>Source domain drilldown — analiza cytowań na poziomie URL</li>
+        <li>Niski próg wejścia — dostępna cena vs enterprise competitors</li>
+      </ul>
+    </div>
+    <div class="swot-card weak">
+      <h4>⚠️ Słabe strony</h4>
+      <ul>
+        <li>Ograniczona coverage AI engines — głównie ChatGPT (DataForSEO)</li>
+        <li>Brak real-time AI visibility monitoring (dane batch, nie live)</li>
+        <li>Brak Technical Health / crawl monitoring</li>
+        <li>Brak AI Ads tracking</li>
+        <li>Mniejsza skala — brak enterprise compliance (SOC 2, formal GDPR audit)</li>
+        <li>Brak Partnership Intelligence na poziomie Brandlight</li>
+        <li>Single-region focus per project — brak unified global view</li>
+        <li>Boutique — mniejszy zespół development, wolniejsze tempo nowych modułów</li>
+      </ul>
+    </div>
+    <div class="swot-card opp">
+      <h4>🌟 Szanse</h4>
+      <ul>
+        <li>FMCG/eCommerce niche — głębsza specjalizacja niż horizontal players</li>
+        <li>Dashboard builder jako platforma do custom analytics (biały label)</li>
+        <li>AI Chat differentiation — żaden enterprise competitor tego nie ma</li>
+        <li>Rozbudowa o dodatkowe AI engines (Gemini, Perplexity) przez DataForSEO</li>
+        <li>Question Map jako unikalna wartość w pitch do klientów</li>
+      </ul>
+    </div>
+    <div class="swot-card thr">
+      <h4>🔥 Zagrożenia</h4>
+      <ul>
+        <li>Brandlight i inni z $30M+ mogą dodać deep analytics</li>
+        <li>Enterprise klienci wymagają SOC 2 — barrier to entry</li>
+        <li>Commoditization AI search data przez DataForSEO/SERPapi</li>
+        <li>Single-person/small team risk — bus factor</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STRATEGIC POSITIONING ═══════════════ -->
+<div class="section">
+  <div class="section-title"><span class="emoji">🎯</span> Pozycjonowanie Strategiczne</div>
+  <div class="table-wrap">
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>Wymiar</th>
+          <th style="color:var(--bl)">Brandlight</th>
+          <th style="color:var(--sx)">StratosX</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feat-name">Segment docelowy</td>
+          <td>Enterprise / Fortune 500</td>
+          <td>SMB–Enterprise, agencje, FMCG</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Value Proposition</td>
+          <td>"Zmierz i popraw widoczność w AI"</td>
+          <td>"Zrozum DLACZEGO AI mówi co mówi"</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Core Metric</td>
+          <td>Visibility Score (% widoczności)</td>
+          <td>Brand Presence × Cluster (deep dive)</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Data Philosophy</td>
+          <td>Monitoring (dashboards → alerts)</td>
+          <td>Analytics (data → insight → action)</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Competitive Moat</td>
+          <td>Multi-engine coverage + enterprise trust</td>
+          <td>Deep GEO analytics + configurability</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Sales Motion</td>
+          <td>Enterprise sales + agency partnerships</td>
+          <td>Product-led growth + consulting</td>
+        </tr>
+        <tr>
+          <td class="feat-name">Category</td>
+          <td>AEO (AI Engine Optimization)</td>
+          <td>GEO (Generative Engine Optimization)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ VERDICT ═══════════════ -->
+<div class="verdict">
+  <h3>🏆 Wnioski Strategiczne</h3>
+  <p>
+    <strong>Brandlight.ai</strong> i <strong>StratosX</strong> operują w tym samym ekosystemie AI Search, ale z fundamentalnie różnymi podejściami. Brandlight to <em>monitoring platform</em> — mówi CI, ŻE Twoja marka jest widoczna (lub nie) w AI. StratosX to <em>analytics platform</em> — mówi CI DLACZEGO i CO z tym zrobić.
+  </p>
+  <p style="margin-top:0.5rem">
+    <strong>Komplementarność:</strong> Idealny stack to Brandlight do monitoringu widoczności na poziomie enterprise + StratosX do deep dive analytics i action planning. Nie są bezpośrednimi konkurentami — raczej uzupełniającymi się narzędziami w pełnym GEO/AEO workflow.
+  </p>
+  <p style="margin-top:0.5rem">
+    <strong>Dla StratosX:</strong> Kluczowe wyróżniki to Question Map, AI Chat, Dashboard Builder i Rufus Scorecard. Te features nie istnieją u Brandlight i powinny być fundamentem komunikacji marketingowej. Najważniejszy gap do zamknięcia: multi-engine coverage i Technical Health.
+  </p>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="footer">
+  Brandlight.ai vs StratosX — Competitive Intelligence Report<br>
+  Prepared by WebQuest Digital · 11 March 2026 · Confidential
+</div>
+
+</div><!-- /container -->
+</body>
+</html>

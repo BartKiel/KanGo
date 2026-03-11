@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🚨 Tram Test — Emergency Operations Guide</title>
+<style>
+:root{--red:#DC2626;--amber:#F59E0B;--green:#10B981;--blue:#3B82F6;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-500:#6B7280;--gray-700:#374151;--gray-900:#111827}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gray-50);color:var(--gray-900);line-height:1.6;padding:0}
+.hero{background:linear-gradient(135deg,#7F1D1D 0%,#991B1B 40%,#DC2626 100%);color:#fff;padding:2rem 1.25rem 1.75rem;text-align:center}
+.hero h1{font-size:1.4rem;font-weight:800}
+.hero p{font-size:.82rem;opacity:.85;margin-top:.5rem;max-width:600px;margin-left:auto;margin-right:auto}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;font-weight:600;margin-bottom:.5rem;letter-spacing:.04em;text-transform:uppercase}
+.container{max-width:800px;margin:0 auto;padding:0 .75rem}
+.warn-box{background:#FEF2F2;border:2px solid var(--red);border-radius:10px;padding:1rem;margin:1rem 0;font-size:.8rem}
+.warn-box h3{color:var(--red);font-size:.9rem;margin-bottom:.3rem}
+.section{margin:1.25rem 0}
+.section-title{font-size:1rem;font-weight:700;border-bottom:2px solid var(--gray-200);padding-bottom:.4rem;margin-bottom:.75rem}
+.card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:.85rem;margin-bottom:.6rem}
+.card h4{font-size:.85rem;font-weight:700;margin-bottom:.3rem;display:flex;align-items:center;gap:.3rem}
+.card p,.card li{font-size:.75rem;color:var(--gray-700)}
+.card ul{padding-left:1.2rem;margin-top:.3rem}
+.card li{margin-bottom:.2rem}
+.tag{display:inline-block;font-size:.6rem;font-weight:600;padding:.1rem .35rem;border-radius:4px;margin-right:.2rem}
+.tag.critical{background:#FEE2E2;color:#991B1B}
+.tag.gcp{background:#DBEAFE;color:#1E40AF}
+.tag.github{background:#F3E8FF;color:#6B21A8}
+.tag.api{background:#D1FAE5;color:#065F46}
+.tag.domain{background:#FEF3C7;color:#92400E}
+table{width:100%;border-collapse:collapse;font-size:.75rem;background:#fff;border-radius:8px;overflow:hidden}
+th{background:var(--gray-100);text-align:left;padding:.5rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.03em;color:var(--gray-500)}
+td{padding:.5rem;border-top:1px solid var(--gray-100);vertical-align:top}
+.mono{font-family:'SF Mono',Monaco,Consolas,monospace;font-size:.7rem;background:var(--gray-100);padding:.1rem .3rem;border-radius:3px}
+.footer{text-align:center;padding:1.5rem;font-size:.65rem;color:var(--gray-500);border-top:1px solid var(--gray-200);margin-top:1.5rem}
+.toc{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:.85rem;margin:1rem 0}
+.toc h3{font-size:.85rem;font-weight:700;margin-bottom:.4rem}
+.toc ol{padding-left:1.5rem;font-size:.75rem}
+.toc li{margin-bottom:.2rem}
+.toc a{color:var(--blue);text-decoration:none}
+@media(min-width:640px){.hero h1{font-size:1.8rem}.container{padding:0 1.5rem}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<div class="badge">🚨 Dokument poufny — wyłącznie dla wspólnika</div>
+<h1>Tram Test — Emergency Operations Guide</h1>
+<p>Gdybym jutro zniknął z komputerem — oto wszystko co musisz wiedzieć, żeby utrzymać i zarządzać naszymi systemami.</p>
+</div>
+
+<div class="container">
+
+<div class="warn-box">
+<h3>⚠️ WAŻNE: Ten dokument NIE zawiera haseł</h3>
+<p>Hasła są w sejfie (1Password vault: "WebQuest Shared"). Tutaj znajdziesz architekturę, loginy email i instrukcje odzyskiwania dostępu. Jeśli nie masz dostępu do 1Password — skontaktuj się z supportem 1Password podając swój email firmowy.</p>
+</div>
+
+<div class="toc">
+<h3>📋 Spis Treści</h3>
+<ol>
+<li><a href="#stack">Stack Technologiczny — Big Picture</a></li>
+<li><a href="#apps">Aplikacje w Produkcji</a></li>
+<li><a href="#infra">Infrastruktura GCP</a></li>
+<li><a href="#domains">Domeny i DNS</a></li>
+<li><a href="#apis">Klucze API i Serwisy Zewnętrzne</a></li>
+<li><a href="#github">GitHub / Repozytoria Kodu</a></li>
+<li><a href="#backups">Backupy</a></li>
+<li><a href="#contacts">Kontakty Awaryjne</a></li>
+<li><a href="#recovery">Procedura Odzyskiwania</a></li>
+</ol>
+</div>
+
+<!-- ═══ 1. STACK ═══ -->
+<div class="section" id="stack">
+<div class="section-title">1. 🏗️ Stack Technologiczny</div>
+<div class="card">
+<h4>Chmura: Google Cloud Platform (GCP)</h4>
+<ul>
+<li><strong>Projekt:</strong> <span class="mono">allegro-autopilot-app</span></li>
+<li><strong>Region:</strong> <span class="mono">europe-central2</span> (Warszawa)</li>
+<li><strong>Login email:</strong> <span class="mono">bart@webquestdigital.com</span></li>
+<li><strong>Konsola:</strong> <a href="https://console.cloud.google.com">console.cloud.google.com</a></li>
+<li><strong>Billing:</strong> Karta firmowa przypisana w Billing → Account</li>
+</ul>
+</div>
+<div class="card">
+<h4>Serwisy GCP których używamy</h4>
+<ul>
+<li><strong>Cloud Run</strong> — hosting aplikacji (serverless containers)</li>
+<li><strong>Cloud Storage (GCS)</strong> — pliki, dane, backupy</li>
+<li><strong>Cloud Scheduler</strong> — cron jobs (automatyczne backupy)</li>
+<li><strong>Artifact Registry</strong> — obrazy Docker</li>
+<li><strong>Secret Manager</strong> — niektóre klucze API</li>
+</ul>
+</div>
+<div class="card">
+<h4>Język / Framework</h4>
+<ul>
+<li><strong>Backend:</strong> Python 3.12 + Flask</li>
+<li><strong>Frontend:</strong> React (StratosX), Tailwind CSS (KanGo), vanilla HTML</li>
+<li><strong>AI:</strong> OpenAI API (GPT-4o-mini), Replicate (image gen)</li>
+<li><strong>Data:</strong> DataForSEO API (keyword/SERP data)</li>
+</ul>
+</div>
+</div>
+
+<!-- ═══ 2. APPS ═══ -->
+<div class="section" id="apps">
+<div class="section-title">2. 🚀 Aplikacje w Produkcji</div>
+
+<div class="card">
+<h4>🔵 StratosX <span class="tag gcp">Cloud Run</span></h4>
+<ul>
+<li><strong>URL:</strong> <a href="https://app.stratosx.com">app.stratosx.com</a></li>
+<li><strong>Cloud Run service:</strong> <span class="mono">stratosx</span></li>
+<li><strong>Kod:</strong> <span class="mono">server.py</span> (~7000 linii), frontend React (SPA)</li>
+<li><strong>GCS Bucket:</strong> <span class="mono">stratosx-app-data</span> (dane użytkowników, pliki Excel)</li>
+<li><strong>Login email (admin):</strong> <span class="mono">bart@webquestdigital.com</span></li>
+<li><strong>Opis:</strong> Platforma GEO analytics — dashboardy, cross-tab, question map, Rufus scorecard, PDP audit, task management, AI chat</li>
+<li><strong>Klienci:</strong> Mars, agencje</li>
+</ul>
+</div>
+
+<div class="card">
+<h4>📋 KanGo <span class="tag gcp">Cloud Run</span></h4>
+<ul>
+<li><strong>URL:</strong> <a href="https://kango-563476266040.europe-central2.run.app">kango-563476266040.europe-central2.run.app</a></li>
+<li><strong>Cloud Run service:</strong> <span class="mono">kango</span></li>
+<li><strong>Kod:</strong> <span class="mono">app.py</span> (~1700 linii), single-file Flask</li>
+<li><strong>GCS Bucket:</strong> <span class="mono">kango-tasks-esj-bk</span></li>
+<li><strong>Opis:</strong> Wewnętrzny Kanban board + file manager</li>
+</ul>
+</div>
+
+<div class="card">
+<h4>🌐 WebQuestDigital.com <span class="tag domain">Website</span></h4>
+<ul>
+<li><strong>URL:</strong> <a href="https://webquestdigital.com">webquestdigital.com</a></li>
+<li><strong>Hosting:</strong> Wix (managed)</li>
+<li><strong>Login email:</strong> <span class="mono">bart@webquestdigital.com</span></li>
+</ul>
+</div>
+
+<div class="card">
+<h4>🧠 MindCloud <span class="tag gcp">Cloud Run</span></h4>
+<ul>
+<li><strong>Cloud Run service:</strong> <span class="mono">mindcloud</span> (jeśli aktywny)</li>
+<li><strong>Opis:</strong> NLP pipeline do przetwarzania danych GEO, embeddings, clustering</li>
+</ul>
+</div>
+
+<div class="card">
+<h4>🌐 GeoCatch <span class="tag gcp">TBD</span></h4>
+<ul>
+<li><strong>Status:</strong> W rozwoju</li>
+<li><strong>Opis:</strong> Narzędzie do zbierania danych z AI engines</li>
+</ul>
+</div>
+</div>
+
+<!-- ═══ 3. INFRA ═══ -->
+<div class="section" id="infra">
+<div class="section-title">3. ☁️ Infrastruktura GCP</div>
+<div class="card">
+<h4>Cloud Storage Buckets</h4>
+<table>
+<tr><th>Bucket</th><th>Zastosowanie</th></tr>
+<tr><td class="mono">stratosx-app-data</td><td>Dane StratosX — użytkownicy, projekty, pliki Excel, obrazy</td></tr>
+<tr><td class="mono">kango-tasks-esj-bk</td><td>Dane KanGo — taski, kolumny, pliki uploadowane</td></tr>
+<tr><td class="mono">stratosx-backups-daily</td><td>Automatyczne backupy StratosX (Cloud Scheduler)</td></tr>
+<tr><td class="mono">kango-backups-daily</td><td>Automatyczne backupy KanGo (Cloud Scheduler)</td></tr>
+<tr><td class="mono">allegro-autopilot-app_cloudbuild</td><td>Build artefakty (Cloud Build / Artifact Registry)</td></tr>
+</table>
+</div>
+<div class="card">
+<h4>Cloud Scheduler Jobs</h4>
+<table>
+<tr><th>Job</th><th>Schedule</th><th>Target</th></tr>
+<tr><td class="mono">kango-daily-backup</td><td>Codziennie 3:00 CET</td><td>POST /cron/daily-backup</td></tr>
+<tr><td class="mono">stratosx-daily-backup</td><td>Codziennie 3:00 CET</td><td>POST /cron/daily-backup (jeśli ustawiony)</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ═══ 4. DOMAINS ═══ -->
+<div class="section" id="domains">
+<div class="section-title">4. 🌐 Domeny i DNS</div>
+<div class="card">
+<table>
+<tr><th>Domena</th><th>Rejestr</th><th>Wskazuje na</th></tr>
+<tr><td class="mono">webquestdigital.com</td><td>Wix / GoDaddy (sprawdź registrar)</td><td>Wix hosting</td></tr>
+<tr><td class="mono">stratosx.com</td><td>GoDaddy / Namecheap</td><td>Cloud Run (custom domain mapping)</td></tr>
+<tr><td class="mono">app.stratosx.com</td><td>CNAME → Cloud Run</td><td>Service: stratosx</td></tr>
+</table>
+<p style="font-size:.72rem;color:var(--gray-500);margin-top:.5rem">⚠️ Sprawdź daty odnowienia domen w panelu rejestratora. Login: <span class="mono">bart@webquestdigital.com</span></p>
+</div>
+</div>
+
+<!-- ═══ 5. APIs ═══ -->
+<div class="section" id="apis">
+<div class="section-title">5. 🔑 Klucze API i Serwisy Zewnętrzne</div>
+<div class="card">
+<table>
+<tr><th>Serwis</th><th>Login email</th><th>Do czego</th></tr>
+<tr><td>OpenAI</td><td class="mono">bart@webquestdigital.com</td><td>GPT-4o-mini — AI chat, page insights, task instructions</td></tr>
+<tr><td>Replicate</td><td class="mono">bart@webquestdigital.com</td><td>FLUX model — generowanie okładek projektów</td></tr>
+<tr><td>DataForSEO</td><td class="mono">bart@webquestdigital.com</td><td>Keyword data, SERP data, AI SoV data</td></tr>
+<tr><td>SendGrid / Brevo</td><td class="mono">bart@webquestdigital.com</td><td>Transakcyjne emaile (invite, reset password)</td></tr>
+<tr><td>GitHub</td><td class="mono">BartKiel</td><td>Repozytoria kodu</td></tr>
+<tr><td>1Password</td><td class="mono">bart@webquestdigital.com</td><td>Sejf haseł — Vault "WebQuest Shared"</td></tr>
+<tr><td>Google Workspace</td><td class="mono">bart@webquestdigital.com</td><td>Poczta firmowa, Drive, Calendar</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ═══ 6. GITHUB ═══ -->
+<div class="section" id="github">
+<div class="section-title">6. 💻 GitHub Repozytoria</div>
+<div class="card">
+<table>
+<tr><th>Repo</th><th>Opis</th><th>Visibility</th></tr>
+<tr><td class="mono">BartKiel/stratosx-deploy</td><td>StratosX — main production code</td><td><span class="tag critical">Private</span></td></tr>
+<tr><td class="mono">BartKiel/KanGo</td><td>KanGo — kanban + file manager</td><td><span class="tag critical">Private</span></td></tr>
+<tr><td class="mono">BartKiel/AllegroAutopilot</td><td>Allegro Autopilot (mockup/POC)</td><td><span class="tag critical">Private</span></td></tr>
+</table>
+<p style="font-size:.72rem;color:var(--gray-500);margin-top:.5rem">Dostęp: GitHub account <span class="mono">BartKiel</span>. Aby dodać collaboratora: Settings → Collaborators → Add people.</p>
+</div>
+</div>
+
+<!-- ═══ 7. BACKUPS ═══ -->
+<div class="section" id="backups">
+<div class="section-title">7. 💾 Backupy</div>
+<div class="card">
+<h4>Automatyczne (Cloud Scheduler)</h4>
+<ul>
+<li>KanGo: codziennie o 3:00 CET → <span class="mono">kango-backups-daily/YYYY-MM-DD/</span></li>
+<li>StratosX: codziennie o 3:00 CET → <span class="mono">stratosx-backups-daily/YYYY-MM-DD/</span></li>
+<li>Format: pełna kopia GCS bucket (wszystkie pliki JSON + uploads)</li>
+<li>Retencja: 30 dni (starsze ręcznie usuwane)</li>
+</ul>
+</div>
+<div class="card">
+<h4>Ręczne odtworzenie z backupu</h4>
+<ol style="font-size:.75rem;padding-left:1.2rem;margin-top:.3rem">
+<li>Zaloguj się do <a href="https://console.cloud.google.com/storage">GCP Console → Storage</a></li>
+<li>Znajdź bucket backupowy (np. <span class="mono">kango-backups-daily</span>)</li>
+<li>Wybierz folder z datą (np. <span class="mono">2026-03-10/</span>)</li>
+<li>Skopiuj pliki z backupu do produkcyjnego bucketa: <br><span class="mono">gsutil -m cp -r gs://kango-backups-daily/2026-03-10/* gs://kango-tasks-esj-bk/</span></li>
+</ol>
+</div>
+<div class="card">
+<h4>Kod źródłowy</h4>
+<p>Cały kod jest na GitHub. Wystarczy <span class="mono">git clone</span> i <span class="mono">gcloud run deploy</span>.</p>
+</div>
+</div>
+
+<!-- ═══ 8. KONTAKTY ═══ -->
+<div class="section" id="contacts">
+<div class="section-title">8. 📞 Kontakty Awaryjne</div>
+<div class="card">
+<table>
+<tr><th>Kto</th><th>Rola</th><th>Kontakt</th></tr>
+<tr><td>Bart Kiełbiński</td><td>CTO / Tech Lead</td><td class="mono">bart@webquestdigital.com</td></tr>
+<tr><td>Google Cloud Support</td><td>Infrastruktura</td><td>console.cloud.google.com → Support</td></tr>
+<tr><td>GitHub Support</td><td>Kod źródłowy</td><td>support.github.com</td></tr>
+<tr><td>Domain Registrar</td><td>Domeny</td><td>Panel rejestratora (login jw.)</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ═══ 9. RECOVERY ═══ -->
+<div class="section" id="recovery">
+<div class="section-title">9. 🔄 Procedura Odzyskiwania (krok po kroku)</div>
+<div class="card">
+<h4>Scenariusz: Bart jest niedostępny, system wymaga interwencji</h4>
+<ol style="font-size:.75rem;padding-left:1.2rem;margin-top:.3rem">
+<li><strong>Loginy:</strong> Wejdź do 1Password (vault "WebQuest Shared") — tam są WSZYSTKIE hasła</li>
+<li><strong>GCP Console:</strong> Zaloguj się na <span class="mono">bart@webquestdigital.com</span> → <a href="https://console.cloud.google.com">console.cloud.google.com</a></li>
+<li><strong>Jeśli app nie działa:</strong> Cloud Run → service → Revisions → przywróć poprzednią rewizję klikając "Route 100% traffic"</li>
+<li><strong>Jeśli dane zniknęły:</strong> Cloud Storage → bucket backupowy → skopiuj najnowszy backup (patrz sekcja 7)</li>
+<li><strong>Jeśli trzeba zdeployować nowy kod:</strong> Zainstaluj <span class="mono">gcloud CLI</span>, sklonuj repo z GitHub, uruchom <span class="mono">gcloud run deploy</span></li>
+<li><strong>Jeśli domena nie działa:</strong> Sprawdź DNS w panelu rejestratora, odnów domenę jeśli wygasła</li>
+<li><strong>Klient pilnie potrzebuje czegoś:</strong> StratosX działa autonomicznie — klienci mogą się logować i korzystać bez naszej interwencji</li>
+</ol>
+</div>
+<div class="card">
+<h4>🆘 Gdyby nic nie pomagało</h4>
+<p>Zatrudnij Python/Flask developera. Pokaż mu ten dokument + repozytoria na GitHub. Stack jest standardowy (Python + Flask + GCS) — każdy mid-level dev ogarnie w 1-2 dni.</p>
+</div>
+</div>
+
+<div class="footer">
+🚨 Tram Test — Emergency Operations Guide · WebQuest Digital · 11 March 2026 · CONFIDENTIAL
+</div>
+
+</div>
+</body>
+</html>

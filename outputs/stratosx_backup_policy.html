@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Backup Policy — app.stratosx.com</title>
+<style>
+:root{--blue:#3B82F6;--blue-light:#EFF6FF;--green:#10B981;--green-light:#ECFDF5;--amber:#F59E0B;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-500:#6B7280;--gray-700:#374151;--gray-900:#111827}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--gray-50);color:var(--gray-900);line-height:1.6}
+.hero{background:linear-gradient(135deg,#1E3A5F 0%,#1E40AF 50%,#3B82F6 100%);color:#fff;padding:2rem 1.25rem 1.75rem;text-align:center}
+.hero h1{font-size:1.4rem;font-weight:800}
+.hero p{font-size:.82rem;opacity:.85;margin-top:.5rem;max-width:600px;margin-left:auto;margin-right:auto}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;font-weight:600;margin-bottom:.5rem;text-transform:uppercase}
+.container{max-width:800px;margin:0 auto;padding:0 .75rem}
+.section{margin:1.25rem 0}
+.section-title{font-size:1rem;font-weight:700;border-bottom:2px solid var(--gray-200);padding-bottom:.4rem;margin-bottom:.75rem}
+.card{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:.85rem;margin-bottom:.6rem}
+.card h4{font-size:.85rem;font-weight:700;margin-bottom:.3rem}
+.card p,.card li{font-size:.75rem;color:var(--gray-700)}
+.card ul,.card ol{padding-left:1.2rem;margin-top:.3rem}
+.card li{margin-bottom:.2rem}
+.mono{font-family:'SF Mono',Monaco,Consolas,monospace;font-size:.7rem;background:var(--gray-100);padding:.1rem .3rem;border-radius:3px}
+.highlight{background:var(--blue-light);border:1px solid #BFDBFE;border-radius:8px;padding:.75rem;margin:.6rem 0;font-size:.75rem}
+.highlight.green{background:var(--green-light);border-color:#A7F3D0}
+table{width:100%;border-collapse:collapse;font-size:.75rem;background:#fff;border-radius:8px;overflow:hidden}
+th{background:var(--gray-100);text-align:left;padding:.5rem;font-size:.68rem;text-transform:uppercase;color:var(--gray-500)}
+td{padding:.5rem;border-top:1px solid var(--gray-100);vertical-align:top}
+.tag{display:inline-block;font-size:.6rem;font-weight:600;padding:.1rem .35rem;border-radius:4px}
+.tag.auto{background:#DBEAFE;color:#1E40AF}
+.tag.manual{background:#FEF3C7;color:#92400E}
+.footer{text-align:center;padding:1.5rem;font-size:.65rem;color:var(--gray-500);border-top:1px solid var(--gray-200);margin-top:1.5rem}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -.75rem;padding:0 .75rem}
+@media(min-width:640px){.hero h1{font-size:1.8rem}.container{padding:0 1.5rem}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+<div class="badge">Operations Documentation</div>
+<h1>💾 Backup Policy — app.stratosx.com</h1>
+<p>Comprehensive backup strategy for the StratosX GEO Analytics Platform deployed on Google Cloud Run + GCS.</p>
+</div>
+
+<div class="container">
+
+<!-- OVERVIEW -->
+<div class="section">
+<div class="section-title">1. 📋 Overview</div>
+<div class="card">
+<h4>Architecture Summary</h4>
+<ul>
+<li><strong>Application:</strong> StratosX (<span class="mono">server.py</span>, ~7026 lines, Python/Flask)</li>
+<li><strong>Hosting:</strong> Google Cloud Run (service: <span class="mono">stratosx</span>)</li>
+<li><strong>Data Store:</strong> Google Cloud Storage (GCS) — all data stored as JSON/XLSX files</li>
+<li><strong>GCP Project:</strong> <span class="mono">allegro-autopilot-app</span></li>
+<li><strong>Region:</strong> <span class="mono">europe-central2</span> (Warsaw, Poland)</li>
+<li><strong>Source Code:</strong> GitHub <span class="mono">BartKiel/stratosx-deploy</span> (private)</li>
+</ul>
+</div>
+<div class="highlight">
+<strong>Key Principle:</strong> StratosX is stateless. All persistent data lives in GCS buckets. Cloud Run containers are ephemeral and can be redeployed at any time from GitHub source. This makes backups focused on <strong>GCS data</strong> and <strong>Git history</strong>.
+</div>
+</div>
+
+<!-- WHAT IS BACKED UP -->
+<div class="section">
+<div class="section-title">2. 📦 What Gets Backed Up</div>
+<div class="card">
+<h4>GCS Bucket: <span class="mono">stratosx-app-data</span></h4>
+<div class="table-wrap">
+<table>
+<tr><th>Path Pattern</th><th>Content</th><th>Criticality</th></tr>
+<tr><td class="mono">users.json</td><td>User accounts, roles, org assignments</td><td>🔴 Critical</td></tr>
+<tr><td class="mono">projects.json</td><td>Project definitions, settings</td><td>🔴 Critical</td></tr>
+<tr><td class="mono">schemas.json</td><td>Dashboard schema definitions</td><td>🔴 Critical</td></tr>
+<tr><td class="mono">pages.json</td><td>Dashboard page configs</td><td>🔴 Critical</td></tr>
+<tr><td class="mono">objects.json</td><td>Dashboard objects (KPI, charts, cross-tabs)</td><td>🔴 Critical</td></tr>
+<tr><td class="mono">files.json</td><td>File registry (metadata)</td><td>🟡 High</td></tr>
+<tr><td class="mono">tasks.json</td><td>Task management data</td><td>🟡 High</td></tr>
+<tr><td class="mono">mappings.json</td><td>File-to-schema mappings</td><td>🟡 High</td></tr>
+<tr><td class="mono">menu.json</td><td>Navigation menu structure</td><td>🟢 Medium</td></tr>
+<tr><td class="mono">activity_log.json</td><td>User activity tracking (last 5000 entries)</td><td>🟢 Low</td></tr>
+<tr><td class="mono">uploads/*</td><td>Uploaded Excel/CSV data files</td><td>🔴 Critical</td></tr>
+<tr><td class="mono">images/*</td><td>AI-generated project covers (JPEG)</td><td>🟢 Low (regenerable)</td></tr>
+<tr><td class="mono">pdp-audit/*</td><td>PDP audit criteria, expectations, results</td><td>🟡 High</td></tr>
+<tr><td class="mono">config/*</td><td>Runtime config (API keys)</td><td>🔴 Critical</td></tr>
+</table>
+</div>
+</div>
+<div class="card">
+<h4>Source Code: GitHub</h4>
+<ul>
+<li>Repository: <span class="mono">BartKiel/stratosx-deploy</span></li>
+<li>Full git history serves as code backup</li>
+<li>Deploy: <span class="mono">gcloud run deploy stratosx --source=.</span></li>
+</ul>
+</div>
+</div>
+
+<!-- BACKUP SCHEDULE -->
+<div class="section">
+<div class="section-title">3. ⏰ Backup Schedule</div>
+<div class="card">
+<h4>Daily Automated Backup <span class="tag auto">Automated</span></h4>
+<ul>
+<li><strong>Trigger:</strong> Google Cloud Scheduler job <span class="mono">stratosx-daily-backup</span></li>
+<li><strong>Schedule:</strong> Daily at <strong>03:00 CET</strong> (01:00 UTC)</li>
+<li><strong>Method:</strong> HTTP POST to <span class="mono">/cron/daily-backup</span> with CRON_SECRET header</li>
+<li><strong>Target Bucket:</strong> <span class="mono">stratosx-backups-daily</span></li>
+<li><strong>Path Format:</strong> <span class="mono">YYYY-MM-DD/&lt;filename&gt;</span></li>
+<li><strong>Scope:</strong> Full copy of all blobs from production bucket</li>
+</ul>
+</div>
+<div class="card">
+<h4>Git Pushes <span class="tag manual">Manual</span></h4>
+<ul>
+<li>Every code change is committed and pushed to GitHub</li>
+<li>Cloud Run stores revision history (last 100 revisions)</li>
+<li>Rollback: set traffic to any previous revision via GCP Console</li>
+</ul>
+</div>
+</div>
+
+<!-- RETENTION -->
+<div class="section">
+<div class="section-title">4. 🗓️ Retention Policy</div>
+<div class="card">
+<table>
+<tr><th>Backup Type</th><th>Retention</th><th>Cleanup</th></tr>
+<tr><td>Daily GCS snapshots</td><td>30 days</td><td>Manual (or lifecycle rule)</td></tr>
+<tr><td>Git history</td><td>Infinite</td><td>N/A (git never deletes)</td></tr>
+<tr><td>Cloud Run revisions</td><td>~100 latest</td><td>Automatic by GCP</td></tr>
+<tr><td>GCS bucket versioning</td><td>Recommended: enable</td><td>30-day noncurrent lifecycle</td></tr>
+</table>
+</div>
+<div class="highlight">
+<strong>💡 Recommendation:</strong> Enable GCS Object Versioning on the production bucket for point-in-time recovery:<br>
+<span class="mono">gsutil versioning set on gs://stratosx-app-data</span>
+</div>
+</div>
+
+<!-- RESTORE -->
+<div class="section">
+<div class="section-title">5. 🔄 Restore Procedures</div>
+<div class="card">
+<h4>Scenario A: Restore All Data (Full Recovery)</h4>
+<ol>
+<li>Identify the backup date: <span class="mono">gsutil ls gs://stratosx-backups-daily/</span></li>
+<li>Copy all files back to production:<br><span class="mono">gsutil -m cp -r gs://stratosx-backups-daily/2026-03-10/* gs://stratosx-app-data/</span></li>
+<li>Verify app is working: visit <span class="mono">app.stratosx.com</span></li>
+</ol>
+</div>
+<div class="card">
+<h4>Scenario B: Restore Single File</h4>
+<ol>
+<li>Find the file in backup: <span class="mono">gsutil ls gs://stratosx-backups-daily/2026-03-10/users.json</span></li>
+<li>Copy it back: <span class="mono">gsutil cp gs://stratosx-backups-daily/2026-03-10/users.json gs://stratosx-app-data/users.json</span></li>
+</ol>
+</div>
+<div class="card">
+<h4>Scenario C: Rollback Application Code</h4>
+<ol>
+<li>Go to GCP Console → Cloud Run → <span class="mono">stratosx</span> → Revisions</li>
+<li>Find the previous working revision</li>
+<li>Click "Manage Traffic" → Route 100% to that revision</li>
+<li>OR: <span class="mono">git revert</span> + <span class="mono">gcloud run deploy</span></li>
+</ol>
+</div>
+</div>
+
+<!-- SECURITY -->
+<div class="section">
+<div class="section-title">6. 🔒 Security</div>
+<div class="card">
+<ul>
+<li><strong>Backup auth:</strong> CRON_SECRET environment variable — Cloud Scheduler sends it in header, endpoint validates</li>
+<li><strong>GCS access:</strong> Cloud Run service account has <span class="mono">storage.objectAdmin</span> on relevant buckets</li>
+<li><strong>Encryption:</strong> GCS default encryption (Google-managed keys, AES-256)</li>
+<li><strong>GitHub:</strong> Private repositories, 2FA enabled</li>
+<li><strong>Passwords:</strong> SHA-256 hashed in <span class="mono">users.json</span>, no plaintext</li>
+</ul>
+</div>
+</div>
+
+<!-- MONITORING -->
+<div class="section">
+<div class="section-title">7. 📊 Monitoring & Alerts</div>
+<div class="card">
+<ul>
+<li><strong>Cloud Scheduler:</strong> Check execution logs in GCP Console → Cloud Scheduler → Logs</li>
+<li><strong>Backup verification:</strong> <span class="mono">gsutil ls gs://stratosx-backups-daily/ | tail -5</span> — confirm latest date exists</li>
+<li><strong>Manual health check:</strong> visit <span class="mono">app.stratosx.com</span>, login, verify dashboards load</li>
+</ul>
+</div>
+<div class="highlight green">
+<strong>✅ Quick Backup Check Command:</strong><br>
+<span class="mono">gsutil du -sh gs://stratosx-backups-daily/$(date +%Y-%m-%d)/</span>
+</div>
+</div>
+
+<!-- DISASTER RECOVERY -->
+<div class="section">
+<div class="section-title">8. 🆘 Disaster Recovery Summary</div>
+<div class="card">
+<table>
+<tr><th>Scenario</th><th>RTO</th><th>RPO</th><th>Action</th></tr>
+<tr><td>Data corruption</td><td>~5 min</td><td>≤24h</td><td>Restore from daily backup</td></tr>
+<tr><td>Accidental deletion</td><td>~5 min</td><td>≤24h</td><td>Copy from backup bucket</td></tr>
+<tr><td>App crash/bug</td><td>~2 min</td><td>0</td><td>Rollback Cloud Run revision</td></tr>
+<tr><td>Full infra loss</td><td>~30 min</td><td>≤24h</td><td>Redeploy from GitHub + restore GCS</td></tr>
+<tr><td>GCP region outage</td><td>~1h</td><td>≤24h</td><td>Deploy to another region from GitHub</td></tr>
+</table>
+<p style="font-size:.7rem;color:var(--gray-500);margin-top:.4rem"><strong>RTO</strong> = Recovery Time Objective &nbsp;|&nbsp; <strong>RPO</strong> = Recovery Point Objective</p>
+</div>
+</div>
+
+<div class="footer">
+Backup Policy — app.stratosx.com · WebQuest Digital · March 2026 · v1.0
+</div>
+
+</div>
+</body>
+</html>
