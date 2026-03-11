@@ -7,3 +7,8 @@ __pycache__/
 venv/
 .venv/
 app_backup.py
+outputs/
+.git/
+*.xlsx
+*.pptx
+*.pdf
