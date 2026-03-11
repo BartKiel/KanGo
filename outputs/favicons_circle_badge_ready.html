@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Circle Badge Favicons — Ready to Deploy</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{outfit:['Outfit','sans-serif']}}}}</script>
+<style>
+body{font-family:'Outfit',sans-serif}
+.copy-btn{cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:#e2e8f0}
+.copy-btn.copied{background:#d1fae5;color:#059669}
+</style>
+</head>
+<body class="bg-slate-50 font-outfit text-slate-700">
+
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+  <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+    <span class="font-bold text-slate-900">🎯 Circle Badge Favicons — Ready to Deploy</span>
+    <span class="text-xs text-slate-400">Kliknij "Copy SVG" aby skopiować do schowka</span>
+  </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-6 py-10 space-y-8">
+
+<section class="text-center py-4">
+  <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Circle Badge — Styl Wybrany</h1>
+  <p class="text-slate-500">Gotowe SVG do wklejenia w <code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">&lt;link rel="icon"&gt;</code> lub konwersji na .ico / .png</p>
+</section>
+
+<!-- IMPLEMENTATION GUIDE -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6">
+  <h2 class="font-bold text-slate-900 mb-3">📋 Jak wdrożyć w każdej aplikacji Flask</h2>
+  <pre class="bg-slate-900 text-green-400 p-4 rounded-xl text-xs overflow-x-auto"><code>&lt;!-- W &lt;head&gt; każdej aplikacji dodaj: --&gt;
+&lt;link rel="icon" type="image/svg+xml" href="/static/favicon.svg"&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32.png"&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png"&gt;
+
+&lt;!-- Lub inline SVG favicon (działa wszędzie): --&gt;
+&lt;link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'&gt;...&lt;/svg&gt;"&gt;</code></pre>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- ALL APPS FAVICONS -->
+<!-- ═══════════════════════════════════════ -->
+
+<!-- StratosX -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="stratosx">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="30" fill="#6366f1"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">S</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#6366f1"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">S</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#6366f1"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">S</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">StratosX</h3><p class="text-xs text-slate-500">#6366f1 • Indigo</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'stratosx-svg')">Copy SVG</button>
+  </div>
+  <textarea id="stratosx-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#6366f1"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">S</text></svg></textarea>
+  <div class="mt-2 text-xs text-slate-400">Inline: <code class="bg-slate-100 px-1 rounded">&lt;link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%236366f1'/%3E%3Ctext x='32' y='42' text-anchor='middle' fill='white' font-family='Outfit,sans-serif' font-weight='800' font-size='30'%3ES%3C/text%3E%3C/svg%3E"&gt;</code></div>
+</section>
+
+<!-- GeoCatch -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="geocatch">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#10b981"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">G</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#10b981"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">G</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#10b981"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">G</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">GeoCatch</h3><p class="text-xs text-slate-500">#10b981 • Emerald</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'geocatch-svg')">Copy SVG</button>
+  </div>
+  <textarea id="geocatch-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#10b981"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">G</text></svg></textarea>
+</section>
+
+<!-- CriteriaBuilder -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="criteriabuilder">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#f59e0b"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">CB</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#f59e0b"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">CB</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#f59e0b"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">C</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">CriteriaBuilder</h3><p class="text-xs text-slate-500">#f59e0b • Amber</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'criteriabuilder-svg')">Copy SVG</button>
+  </div>
+  <textarea id="criteriabuilder-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#f59e0b"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">CB</text></svg></textarea>
+</section>
+
+<!-- KanGo -->
+<section class="bg-white rounded-2xl border-2 border-violet-200 p-6" id="kango">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#8b5cf6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">K</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#8b5cf6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">K</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#8b5cf6"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">K</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">KanGo <span class="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">LIVE</span></h3><p class="text-xs text-slate-500">#8b5cf6 • Violet</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'kango-svg')">Copy SVG</button>
+  </div>
+  <textarea id="kango-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#8b5cf6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="30">K</text></svg></textarea>
+</section>
+
+<!-- PDPCatch -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="pdpcatch">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ef4444"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">PD</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ef4444"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">PD</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ef4444"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">P</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">PDPCatch</h3><p class="text-xs text-slate-500">#ef4444 • Red</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'pdpcatch-svg')">Copy SVG</button>
+  </div>
+  <textarea id="pdpcatch-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ef4444"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">PD</text></svg></textarea>
+</section>
+
+<!-- MindCloud -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="mindcloud">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ec4899"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">MC</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ec4899"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">MC</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ec4899"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">M</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">MindCloud</h3><p class="text-xs text-slate-500">#ec4899 • Pink</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'mindcloud-svg')">Copy SVG</button>
+  </div>
+  <textarea id="mindcloud-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#ec4899"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">MC</text></svg></textarea>
+</section>
+
+<!-- AllegroAutopilot -->
+<section class="bg-white rounded-2xl border-2 border-blue-200 p-6" id="allegroautopilot">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3b82f6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">AA</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3b82f6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">AA</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3b82f6"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">A</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">AllegroAutopilot <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">LIVE</span></h3><p class="text-xs text-slate-500">#3b82f6 • Blue</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'allegroautopilot-svg')">Copy SVG</button>
+  </div>
+  <textarea id="allegroautopilot-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#3b82f6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">AA</text></svg></textarea>
+</section>
+
+<!-- OralB Dashboard -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="oralb">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#0ea5e9"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">OB</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#0ea5e9"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">OB</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#0ea5e9"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">O</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">OralB Dashboard</h3><p class="text-xs text-slate-500">#0ea5e9 • Sky</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'oralb-svg')">Copy SVG</button>
+  </div>
+  <textarea id="oralb-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#0ea5e9"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="26">OB</text></svg></textarea>
+</section>
+
+<!-- WebQuestDigital -->
+<section class="bg-white rounded-2xl border border-slate-200 p-6" id="webquest">
+  <div class="flex items-center gap-4 mb-4">
+    <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#14b8a6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="24">WQ</text></svg>
+    <div class="flex gap-2 items-end">
+      <svg width="32" height="32" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#14b8a6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="24">WQ</text></svg>
+      <svg width="16" height="16" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#14b8a6"/><text x="32" y="44" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="34">W</text></svg>
+    </div>
+    <div class="flex-1"><h3 class="text-lg font-bold text-slate-900">WebQuestDigital</h3><p class="text-xs text-slate-500">#14b8a6 • Teal</p></div>
+    <button class="copy-btn px-3 py-1.5 border border-slate-200 rounded-lg text-xs font-medium" onclick="copyFav(this,'webquest-svg')">Copy SVG</button>
+  </div>
+  <textarea id="webquest-svg" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-mono h-16 resize-none" readonly><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#14b8a6"/><text x="32" y="42" text-anchor="middle" fill="white" font-family="Outfit,sans-serif" font-weight="800" font-size="24">WQ</text></svg></textarea>
+</section>
+
+<footer class="text-center text-xs text-slate-400 py-8">
+  Circle Badge Favicons • All Apps • Ready to deploy • 2026-03-11
+</footer>
+</main>
+
+<script>
+function copyFav(btn, id) {
+  const el = document.getElementById(id);
+  el.select();
+  document.execCommand('copy');
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy SVG'; btn.classList.remove('copied'); }, 2000);
+}
+</script>
+</body></html>

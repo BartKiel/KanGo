@@ -27,6 +27,14 @@ PASSWORD_HASH = os.environ.get(
     "PASSWORD_HASH",
     hashlib.sha256("kango2026".encode()).hexdigest(),
 )
+CRON_SECRET = os.environ.get("CRON_SECRET", "")
+BACKUP_DEST_BUCKET = "stratosx-backups-esj"
+BACKUP_SOURCE_BUCKETS = [
+    "stratosx-data-esj",
+    "kango-tasks-esj-bk",
+    "stratosx-mind-cloud",
+    "stratosx-criteria-builder",
+]
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("kango")
@@ -1220,6 +1228,62 @@ function poll(){
 }
 setInterval(poll,POLL_INTERVAL);
 </script></body></html>"""
+
+
+# ──────────────────────────────────────────────
+# CRON: Daily backup — /cron/daily-backup
+# Copies blobs from 4 source buckets → gs://stratosx-backups-esj/YYYY-MM-DD/
+# Protected by CRON_SECRET header (set in Cloud Scheduler)
+# ──────────────────────────────────────────────
+@app.route("/cron/daily-backup", methods=["POST"])
+def cron_daily_backup():
+    """Daily backup triggered by Cloud Scheduler."""
+    # Verify CRON_SECRET (skip check if not configured — dev mode)
+    incoming_secret = request.headers.get("X-Cron-Secret", "")
+    if CRON_SECRET and incoming_secret != CRON_SECRET:
+        log.warning("Backup rejected — bad CRON_SECRET from %s",
+                    request.remote_addr)
+        return jsonify({"error": "unauthorized"}), 403
+
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    client = _gcs()
+    dest_bucket = client.bucket(BACKUP_DEST_BUCKET)
+    stats = {"date": today, "buckets": {}}
+
+    for src_name in BACKUP_SOURCE_BUCKETS:
+        try:
+            src_bucket = client.bucket(src_name)
+            blobs = list(src_bucket.list_blobs())
+            copied = 0
+            for blob in blobs:
+                dest_name = f"{today}/{src_name}/{blob.name}"
+                src_bucket.copy_blob(blob, dest_bucket, dest_name)
+                copied += 1
+            stats["buckets"][src_name] = {
+                "status": "ok",
+                "blobs_copied": copied,
+            }
+            log.info("Backup %s: %d blobs → %s/%s/%s/",
+                     src_name, copied, BACKUP_DEST_BUCKET,
+                     today, src_name)
+        except Exception as exc:
+            stats["buckets"][src_name] = {
+                "status": "error",
+                "error": str(exc),
+            }
+            log.error("Backup %s failed: %s", src_name, exc)
+
+    all_ok = all(
+        b["status"] == "ok" for b in stats["buckets"].values()
+    )
+    stats["overall"] = "ok" if all_ok else "partial_failure"
+    total = sum(
+        b.get("blobs_copied", 0) for b in stats["buckets"].values()
+    )
+    log.info("Daily backup %s: %d blobs total, status=%s",
+             today, total, stats["overall"])
+    status_code = 200 if all_ok else 207
+    return jsonify(stats), status_code
 
 
 # ──────────────────────────────────────────────
