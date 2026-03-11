@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KanGo — Autopilot Context Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{outfit:['Outfit','sans-serif']}}}}</script>
+<style>
+body{font-family:'Outfit',sans-serif}
+.code{font-family:'SF Mono','Fira Code',monospace;font-size:13px;background:#1e293b;color:#e2e8f0;border-radius:12px;padding:16px 20px;overflow-x:auto;line-height:1.7}
+.code .kw{color:#c084fc}.code .str{color:#34d399}.code .cm{color:#64748b}.code .fn{color:#60a5fa}
+section{scroll-margin-top:80px}
+</style></head>
+<body class="bg-slate-50 font-outfit text-slate-700">
+
+<!-- NAV -->
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+  <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white text-sm font-bold">K</div>
+      <span class="font-bold text-slate-900">KanGo Autopilot Context</span>
+    </div>
+    <span class="text-xs text-slate-400">Generated 2026-03-11</span>
+  </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-6 py-10 space-y-12">
+
+<!-- HERO -->
+<section class="text-center py-8">
+  <h1 class="text-4xl font-extrabold text-slate-900 mb-3">KanGo Autopilot — Context Guide</h1>
+  <p class="text-lg text-slate-500 max-w-2xl mx-auto">Everything a Copilot agent needs to know about working with KanGo tasks automatically — API, workflow, deploy, and conventions.</p>
+</section>
+
+<!-- 1. WHAT IS KANGO -->
+<section id="what">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">1</span>
+    What is KanGo?
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-3">
+    <p>KanGo is a <strong>lightweight Kanban task board</strong> built for the StratosX ecosystem. It runs as a single Flask app on Google Cloud Run with Google Cloud Storage (GCS) as a JSON backend.</p>
+    <div class="grid grid-cols-3 gap-4 mt-4">
+      <div class="bg-blue-50 rounded-xl p-4 text-center"><div class="text-2xl mb-1">🚀</div><div class="text-sm font-semibold text-blue-700">Cloud Run</div><div class="text-xs text-blue-500">europe-central2</div></div>
+      <div class="bg-emerald-50 rounded-xl p-4 text-center"><div class="text-2xl mb-1">☁️</div><div class="text-sm font-semibold text-emerald-700">GCS Backend</div><div class="text-xs text-emerald-500">kango-tasks-esj-bk</div></div>
+      <div class="bg-violet-50 rounded-xl p-4 text-center"><div class="text-2xl mb-1">🔑</div><div class="text-sm font-semibold text-violet-700">Auth</div><div class="text-xs text-violet-500">SHA-256 password</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. PRODUCTION URLs -->
+<section id="urls">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">2</span>
+    Production URLs & Access
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <table class="w-full text-sm">
+      <tr class="border-b border-slate-100"><td class="py-2 font-semibold text-slate-500 w-40">Service URL</td><td><code class="bg-slate-100 px-2 py-1 rounded">https://kango-563476266040.europe-central2.run.app</code></td></tr>
+      <tr class="border-b border-slate-100"><td class="py-2 font-semibold text-slate-500">GCP Project</td><td>allegro-autopilot-app</td></tr>
+      <tr class="border-b border-slate-100"><td class="py-2 font-semibold text-slate-500">Region</td><td>europe-central2 (Warsaw)</td></tr>
+      <tr class="border-b border-slate-100"><td class="py-2 font-semibold text-slate-500">GCS Bucket</td><td>kango-tasks-esj-bk</td></tr>
+      <tr class="border-b border-slate-100"><td class="py-2 font-semibold text-slate-500">GitHub</td><td>BartKiel/KanGo (PRIVATE)</td></tr>
+      <tr class="border-b border-slate-100"><td class="py-2 font-semibold text-slate-500">Password</td><td>kango2026</td></tr>
+      <tr><td class="py-2 font-semibold text-slate-500">Local Dir</td><td><code class="bg-slate-100 px-2 py-1 rounded">~/Documents/Coding_space-Python/KanGo/</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 3. KANBAN BUCKETS -->
+<section id="buckets">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">3</span>
+    Kanban Buckets (columns)
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div class="rounded-xl border-l-4 border-indigo-500 bg-indigo-50/50 p-3"><div class="font-semibold text-indigo-700 text-sm">🤖 Auto-Recommended</div><div class="text-xs text-slate-500 mt-1">AI/Copilot generated suggestions</div></div>
+      <div class="rounded-xl border-l-4 border-blue-500 bg-blue-50/50 p-3"><div class="font-semibold text-blue-700 text-sm">📝 Manually Recommended</div><div class="text-xs text-slate-500 mt-1">Human-created tasks, ideas</div></div>
+      <div class="rounded-xl border-l-4 border-amber-500 bg-amber-50/50 p-3"><div class="font-semibold text-amber-700 text-sm">🚀 For Production</div><div class="text-xs text-slate-500 mt-1">Approved tasks ready for agent work</div></div>
+      <div class="rounded-xl border-l-4 border-violet-500 bg-violet-50/50 p-3"><div class="font-semibold text-violet-700 text-sm">🧪 For Tests — Confirm</div><div class="text-xs text-slate-500 mt-1">Completed, awaiting human review</div></div>
+      <div class="rounded-xl border-l-4 border-emerald-500 bg-emerald-50/50 p-3"><div class="font-semibold text-emerald-700 text-sm">📦 Delivered</div><div class="text-xs text-slate-500 mt-1">Reviewed & accepted</div></div>
+      <div class="rounded-xl border-l-4 border-gray-400 bg-gray-50/50 p-3"><div class="font-semibold text-gray-600 text-sm">✅ Done</div><div class="text-xs text-slate-500 mt-1">Archived/completed</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. TASK FIELDS -->
+<section id="fields">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">4</span>
+    Task Schema (JSON fields)
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <div class="code"><span class="cm">// Every task object</span>
+{
+  <span class="str">"id"</span>:             <span class="cm">"uuid[:12]"</span>,
+  <span class="str">"title"</span>:          <span class="cm">"Short descriptive name"</span>,
+  <span class="str">"description"</span>:    <span class="cm">"Detailed context"</span>,
+  <span class="str">"prompt"</span>:         <span class="cm">"AI prompt for Copilot — KEY FIELD"</span>,
+  <span class="str">"priority"</span>:       <span class="cm">"critical | high | medium | low"</span>,
+  <span class="str">"tags"</span>:           <span class="cm">["security", "ui", ...]</span>,
+  <span class="str">"app"</span>:            <span class="cm">"StratosX | KanGo | GeoCatch | ..."</span>,
+  <span class="str">"app_directory"</span>:  <span class="cm">"~/Documents/Coding_space-Python/..."</span>,
+  <span class="str">"bucket"</span>:         <span class="cm">"for-production | done | ..."</span>,
+  <span class="str">"estimated_time"</span>: <span class="cm">"15 min | 2h | ..."</span>,
+  <span class="str">"comment"</span>:        <span class="cm">"Execution log — what was done, links"</span>,
+  <span class="str">"source"</span>:         <span class="cm">"manual | copilot"</span>,
+  <span class="str">"done"</span>:           <span class="cm">true/false</span>,
+  <span class="str">"archived"</span>:       <span class="cm">true/false</span>,
+  <span class="str">"in_progress"</span>:    <span class="cm">true/false — agent working on it NOW</span>,
+  <span class="str">"order"</span>:          <span class="cm">integer (sort within bucket)</span>,
+  <span class="str">"created_at"</span>:     <span class="cm">"ISO 8601"</span>,
+  <span class="str">"updated_at"</span>:     <span class="cm">"ISO 8601"</span>
+}</div>
+  </div>
+</section>
+
+<!-- 5. API ENDPOINTS -->
+<section id="api">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">5</span>
+    API Endpoints
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-2">
+    <table class="w-full text-sm">
+      <thead><tr class="text-left text-xs text-slate-400 uppercase"><th class="py-2">Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody class="divide-y divide-slate-100">
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-mono text-xs">GET</span></td><td class="font-mono text-xs">/api/tasks</td><td>Get all tasks + apps</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">POST</span></td><td class="font-mono text-xs">/api/tasks</td><td>Create task (JSON body)</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded font-mono text-xs">PUT</span></td><td class="font-mono text-xs">/api/tasks/&lt;id&gt;</td><td>Update task fields</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded font-mono text-xs">DEL</span></td><td class="font-mono text-xs">/api/tasks/&lt;id&gt;</td><td>Delete task</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">POST</span></td><td class="font-mono text-xs">/api/reorder</td><td>Bulk update bucket + order</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">POST</span></td><td class="font-mono text-xs">/api/apps</td><td>Add new application</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-mono text-xs">GET</span></td><td class="font-mono text-xs">/api/export</td><td>Download all data as JSON</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">POST</span></td><td class="font-mono text-xs">/api/import?mode=merge|replace</td><td>Import JSON data</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-mono text-xs">GET</span></td><td class="font-mono text-xs">/api/files</td><td>List uploaded files</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">POST</span></td><td class="font-mono text-xs">/api/files</td><td>Upload file (multipart)</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-mono text-xs">GET</span></td><td class="font-mono text-xs">/api/files/&lt;name&gt;?preview=1</td><td>Download/preview file</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded font-mono text-xs">POST</span></td><td class="font-mono text-xs">/api/files/&lt;name&gt;/public</td><td>Create public share link</td></tr>
+        <tr><td class="py-2"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-mono text-xs">GET</span></td><td class="font-mono text-xs">/health</td><td>Health check (no auth)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 6. COPILOT WORKFLOW -->
+<section id="workflow">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">6</span>
+    Copilot Autopilot Workflow
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <div class="space-y-4">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">1️⃣</div>
+        <div><div class="font-semibold text-slate-800">Pick a task from "For Production"</div>
+        <div class="text-sm text-slate-500 mt-1">GET /api/tasks → filter <code>bucket == "for-production"</code>, sort by priority (critical first), pick one that has a <code>prompt</code> filled in.</div></div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">2️⃣</div>
+        <div><div class="font-semibold text-slate-800">Set in_progress = true</div>
+        <div class="text-sm text-slate-500 mt-1">PUT /api/tasks/&lt;id&gt; with <code>{"in_progress": true}</code>. This triggers blue glow + pulse animation on the board (visible to human watching).</div></div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">3️⃣</div>
+        <div><div class="font-semibold text-slate-800">Execute the prompt</div>
+        <div class="text-sm text-slate-500 mt-1">Read the <code>prompt</code> field. Open the relevant app directory (<code>app_directory</code>). Execute the work — code changes, file generation, etc.</div></div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">4️⃣</div>
+        <div><div class="font-semibold text-slate-800">Write execution log in comment</div>
+        <div class="text-sm text-slate-500 mt-1">PUT /api/tasks/&lt;id&gt; with <code>{"comment": "✅ What was done:\n- detail 1\n- detail 2\nDeploy: revision-name"}</code>. Always start with ✅ if successful.</div></div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">5️⃣</div>
+        <div><div class="font-semibold text-slate-800">Move to "For Tests — Confirm"</div>
+        <div class="text-sm text-slate-500 mt-1">PUT /api/tasks/&lt;id&gt; with <code>{"bucket": "for-tests-confirm", "in_progress": false, "done": true}</code>. The card moves and gets green glow.</div></div>
+      </div>
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">6️⃣</div>
+        <div><div class="font-semibold text-slate-800">Pick next task</div>
+        <div class="text-sm text-slate-500 mt-1">Repeat from step 1. Human reviews "For Tests" tasks and moves them to Delivered → Done.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. DEPLOY -->
+<section id="deploy">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">7</span>
+    Deploy Process
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+    <div class="code"><span class="cm"># From KanGo project directory:</span>
+cd ~/Documents/Coding_space-Python/KanGo
+
+<span class="cm"># Deploy to Cloud Run (nohup to avoid terminal interruption)</span>
+nohup gcloud run deploy kango \
+  --source=. \
+  --region=europe-central2 \
+  --allow-unauthenticated \
+  --port=8080 \
+  --set-env-vars=GCS_BUCKET=kango-tasks-esj-bk \
+  --quiet > /tmp/kango_deploy.log 2>&1 &
+
+<span class="cm"># Wait ~2 min, then check:</span>
+cat /tmp/kango_deploy.log
+
+<span class="cm"># Git push</span>
+git add -A && git commit -m "feat: description" && git push origin main</div>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+      <div class="flex items-start gap-2">
+        <span class="text-amber-500">⚠️</span>
+        <div class="text-sm text-amber-700"><strong>Important:</strong> Always use <code>nohup ... &</code> for gcloud deploy. VS Code terminals kill background processes otherwise. Always set <code>debug=False</code> in production. PATH may need: <code>export PATH="/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin:$HOME/google-cloud-sdk/bin:$PATH"</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. CONVENTIONS -->
+<section id="conventions">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">8</span>
+    Conventions & Rules
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <ul class="space-y-3 text-sm">
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>System UI in English</strong> — all labels, buttons, messages, error text must be English</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>Comments start with ✅</strong> for completed tasks — this triggers the green glow on the card</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>No prompt = red border</strong> — tasks without a prompt field get a red left border as visual indicator</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>Estimated time = Vibe Coding speed</strong> — estimate based on AI agent work, not manual human effort</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>HTML outputs go to Files</strong> — generated reports/analyses get uploaded to GCS via /api/files and linked in comment</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>One task at a time</strong> — set in_progress on ONE task, complete it, move to next. Don't work on all for-production tasks simultaneously</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>UI aesthetic = Tailwind + Outfit font</strong> — clean, modern, TailAdmin-inspired. SVG icons, no emojis in system UI (emojis OK in bucket labels)</div></li>
+      <li class="flex items-start gap-2"><span class="text-blue-500 mt-0.5">●</span><div><strong>Live polling</strong> — board auto-refreshes every 5 seconds. Changes via API appear on screen without manual reload</div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 9. ECOSYSTEM -->
+<section id="ecosystem">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">9</span>
+    StratosX Ecosystem Apps
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <div class="bg-slate-50 rounded-xl p-3"><strong>StratosX</strong> — main GEO platform</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>GeoCatch</strong> — GEO competitor intelligence</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>CriteriaBuilder</strong> — search criteria management</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>MindCloud</strong> — AI knowledge base</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>OralB Dashboard</strong> — brand dashboard</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>PDPCatch</strong> — product page auditor</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>StratosX Brand</strong> — brand analytics</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>KanGo</strong> — this task board</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>AllegroAutopilot</strong> — Allegro ads automation</div>
+      <div class="bg-slate-50 rounded-xl p-3"><strong>WebQuestDigital</strong> — company website</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. SECURITY -->
+<section id="security">
+  <h2 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm font-bold">10</span>
+    Security Features
+  </h2>
+  <div class="bg-white rounded-2xl border border-slate-200 p-6">
+    <ul class="space-y-2 text-sm">
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> SHA-256 hashed password (no plaintext storage)</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> Session-based auth with Flask secret key</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> X-Content-Type-Options: nosniff</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> X-Frame-Options: DENY (anti-clickjacking)</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> X-XSS-Protection: 1; mode=block</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> Referrer-Policy: strict-origin-when-cross-origin</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> Rate limiter: 5 login attempts / 60 seconds per IP (HTTP 429)</li>
+      <li class="flex items-start gap-2"><span class="text-emerald-500">✓</span> Cloud Run IAM (unauthenticated allowed for public access)</li>
+    </ul>
+  </div>
+</section>
+
+<footer class="text-center text-xs text-slate-400 py-8 border-t border-slate-200 mt-12">
+  KanGo Autopilot Context — StratosX Ecosystem &bull; Generated by Copilot &bull; 2026-03-11
+</footer>
+
+</main>
+</body></html>

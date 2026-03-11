@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apps — Słownik Ekosystemu StratosX</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{outfit:['Outfit','sans-serif']}}}}</script>
+<style>body{font-family:'Outfit',sans-serif}.app-card{transition:all .2s}.app-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}</style>
+</head>
+<body class="bg-slate-50 font-outfit text-slate-700">
+
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <span class="font-bold text-slate-900">📖 Apps — Słownik Ekosystemu StratosX</span>
+    <span class="text-xs text-slate-400">Pełne portfolio aplikacji by eSJ/BK</span>
+  </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-6 py-10 space-y-8">
+
+<section class="text-center py-4">
+  <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Słownik Aplikacji</h1>
+  <p class="text-slate-500 max-w-2xl mx-auto">Kompletny przewodnik po aplikacjach ekosystemu StratosX — z adresami, loginami, technologiami i statusem.</p>
+</section>
+
+<!-- QUICK OVERVIEW TABLE -->
+<section class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+  <div class="p-6 border-b border-slate-100">
+    <h2 class="text-lg font-bold text-slate-900">⚡ Szybki Przegląd</h2>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-left">
+        <tr>
+          <th class="px-6 py-3 font-semibold text-slate-600">App</th>
+          <th class="px-6 py-3 font-semibold text-slate-600">Typ</th>
+          <th class="px-6 py-3 font-semibold text-slate-600">Status</th>
+          <th class="px-6 py-3 font-semibold text-slate-600">URL Produkcyjny</th>
+          <th class="px-6 py-3 font-semibold text-slate-600">GCP Region</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <tr><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#6366f1"></span>StratosX</td><td class="px-6 py-3">SEO Platform</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">In Development</span></td><td class="px-6 py-3 text-xs font-mono">—</td><td class="px-6 py-3 text-xs">—</td></tr>
+        <tr><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#10b981"></span>GeoCatch</td><td class="px-6 py-3">Local SEO Tool</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">In Development</span></td><td class="px-6 py-3 text-xs font-mono">—</td><td class="px-6 py-3 text-xs">—</td></tr>
+        <tr><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#f59e0b"></span>CriteriaBuilder</td><td class="px-6 py-3">Content Brief Generator</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">In Development</span></td><td class="px-6 py-3 text-xs font-mono">—</td><td class="px-6 py-3 text-xs">—</td></tr>
+        <tr class="bg-green-50/50"><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#8b5cf6"></span>KanGo</td><td class="px-6 py-3">Kanban Board</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">✅ LIVE</span></td><td class="px-6 py-3 text-xs font-mono">kango-563476266040.europe-central2.run.app</td><td class="px-6 py-3 text-xs">europe-central2</td></tr>
+        <tr class="bg-green-50/50"><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#3b82f6"></span>AllegroAutopilot</td><td class="px-6 py-3">Marketplace Optimizer</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">✅ LIVE</span></td><td class="px-6 py-3 text-xs font-mono">allegro-autopilot-563476266040.europe-central2.run.app</td><td class="px-6 py-3 text-xs">europe-central2</td></tr>
+        <tr><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#ef4444"></span>PDPCatch</td><td class="px-6 py-3">PDP Auditor</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">Concept</span></td><td class="px-6 py-3 text-xs font-mono">—</td><td class="px-6 py-3 text-xs">—</td></tr>
+        <tr><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#ec4899"></span>MindCloud</td><td class="px-6 py-3">Ideation Hub</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">Concept</span></td><td class="px-6 py-3 text-xs font-mono">—</td><td class="px-6 py-3 text-xs">—</td></tr>
+        <tr><td class="px-6 py-3 font-bold"><span class="inline-block w-3 h-3 rounded-full mr-2" style="background:#0ea5e9"></span>OralB Dashboard</td><td class="px-6 py-3">Brand Dashboard</td><td class="px-6 py-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">Concept</span></td><td class="px-6 py-3 text-xs font-mono">—</td><td class="px-6 py-3 text-xs">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- DETAILED APP CARDS -->
+<!-- ═══════════════════════════════════════ -->
+
+<!-- StratosX -->
+<section class="app-card bg-white rounded-2xl border border-slate-200 p-8">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl flex-shrink-0" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">S</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">StratosX</h2>
+      <p class="text-sm text-slate-500">Flagship SEO Intelligence Platform</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Platforma SEO łącząca dane z DataForSEO, Google Search Console, AI — klasteryzacja słów kluczowych, monitoring pozycji, analiza konkurencji, audyty techniczne.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> Python (Flask/FastAPI), Tailwind CSS, Outfit font, DataForSEO API, OpenAI API</div>
+      <div><span class="font-semibold text-slate-600">Backend:</span> GCS / Firestore (planned)</div>
+      <div><span class="font-semibold text-slate-600">Hosting:</span> Google Cloud Run (planned)</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">GitHub:</span> <code class="bg-slate-100 px-2 py-0.5 rounded text-xs">BartKiel/StratosX</code> (PRIVATE, planned)</div>
+      <div><span class="font-semibold text-slate-600">Login:</span> Password-based (SHA-256 hash)</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#6366f1"></span> Indigo #6366f1</div>
+      <div><span class="font-semibold text-slate-600">Moduły:</span> Keyword Clustering, SERP Tracker, Content Audit, Technical SEO, Competitor Gap</div>
+      <div><span class="font-semibold text-slate-600">Status:</span> <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">In Development — core architecture</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GeoCatch -->
+<section class="app-card bg-white rounded-2xl border border-slate-200 p-8">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl flex-shrink-0" style="background:linear-gradient(135deg,#10b981,#059669)">G</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">GeoCatch</h2>
+      <p class="text-sm text-slate-500">Local SEO Intelligence</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Narzędzie do analizy lokalnego SEO — monitorowanie Google Business Profile, local pack pozycji, analiza recenzji, lokalne słowa kluczowe.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> Python (Flask), Tailwind CSS, DataForSEO Local API, Google Maps API</div>
+      <div><span class="font-semibold text-slate-600">Backend:</span> GCS / Firestore (planned)</div>
+      <div><span class="font-semibold text-slate-600">Hosting:</span> Google Cloud Run (planned)</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">GitHub:</span> <code class="bg-slate-100 px-2 py-0.5 rounded text-xs">BartKiel/GeoCatch</code> (PRIVATE, planned)</div>
+      <div><span class="font-semibold text-slate-600">Login:</span> Password-based</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#10b981"></span> Emerald #10b981</div>
+      <div><span class="font-semibold text-slate-600">Moduły:</span> GBP Monitor, Local Pack Tracker, Review Analyzer, Local Keyword Scout</div>
+      <div><span class="font-semibold text-slate-600">Status:</span> <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">In Development</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CriteriaBuilder -->
+<section class="app-card bg-white rounded-2xl border border-slate-200 p-8">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl flex-shrink-0" style="background:linear-gradient(135deg,#f59e0b,#d97706)">CB</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">CriteriaBuilder</h2>
+      <p class="text-sm text-slate-500">AI-Powered Content Brief Generator</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Generator briefów content-owych opartych na danych SERP — analiza TOP10, pytania PAA, struktura nagłówków, wytyczne SEO dla copywriterów.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> Python (Flask), Tailwind CSS, DataForSEO SERP API, OpenAI GPT-4</div>
+      <div><span class="font-semibold text-slate-600">Backend:</span> GCS</div>
+      <div><span class="font-semibold text-slate-600">Hosting:</span> Google Cloud Run (planned)</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">GitHub:</span> <code class="bg-slate-100 px-2 py-0.5 rounded text-xs">BartKiel/CriteriaBuilder</code> (PRIVATE, planned)</div>
+      <div><span class="font-semibold text-slate-600">Login:</span> Password-based</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#f59e0b"></span> Amber #f59e0b</div>
+      <div><span class="font-semibold text-slate-600">Moduły:</span> SERP Analyzer, Heading Mapper, PAA Extractor, Brief Generator, Content Scorer</div>
+      <div><span class="font-semibold text-slate-600">Status:</span> <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">In Development</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- KanGo -->
+<section class="app-card bg-white rounded-2xl border-2 border-violet-200 p-8 ring-2 ring-violet-100">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl flex-shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9)">K</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">KanGo <span class="text-green-500 text-base">✅ LIVE</span></h2>
+      <p class="text-sm text-slate-500">Kanban Task Board for StratosX Ecosystem</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Tablica Kanban zarządzająca wszystkimi taskami ekosystemu StratosX — 6 bucketów, priorytety, filtry per-app, drag-and-drop, live polling, pliki z udostępnianiem publicznym.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> Python 3.12, Flask 3.x, Tailwind CSS (CDN), Outfit font, Gunicorn</div>
+      <div><span class="font-semibold text-slate-600">Backend:</span> GCS bucket <code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">kango-tasks-esj-bk</code></div>
+      <div><span class="font-semibold text-slate-600">Dane:</span> tasks.json (56+ tasków), files/ (10+ plików), public/ (linki publiczne)</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">URL:</span> <code class="bg-violet-50 px-2 py-0.5 rounded text-xs text-violet-700">https://kango-563476266040.europe-central2.run.app</code></div>
+      <div><span class="font-semibold text-slate-600">GitHub:</span> <code class="bg-slate-100 px-2 py-0.5 rounded text-xs">BartKiel/KanGo</code> (PRIVATE)</div>
+      <div><span class="font-semibold text-slate-600">Login:</span> Password <code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">kango2026</code> (SHA-256)</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#8b5cf6"></span> Violet #8b5cf6</div>
+      <div><span class="font-semibold text-slate-600">GCP:</span> Cloud Run, europe-central2, Project <code class="text-xs">allegro-autopilot-app</code></div>
+      <div><span class="font-semibold text-slate-600">Security:</span> X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Rate Limiter (5/60s)</div>
+      <div><span class="font-semibold text-slate-600">API:</span> /api/tasks, /api/reorder, /api/apps, /api/files, /api/export, /api/import, /health</div>
+    </div>
+  </div>
+  <div class="mt-4 bg-violet-50 rounded-xl p-4 text-sm text-violet-700">
+    <strong>6 bucketów:</strong> auto-recommended → manually-recommended → for-production → for-tests-confirm → delivered → done
+  </div>
+</section>
+
+<!-- AllegroAutopilot -->
+<section class="app-card bg-white rounded-2xl border-2 border-blue-200 p-8 ring-2 ring-blue-100">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-lg flex-shrink-0" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)">AA</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">AllegroAutopilot <span class="text-green-500 text-base">✅ LIVE</span></h2>
+      <p class="text-sm text-slate-500">Marketplace Listing Optimizer for Allegro</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Narzędzie do optymalizacji listingów na Allegro — AI-driven tytuły, opisy, sugerowane kategorie, analiza konkurencji marketplace.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> Python 3.12, Flask, Tailwind CSS, Outfit font, Gunicorn</div>
+      <div><span class="font-semibold text-slate-600">Backend:</span> GCS</div>
+      <div><span class="font-semibold text-slate-600">Hosting:</span> Google Cloud Run</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">URL:</span> <code class="bg-blue-50 px-2 py-0.5 rounded text-xs text-blue-700">https://allegro-autopilot-563476266040.europe-central2.run.app</code></div>
+      <div><span class="font-semibold text-slate-600">GitHub:</span> <code class="bg-slate-100 px-2 py-0.5 rounded text-xs">BartKiel/AllegroAutopilot</code> (PRIVATE)</div>
+      <div><span class="font-semibold text-slate-600">Login:</span> Password-based</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#3b82f6"></span> Blue #3b82f6</div>
+      <div><span class="font-semibold text-slate-600">GCP:</span> Cloud Run, europe-central2</div>
+    </div>
+  </div>
+</section>
+
+<!-- PDPCatch -->
+<section class="app-card bg-white rounded-2xl border border-slate-200 p-8">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl flex-shrink-0" style="background:linear-gradient(135deg,#ef4444,#dc2626)">PD</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">PDPCatch</h2>
+      <p class="text-sm text-slate-500">Product Detail Page Auditor</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Audyt stron produktowych (PDP) — sprawdzanie tytułów, opisów, obrazów, bullet pointów, A+ content na Amazon, Walmart, Allegro.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> Python (Flask), Tailwind CSS, Playwright/Selenium, OpenAI Vision</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#ef4444"></span> Red #ef4444</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Moduły:</span> PDP Scraper, Content Scorer, Image Analyzer, Benchmark Compare, Bulk Audit</div>
+      <div><span class="font-semibold text-slate-600">Status:</span> <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">Concept — many scripts exist</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MindCloud -->
+<section class="app-card bg-white rounded-2xl border border-slate-200 p-8">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl flex-shrink-0" style="background:linear-gradient(135deg,#ec4899,#db2777)">MC</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">MindCloud</h2>
+      <p class="text-sm text-slate-500">Ideation & Knowledge Hub</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Hub do gromadzenia pomysłów, notatek, inspiracji, bookmarków — wbudowany AI do podsumowań i łączenia koncepcji.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> TBD (Python + Flask expected)</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#ec4899"></span> Pink #ec4899</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Moduły:</span> Note Capture, Idea Board, AI Summary, Tag System, Share & Export</div>
+      <div><span class="font-semibold text-slate-600">Status:</span> <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">Concept</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- OralB Dashboard -->
+<section class="app-card bg-white rounded-2xl border border-slate-200 p-8">
+  <div class="flex items-start gap-4 mb-6">
+    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl flex-shrink-0" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">OB</div>
+    <div>
+      <h2 class="text-2xl font-extrabold text-slate-900">OralB Dashboard</h2>
+      <p class="text-sm text-slate-500">Brand Performance Dashboard</p>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-6 text-sm">
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Opis:</span> Dashboard brandowy do monitorowania wyników marki (OralB case study) — eCommerce performance, search visibility, content health.</div>
+      <div><span class="font-semibold text-slate-600">Stack:</span> TBD (Python + Flask expected)</div>
+      <div><span class="font-semibold text-slate-600">Kolor brand:</span> <span class="inline-block w-4 h-4 rounded align-middle" style="background:#0ea5e9"></span> Sky #0ea5e9</div>
+    </div>
+    <div class="space-y-3">
+      <div><span class="font-semibold text-slate-600">Moduły:</span> Sales Tracker, Visibility Index, Content Score, Competitor Compare</div>
+      <div><span class="font-semibold text-slate-600">Status:</span> <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">Concept</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHARED INFRASTRUCTURE -->
+<section class="bg-white rounded-2xl border border-slate-200 p-8">
+  <h2 class="text-xl font-bold text-slate-900 mb-6">🏗️ Wspólna Infrastruktura</h2>
+  <div class="grid md:grid-cols-3 gap-6 text-sm">
+    <div class="bg-slate-50 rounded-xl p-4 space-y-2">
+      <h3 class="font-bold text-slate-700">☁️ GCP Project</h3>
+      <div>Project: <code class="text-xs bg-white px-1.5 py-0.5 rounded">allegro-autopilot-app</code></div>
+      <div>Region: <code class="text-xs bg-white px-1.5 py-0.5 rounded">europe-central2</code> (Warsaw)</div>
+      <div>Billing: <code class="text-xs bg-white px-1.5 py-0.5 rounded">01B1E0-D2148C-CA56F6</code></div>
+      <div>Services: Cloud Run, Cloud Storage, (Firestore planned)</div>
+    </div>
+    <div class="bg-slate-50 rounded-xl p-4 space-y-2">
+      <h3 class="font-bold text-slate-700">🎨 Design System</h3>
+      <div>Font: <strong>Outfit</strong> (Google Fonts)</div>
+      <div>CSS: <strong>Tailwind CSS</strong> (CDN)</div>
+      <div>Corners: 14px (cards), 8px (buttons)</div>
+      <div>Palette: per-app color (see table above)</div>
+      <div>Theme: Light, glassmorphism nav, slate backgrounds</div>
+    </div>
+    <div class="bg-slate-50 rounded-xl p-4 space-y-2">
+      <h3 class="font-bold text-slate-700">🔐 Security Standards</h3>
+      <div>Auth: Password-based (SHA-256 hash)</div>
+      <div>Headers: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy</div>
+      <div>Rate Limit: 5 attempts / 60s per IP</div>
+      <div>Transport: HTTPS via Cloud Run</div>
+      <div>Repos: All PRIVATE on GitHub</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCAL DEV PATHS -->
+<section class="bg-white rounded-2xl border border-slate-200 p-8">
+  <h2 class="text-xl font-bold text-slate-900 mb-4">📁 Lokalne Ścieżki (Dev Machine)</h2>
+  <div class="space-y-2 text-sm font-mono bg-slate-900 text-green-400 p-4 rounded-xl">
+    <div>~/Documents/Coding_space-Python/<strong>KanGo/</strong>          ← KanGo (LIVE)</div>
+    <div>~/Documents/Coding_space-Python/<strong>AllegroAutopilot/</strong> ← AllegroAutopilot (LIVE)</div>
+    <div>~/Documents/Coding_space-Python/<strong>eSJ_by_BK/</strong>       ← eSJ workspace (scripts, analyses)</div>
+    <div>~/Documents/Coding_space-Python/                      ← Root workspace</div>
+  </div>
+</section>
+
+<footer class="text-center text-xs text-slate-400 py-8">
+  Apps Słownik Ekosystemu StratosX &bull; Wersja 1.0 &bull; 2026-03-11
+</footer>
+
+</main>
+</body></html>

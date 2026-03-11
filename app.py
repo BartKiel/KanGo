@@ -9,7 +9,9 @@ import uuid
 import hashlib
 import functools
 import logging
+from collections import defaultdict
 from datetime import datetime, timezone
+from time import time as _now
 
 from flask import (Flask, request, jsonify, make_response,
                    redirect, session)
@@ -28,6 +30,38 @@ PASSWORD_HASH = os.environ.get(
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("kango")
+
+
+# ──────────────────────────────────────────────
+# Security headers (X-Content-Type-Options, X-Frame-Options)
+# ──────────────────────────────────────────────
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
+
+# ──────────────────────────────────────────────
+# Rate limiter for /login (in-memory, 5 per minute per IP)
+# ──────────────────────────────────────────────
+_login_attempts = defaultdict(list)   # {ip: [timestamp, ...]}
+RATE_LIMIT_MAX = 5
+RATE_LIMIT_WINDOW = 60  # seconds
+
+
+def _check_rate_limit(ip):
+    """Return True if request is allowed, False if rate-limited."""
+    now = _now()
+    attempts = _login_attempts[ip]
+    # prune old entries
+    _login_attempts[ip] = [t for t in attempts if now - t < RATE_LIMIT_WINDOW]
+    if len(_login_attempts[ip]) >= RATE_LIMIT_MAX:
+        return False
+    _login_attempts[ip].append(now)
+    return True
 
 BUCKETS_ORDER = [
     "auto-recommended",
@@ -120,11 +154,19 @@ def login_required(f):
 def login():
     error_div = ""
     if request.method == "POST":
+        ip = request.headers.get("X-Forwarded-For",
+                                 request.remote_addr or "unknown")
+        if not _check_rate_limit(ip):
+            error_div = '<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl"><div class="flex items-center space-x-2"><svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg><span class="text-sm text-red-600">Too many attempts. Try again in 60 seconds.</span></div></div>'
+            html = LOGIN_PAGE.replace("{{ERROR}}", error_div)
+            resp = make_response(html, 429)
+            resp.headers["Content-Type"] = "text/html; charset=utf-8"
+            return resp
         pw = request.form.get("password", "")
         if hashlib.sha256(pw.encode()).hexdigest() == PASSWORD_HASH:
             session["authed"] = True
             return redirect("/")
-    error_div = '<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl"><div class="flex items-center space-x-2"><svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg><span class="text-sm text-red-600">Incorrect password</span></div></div>'
+        error_div = '<div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl"><div class="flex items-center space-x-2"><svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg><span class="text-sm text-red-600">Incorrect password</span></div></div>'
 
     html = LOGIN_PAGE.replace("{{ERROR}}", error_div)
     resp = make_response(html)
