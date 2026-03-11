@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESEARCH: Odpalanie Copilota przez WWW</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{outfit:['Outfit','sans-serif']}}}}</script>
+<style>
+body{font-family:'Outfit',sans-serif}
+.gradient-text{background:linear-gradient(135deg,#6366f1,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card{border-radius:16px;border:1px solid #e2e8f0;background:#fff;transition:all .2s}
+.card:hover{box-shadow:0 12px 40px -8px rgba(0,0,0,.08);transform:translateY(-2px)}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.arch-box{border:2px solid #6366f1;border-radius:12px;padding:16px;background:rgba(99,102,241,0.03);position:relative}
+.arch-arrow{color:#6366f1;font-size:24px;text-align:center;line-height:1}
+table{border-collapse:separate;border-spacing:0}
+th{background:#f8fafc;position:sticky;top:0}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid #f1f5f9}
+.verdict{background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:2px solid #22c55e;border-radius:16px;padding:24px}
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+<div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-xl flex items-center justify-center text-white text-lg shadow-lg shadow-violet-500/20">🔬</div>
+    <div>
+      <h1 class="text-lg font-bold text-slate-900">RESEARCH</h1>
+      <p class="text-xs text-slate-400">KanGo Task 6bc9bf1a-117 · 11 Mar 2026</p>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <span class="tag bg-violet-100 text-violet-700">AI / Automation</span>
+    <span class="tag bg-blue-100 text-blue-700">Architecture</span>
+    <span class="tag bg-amber-100 text-amber-700">Remote Execution</span>
+  </div>
+</div>
+</header>
+
+<main class="max-w-5xl mx-auto px-6 py-10">
+
+<!-- TITLE -->
+<div class="text-center mb-12">
+  <h2 class="text-4xl font-extrabold mb-3"><span class="gradient-text">Odpalanie Copilota przez WWW</span></h2>
+  <p class="text-lg text-slate-500 max-w-2xl mx-auto">Czy można uruchamiać zadania AI coding assistanta z poziomu przeglądarki — bez siedzenia przy komputerze? Analiza architektur, narzędzi i konfiguracji.</p>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="verdict mb-10">
+  <h3 class="text-xl font-bold text-emerald-800 mb-3">✅ VERDICT: TAK — jest to możliwe na kilka sposobów</h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div class="bg-white rounded-xl p-4 border border-emerald-200">
+      <div class="text-2xl mb-1">🥇</div>
+      <div class="font-bold text-slate-800 text-sm">Najłatwiej: Claude Code + tmux</div>
+      <div class="text-xs text-slate-500 mt-1">SSH do maszyny z claude, odpal z telefona via web terminal. Działa TERAZ.</div>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-emerald-200">
+      <div class="text-2xl mb-1">🥈</div>
+      <div class="font-bold text-slate-800 text-sm">Najlepiej: GitHub Copilot Agent Mode + Codespaces</div>
+      <div class="text-xs text-slate-500 mt-1">VS Code w przeglądarce + Copilot agent. Zero lokalnej konfiguracji.</div>
+    </div>
+    <div class="bg-white rounded-xl p-4 border border-emerald-200">
+      <div class="text-2xl mb-1">🥉</div>
+      <div class="font-bold text-slate-800 text-sm">Najbardziej custom: KanGo → API → Codex/Claude</div>
+      <div class="text-xs text-slate-500 mt-1">Webhook z KanGo triggeruje AI agent na serwerze. Wymaga budowania.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: PROBLEM DEFINITION -->
+<section class="mb-10">
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">📋 1. Definicja problemu</h3>
+<div class="card p-6">
+  <p class="text-slate-600 leading-relaxed mb-4">
+    Aktualny workflow: <strong>siedzisz przy Macu → otwierasz VS Code → Copilot/Claude działa lokalnie</strong>. 
+    Problem: chcesz z poziomu <strong>KanGo w przeglądarce</strong> (np. z telefonu) zlecić zadanie coding, 
+    a pilot ma je wykonać — bez otwierania laptopa.
+  </p>
+  <div class="bg-slate-50 rounded-xl p-4">
+    <p class="text-sm font-semibold text-slate-700 mb-2">Wymagania:</p>
+    <ul class="space-y-1 text-sm text-slate-600">
+      <li>✅ Trigger z przeglądarki (w tym mobile)</li>
+      <li>✅ AI coding agent wykonuje zadanie (edycja kodu, deploy)</li>
+      <li>✅ Wynik widoczny bez otwierania IDE</li>
+      <li>✅ Bezpieczeństwo (nie każdy może triggerować)</li>
+      <li>⭐ Bonus: integracja z KanGo board (task → auto-execute)</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- SECTION 2: OPCJE -->
+<section class="mb-10">
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">🏗️ 2. Dostępne opcje (marzec 2026)</h3>
+
+<!-- OPTION A -->
+<div class="card p-6 mb-4">
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800">Opcja A: GitHub Codespaces + Copilot Agent</h4>
+      <div class="flex gap-1 mt-1">
+        <span class="tag bg-emerald-100 text-emerald-700">Gotowe</span>
+        <span class="tag bg-blue-100 text-blue-700">Cloud IDE</span>
+        <span class="tag bg-violet-100 text-violet-700">Copilot</span>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Trudność</div>
+      <div class="text-lg font-bold text-emerald-600">⭐ Łatwa</div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <p class="text-sm text-slate-600 leading-relaxed mb-3">
+        GitHub Codespaces to VS Code w przeglądarce. Copilot Agent Mode (od Q1 2025) pozwala zlecić multi-file zadania w trybie agentic. Otwierasz <code>github.dev</code> lub Codespace z telefonu → piszesz prompt → Copilot robi.
+      </p>
+      <p class="text-sm font-semibold text-slate-700 mb-1">Konfiguracja:</p>
+      <ol class="text-sm text-slate-600 space-y-1 list-decimal ml-4">
+        <li>Repo KanGo na GitHub ✅ (już jest — BartKiel/KanGo)</li>
+        <li>GitHub Copilot license (Business lub Pro+) ✅</li>
+        <li>Otwórz <code>github.com/codespaces</code> → New → KanGo</li>
+        <li>W VS Code web → Copilot Chat → Agent mode → prompt</li>
+        <li>Copilot edytuje, commituje, otwiera PR</li>
+      </ol>
+    </div>
+    <div class="bg-slate-50 rounded-xl p-4">
+      <p class="text-xs font-semibold text-slate-500 mb-2">ARCHITEKTURA</p>
+      <div class="space-y-2 text-sm">
+        <div class="arch-box">📱 Telefon / Browser</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-box">☁️ GitHub Codespaces (cloud VM)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-box">🤖 Copilot Agent Mode (w VS Code web)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-box">📦 Git commit → Cloud Run deploy</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 grid grid-cols-2 gap-4 text-xs">
+    <div class="bg-emerald-50 rounded-lg p-3">
+      <p class="font-semibold text-emerald-700 mb-1">✅ Zalety</p>
+      <ul class="text-emerald-600 space-y-0.5">
+        <li>• Działa OOB, zero custom code</li>
+        <li>• Pełne VS Code w przeglądarce</li>
+        <li>• Copilot widzi cały kontekst repo</li>
+        <li>• Działa z telefonu</li>
+        <li>• Bezpieczne (GitHub auth)</li>
+      </ul>
+    </div>
+    <div class="bg-red-50 rounded-lg p-3">
+      <p class="font-semibold text-red-700 mb-1">❌ Wady</p>
+      <ul class="text-red-600 space-y-0.5">
+        <li>• Nadal musisz pisać prompt ręcznie</li>
+        <li>• Nie jest "fire and forget" z KanGo</li>
+        <li>• Codespace startup = ~60s</li>
+        <li>• Koszt: $0.18/h (2-core) → ~$13/mies</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION B -->
+<div class="card p-6 mb-4">
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800">Opcja B: Claude Code + SSH + Web Terminal</h4>
+      <div class="flex gap-1 mt-1">
+        <span class="tag bg-emerald-100 text-emerald-700">Gotowe</span>
+        <span class="tag bg-orange-100 text-orange-700">CLI</span>
+        <span class="tag bg-violet-100 text-violet-700">Claude</span>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Trudność</div>
+      <div class="text-lg font-bold text-emerald-600">⭐ Łatwa</div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <p class="text-sm text-slate-600 leading-relaxed mb-3">
+        <code>claude</code> CLI (Claude Code) działa w terminalu bez GUI. Wystarczy SSH do maszyny (Mac/serwer) z dowolnego web-terminala (Termius, Blink Shell, nawet KanGo z wbudowanym xterm.js).
+      </p>
+      <p class="text-sm font-semibold text-slate-700 mb-1">Konfiguracja:</p>
+      <ol class="text-sm text-slate-600 space-y-1 list-decimal ml-4">
+        <li>Mac z zainstalowanym <code>claude</code> CLI (masz!)</li>
+        <li>SSH server na Macu: System Settings → Remote Login ✅</li>
+        <li>tmux na Macu (dla persystencji sesji)</li>
+        <li>Web SSH client: Termius (app), lub własny via KanGo</li>
+        <li><code>ssh mac → tmux attach → claude "fix bug X in app.py"</code></li>
+      </ol>
+    </div>
+    <div class="bg-slate-50 rounded-xl p-4">
+      <p class="text-xs font-semibold text-slate-500 mb-2">ARCHITEKTURA</p>
+      <div class="space-y-2 text-sm">
+        <div class="arch-box">📱 Telefon → Web SSH (Termius / xterm.js)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-box">💻 Mac (tmux session, claude CLI)</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-box">🤖 Claude Code edytuje pliki</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-box">📦 git push → Cloud Build → Deploy</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 p-4 bg-violet-50 rounded-xl border border-violet-200">
+    <p class="text-sm font-bold text-violet-800 mb-2">💡 PRO TIP: One-liner z telefona</p>
+    <code class="text-xs text-violet-700 bg-violet-100 rounded px-2 py-1 block">ssh mac "cd ~/KanGo && claude --dangerously-skip-permissions 'Implement the task: fix login timeout bug. Then git commit and push.'"</code>
+    <p class="text-xs text-violet-600 mt-2">Claude Code przyjmuje prompt jako argument — zero interakcji, fire-and-forget. Wynik na GitHubie.</p>
+  </div>
+</div>
+
+<!-- OPTION C -->
+<div class="card p-6 mb-4">
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800">Opcja C: GitHub Copilot Workspace (Spark)</h4>
+      <div class="flex gap-1 mt-1">
+        <span class="tag bg-amber-100 text-amber-700">Preview</span>
+        <span class="tag bg-blue-100 text-blue-700">GitHub Native</span>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Trudność</div>
+      <div class="text-lg font-bold text-amber-600">⭐⭐ Średnia</div>
+    </div>
+  </div>
+  <p class="text-sm text-slate-600 leading-relaxed mb-3">
+    GitHub Copilot Workspace (dawniej "Spark") pozwala na uruchomienie Issue → Plan → Implement → PR 
+    w pełni z poziomu <strong>github.com</strong> — bez IDE. Otwierasz issue, klikasz "Open in Copilot Workspace", 
+    Copilot generuje plan zmian, implementuje, otwiera PR. Dostępny w Technical Preview (od Q4 2025).
+  </p>
+  <div class="grid grid-cols-2 gap-4 text-xs">
+    <div class="bg-emerald-50 rounded-lg p-3">
+      <p class="font-semibold text-emerald-700 mb-1">✅ Idealnie do</p>
+      <ul class="text-emerald-600 space-y-0.5">
+        <li>• "Zrób to co w tym issue" z telefona</li>
+        <li>• Zero konfiguracji, działa na github.com</li>
+        <li>• AI czyta issue, tworzy plan, implementuje</li>
+      </ul>
+    </div>
+    <div class="bg-red-50 rounded-lg p-3">
+      <p class="font-semibold text-red-700 mb-1">❌ Ograniczenia</p>
+      <ul class="text-red-600 space-y-0.5">
+        <li>• Nadal w preview (waitlist)</li>
+        <li>• Mniej kontekstu niż Copilot w IDE</li>
+        <li>• Nie deployuje automatycznie</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION D -->
+<div class="card p-6 mb-4">
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800">Opcja D: OpenAI Codex Agent (cloud)</h4>
+      <div class="flex gap-1 mt-1">
+        <span class="tag bg-emerald-100 text-emerald-700">Dostępne</span>
+        <span class="tag bg-slate-100 text-slate-700">API</span>
+        <span class="tag bg-violet-100 text-violet-700">OpenAI</span>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Trudność</div>
+      <div class="text-lg font-bold text-amber-600">⭐⭐ Średnia</div>
+    </div>
+  </div>
+  <p class="text-sm text-slate-600 leading-relaxed mb-3">
+    OpenAI Codex (dawniej "Devin-like") — cloud agent. Podajesz repo + prompt → agent klonuje, edytuje, 
+    otwiera PR. Dostępny via API i dashboard ChatGPT. Można triggerować przez API z KanGo.
+  </p>
+  <div class="bg-slate-50 rounded-xl p-4">
+    <p class="text-xs font-semibold text-slate-500 mb-2">FLOW Z KANGO</p>
+    <div class="flex items-center gap-2 flex-wrap text-sm">
+      <div class="arch-box flex-1 min-w-[120px]">KanGo: klik "Execute"</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box flex-1 min-w-[120px]">POST /v1/codex/tasks</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box flex-1 min-w-[120px]">Codex clones repo</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box flex-1 min-w-[120px]">PR on GitHub</div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION E -->
+<div class="card p-6 mb-4">
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800">Opcja E: Custom — KanGo → Webhook → Claude API + Git</h4>
+      <div class="flex gap-1 mt-1">
+        <span class="tag bg-red-100 text-red-700">Custom Build</span>
+        <span class="tag bg-slate-100 text-slate-700">Full Control</span>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Trudność</div>
+      <div class="text-lg font-bold text-red-600">⭐⭐⭐ Trudna</div>
+    </div>
+  </div>
+  <p class="text-sm text-slate-600 leading-relaxed mb-3">
+    Zbudować własny pipeline: KanGo task button → Cloud Function → Claude API (z kodem repo w context) → commit wyników → deploy. Pełna kontrola, ale dużo roboty (~2-3 dni dev).
+  </p>
+  <div class="bg-slate-50 rounded-xl p-4 text-sm">
+    <p class="font-semibold text-slate-700 mb-2">Komponenty do zbudowania:</p>
+    <ol class="text-slate-600 space-y-1 list-decimal ml-4">
+      <li><strong>KanGo UI:</strong> Przycisk "🤖 Execute with AI" na task card</li>
+      <li><strong>API endpoint:</strong> <code>POST /api/tasks/:id/execute</code></li>
+      <li><strong>Cloud Function:</strong> Klonuje repo, ładuje pliki do kontekstu Claude API</li>
+      <li><strong>Claude API call:</strong> System prompt + task prompt + code files → response z edytowanymi plikami</li>
+      <li><strong>Git ops:</strong> Apply diffs, commit, push, trigger Cloud Build</li>
+      <li><strong>Callback:</strong> Update task status w KanGo → done + link do PR</li>
+    </ol>
+  </div>
+  <div class="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-700">
+    ⚠️ Ograniczenie: Claude API nie ma dostępu do file system. Musisz ręcznie ładować kod do kontekstu i parsować output. Anthropic Claude "computer use" / "tool use" to inny flow (desktop agent, nie serverless).
+  </div>
+</div>
+
+<!-- OPTION F -->
+<div class="card p-6 mb-4">
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800">Opcja F: Cursor + VS Code Server (code-server)</h4>
+      <div class="flex gap-1 mt-1">
+        <span class="tag bg-emerald-100 text-emerald-700">Gotowe</span>
+        <span class="tag bg-blue-100 text-blue-700">Self-hosted IDE</span>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Trudność</div>
+      <div class="text-lg font-bold text-amber-600">⭐⭐ Średnia</div>
+    </div>
+  </div>
+  <p class="text-sm text-slate-600 leading-relaxed">
+    <code>code-server</code> (od Coder) uruchamia VS Code jako web app na twoim Macu. Łączysz się przez ngrok/tailscale z telefona. Masz pełne IDE z rozszerzeniami (Copilot, Cline, Continue, etc.). Alternatywnie: Cursor ma własny cloud sync.
+  </p>
+</div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="mb-10">
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">📊 3. Porównanie opcji</h3>
+<div class="card overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr>
+        <th class="text-xs font-semibold text-slate-500 rounded-tl-xl">Opcja</th>
+        <th class="text-xs font-semibold text-slate-500">Trudność</th>
+        <th class="text-xs font-semibold text-slate-500">Koszt/mies</th>
+        <th class="text-xs font-semibold text-slate-500">Fire&Forget?</th>
+        <th class="text-xs font-semibold text-slate-500">Integracja KanGo</th>
+        <th class="text-xs font-semibold text-slate-500">Dostępność</th>
+        <th class="text-xs font-semibold text-slate-500 rounded-tr-xl">Rekomendacja</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bg-emerald-50/50">
+        <td class="font-semibold">A. Codespaces + Copilot</td>
+        <td>⭐</td>
+        <td>~$13</td>
+        <td>❌ ręczny prompt</td>
+        <td>🟡 Osobny workflow</td>
+        <td class="text-emerald-600 font-semibold">✅ Teraz</td>
+        <td><span class="tag bg-emerald-100 text-emerald-700">Na już</span></td>
+      </tr>
+      <tr class="bg-violet-50/50">
+        <td class="font-semibold">B. Claude Code + SSH</td>
+        <td>⭐</td>
+        <td>$20 (API)</td>
+        <td>✅ one-liner</td>
+        <td>🟢 Webhook możliwy</td>
+        <td class="text-emerald-600 font-semibold">✅ Teraz</td>
+        <td><span class="tag bg-violet-100 text-violet-700">⭐ Best pick</span></td>
+      </tr>
+      <tr>
+        <td class="font-semibold">C. Copilot Workspace</td>
+        <td>⭐</td>
+        <td>Included</td>
+        <td>✅ z issue</td>
+        <td>🟡 Via GitHub Issues</td>
+        <td class="text-amber-600 font-semibold">⚠️ Preview</td>
+        <td><span class="tag bg-amber-100 text-amber-700">Czekaj</span></td>
+      </tr>
+      <tr>
+        <td class="font-semibold">D. OpenAI Codex</td>
+        <td>⭐⭐</td>
+        <td>Pay per use</td>
+        <td>✅ API</td>
+        <td>🟢 API integrable</td>
+        <td class="text-emerald-600 font-semibold">✅ Teraz</td>
+        <td><span class="tag bg-blue-100 text-blue-700">Dobra opcja</span></td>
+      </tr>
+      <tr>
+        <td class="font-semibold">E. Custom Pipeline</td>
+        <td>⭐⭐⭐</td>
+        <td>API costs</td>
+        <td>✅ Full auto</td>
+        <td>🟢 Native</td>
+        <td class="text-emerald-600 font-semibold">✅ Do zbudowania</td>
+        <td><span class="tag bg-slate-100 text-slate-600">Przyszłość</span></td>
+      </tr>
+      <tr>
+        <td class="font-semibold">F. code-server</td>
+        <td>⭐⭐</td>
+        <td>$0 (self-host)</td>
+        <td>❌ ręczny prompt</td>
+        <td>🟡 Osobny workflow</td>
+        <td class="text-emerald-600 font-semibold">✅ Teraz</td>
+        <td><span class="tag bg-slate-100 text-slate-600">Alternatywa</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<!-- RECOMMENDED ARCHITECTURE -->
+<section class="mb-10">
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">🏆 4. Rekomendowany setup (2 fazy)</h3>
+
+<!-- Phase 1 -->
+<div class="card p-6 mb-4 border-l-4 border-l-violet-500">
+  <h4 class="text-lg font-bold text-violet-700 mb-2">Faza 1: Teraz (0 dni pracy)</h4>
+  <p class="text-sm text-slate-600 mb-3">Claude Code + SSH + tmux. Działa z istniejącą infrastrukturą.</p>
+  <div class="bg-slate-50 rounded-xl p-4 space-y-3">
+    <div class="text-sm">
+      <p class="font-semibold text-slate-700 mb-1">Setup (jednorazowy, ~10 min):</p>
+      <ol class="text-slate-600 space-y-1 list-decimal ml-4">
+        <li>Włącz SSH na Macu: <code>System Settings → General → Sharing → Remote Login</code></li>
+        <li>Zainstaluj tmux: <code>brew install tmux</code></li>
+        <li>Skonfiguruj tailscale lub ngrok dla dostępu spoza LAN</li>
+        <li>Na telefonie zainstaluj <strong>Termius</strong> (iOS/Android) — darmowy SSH client</li>
+      </ol>
+    </div>
+    <div class="text-sm">
+      <p class="font-semibold text-slate-700 mb-1">Daily workflow:</p>
+      <div class="bg-white rounded-lg p-3 font-mono text-xs text-slate-700 space-y-1">
+        <p class="text-slate-400"># Z telefona (Termius):</p>
+        <p>$ ssh bartosz@mac.tailnet</p>
+        <p>$ cd ~/Documents/Coding_space-Python/KanGo</p>
+        <p>$ tmux new -s copilot</p>
+        <p>$ claude "Read the task from KanGo API (task id X). Implement it. Git commit and push. Then deploy with gcloud."</p>
+        <p class="text-slate-400"># Detach: Ctrl+B, D — claude pracuje dalej</p>
+        <p class="text-slate-400"># Sprawdź potem: ssh → tmux attach -t copilot</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Phase 2 -->
+<div class="card p-6 border-l-4 border-l-blue-500">
+  <h4 class="text-lg font-bold text-blue-700 mb-2">Faza 2: Przyszłość (~1-2 dni pracy)</h4>
+  <p class="text-sm text-slate-600 mb-3">Przycisk "🤖 Execute" w KanGo → automatyczny pipeline.</p>
+  <div class="bg-slate-50 rounded-xl p-4">
+    <div class="text-sm">
+      <p class="font-semibold text-slate-700 mb-2">Architektura docelowa:</p>
+      <div class="grid grid-cols-1 gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <div class="arch-box flex-1 text-center min-w-[100px]">
+            <div class="text-lg">📱</div>
+            <div class="text-xs font-semibold">KanGo Board</div>
+            <div class="text-[10px] text-slate-400">Klik "Execute"</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box flex-1 text-center min-w-[100px]">
+            <div class="text-lg">⚡</div>
+            <div class="text-xs font-semibold">Cloud Function</div>
+            <div class="text-[10px] text-slate-400">Or Cloud Run Job</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box flex-1 text-center min-w-[100px]">
+            <div class="text-lg">🤖</div>
+            <div class="text-xs font-semibold">Claude API</div>
+            <div class="text-[10px] text-slate-400">Code gen + diffs</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box flex-1 text-center min-w-[100px]">
+            <div class="text-lg">📦</div>
+            <div class="text-xs font-semibold">Git Push + Deploy</div>
+            <div class="text-[10px] text-slate-400">Cloud Build</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box flex-1 text-center min-w-[100px]">
+            <div class="text-lg">✅</div>
+            <div class="text-xs font-semibold">KanGo → Done</div>
+            <div class="text-[10px] text-slate-400">Status callback</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3 text-xs text-slate-500">
+      <p><strong>Stack:</strong> Cloud Run Job (Python) + Claude API (claude-4-sonnet) + PyGithub + gcloud SDK</p>
+      <p><strong>Estymowany czas budowy:</strong> 1-2 dni na MVP</p>
+      <p><strong>Koszt:</strong> ~$0.02-0.10 per execution (API tokens)</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- KANGO INTEGRATION SPEC -->
+<section class="mb-10">
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">🔧 5. KanGo Integration Spec (Faza 2)</h3>
+<div class="card p-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <p class="text-sm font-semibold text-slate-700 mb-2">Frontend (task card):</p>
+      <div class="bg-slate-50 rounded-xl p-4 text-xs font-mono text-slate-600 space-y-1">
+        <p class="text-slate-400">// Nowy przycisk na task card</p>
+        <p>&lt;button onclick="executeWithAI('task-id')"&gt;</p>
+        <p>&nbsp;&nbsp;🤖 Execute with Copilot</p>
+        <p>&lt;/button&gt;</p>
+        <p></p>
+        <p class="text-slate-400">// Status na karcie:</p>
+        <p>🔄 AI working... (spinner)</p>
+        <p>✅ AI completed — <a>view PR</a></p>
+        <p>❌ AI failed — <a>view log</a></p>
+      </div>
+    </div>
+    <div>
+      <p class="text-sm font-semibold text-slate-700 mb-2">Backend (new endpoint):</p>
+      <div class="bg-slate-50 rounded-xl p-4 text-xs font-mono text-slate-600 space-y-1">
+        <p class="text-violet-600">POST /api/tasks/:id/execute</p>
+        <p></p>
+        <p class="text-slate-400">// 1. Load task prompt</p>
+        <p class="text-slate-400">// 2. Clone repo (shallow)</p>
+        <p class="text-slate-400">// 3. Load relevant files</p>
+        <p class="text-slate-400">// 4. Claude API call</p>
+        <p class="text-slate-400">// 5. Apply changes</p>
+        <p class="text-slate-400">// 6. Git commit + push</p>
+        <p class="text-slate-400">// 7. Trigger Cloud Build</p>
+        <p class="text-slate-400">// 8. Update task → done</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SECURITY -->
+<section class="mb-10">
+<h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">🔒 6. Bezpieczeństwo</h3>
+<div class="card p-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-red-50 rounded-xl p-4">
+      <p class="text-sm font-bold text-red-800 mb-2">⚠️ Ryzyka</p>
+      <ul class="text-xs text-red-700 space-y-1">
+        <li>• AI może wygenerować złośliwy kod</li>
+        <li>• Niekontrolowany dostęp do repo</li>
+        <li>• API key leaks</li>
+        <li>• Runaway costs (token loop)</li>
+      </ul>
+    </div>
+    <div class="bg-emerald-50 rounded-xl p-4">
+      <p class="text-sm font-bold text-emerald-800 mb-2">✅ Mitygacja</p>
+      <ul class="text-xs text-emerald-700 space-y-1">
+        <li>• AI commituje do brancha, nie main</li>
+        <li>• PR review przed merge</li>
+        <li>• Max token budget per execution</li>
+        <li>• Whitelist allowed tasks/repos</li>
+      </ul>
+    </div>
+    <div class="bg-blue-50 rounded-xl p-4">
+      <p class="text-sm font-bold text-blue-800 mb-2">🛡️ Must-have</p>
+      <ul class="text-xs text-blue-700 space-y-1">
+        <li>• Auth required (KanGo login)</li>
+        <li>• Rate limit: max 10 exec/day</li>
+        <li>• Audit log w GCS</li>
+        <li>• Sandbox: Cloud Run Job (isolated)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- BOTTOM LINE -->
+<section class="mb-10">
+<div class="bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl p-8 text-white">
+  <h3 class="text-2xl font-bold mb-4">📌 TL;DR — Co zrobić dziś?</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+      <p class="font-semibold text-violet-200 text-sm mb-2">Natychmiast (0 pracy):</p>
+      <ol class="text-sm space-y-2 text-white/90">
+        <li><strong>1.</strong> Włącz SSH na Macu</li>
+        <li><strong>2.</strong> Zainstaluj Termius na telefonie</li>
+        <li><strong>3.</strong> <code class="bg-white/10 px-1.5 py-0.5 rounded">ssh mac → claude "do task X"</code></li>
+        <li class="text-violet-200 text-xs">→ Masz "odpalanie copilota z www" w 10 minut</li>
+      </ol>
+    </div>
+    <div>
+      <p class="font-semibold text-violet-200 text-sm mb-2">Następny sprint:</p>
+      <ol class="text-sm space-y-2 text-white/90">
+        <li><strong>1.</strong> Dodaj "🤖 Execute" button w KanGo</li>
+        <li><strong>2.</strong> Cloud Run Job z Claude API</li>
+        <li><strong>3.</strong> Auto-commit → PR → deploy pipeline</li>
+        <li class="text-violet-200 text-xs">→ Pełna automatyzacja task → code → deploy</li>
+      </ol>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200">
+  KanGo Research · Generated 11 Mar 2026 · Task 6bc9bf1a-117
+</footer>
+
+</body>
+</html>
