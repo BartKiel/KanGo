@@ -1,0 +1,67 @@
+# ──────────────────────────────────────────────────────────
+# KanGo CI/CD - auto-deploy to Cloud Run
+# ──────────────────────────────────────────────────────────
+# push to dev  -> deploys to kango-dev  (test)
+# push to main -> deploys to kango      (production)
+# ──────────────────────────────────────────────────────────
+
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main, dev]
+
+env:
+  PROJECT_ID: stratosx-esj-bk
+  REGION: europe-central2
+  GCS_BUCKET: kango-tasks-esj-bk
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write          # needed for Workload Identity Federation
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # ── Determine target service name ──
+      - name: Set service name
+        id: svc
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "service=kango" >> "$GITHUB_OUTPUT"
+            echo "tag=prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "service=kango-dev" >> "$GITHUB_OUTPUT"
+            echo "tag=dev" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── Deploy ──
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ steps.svc.outputs.service }} \
+            --source=. \
+            --region=${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port=8080 \
+            --set-env-vars="GCS_BUCKET=${{ env.GCS_BUCKET }},CRON_SECRET=${{ secrets.CRON_SECRET }}" \
+            --quiet
+
+      - name: Show URL
+        run: |
+          URL=$(gcloud run services describe ${{ steps.svc.outputs.service }} \
+            --region=${{ env.REGION }} \
+            --format="value(status.url)")
+          echo "🚀 Deployed to: $URL"
+          echo "### 🚀 Deployed \`${{ steps.svc.outputs.tag }}\` → $URL" >> "$GITHUB_SUMMARY"
