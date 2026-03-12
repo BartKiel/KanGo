@@ -1600,7 +1600,7 @@ function saveTask(){
   var body={title:document.getElementById('fTitle').value,description:document.getElementById('fDesc').value,prompt:document.getElementById('fPrompt').value,priority:document.getElementById('fPriority').value,bucket:document.getElementById('fBucket').value,app:document.getElementById('fApp').value,estimated_time:document.getElementById('fTime').value,app_directory:document.getElementById('fDir').value,tags:document.getElementById('fTags').value.split(',').map(function(s){return s.trim()}).filter(Boolean),comment:document.getElementById('fComment').value,done:document.getElementById('fDone').checked,source:'manual'};
   var url=id?'/api/tasks/'+id:'/api/tasks';
   var method=id?'PUT':'POST';
-  fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(){closeModal();load()});
+  fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error('Save failed: '+r.status);return r.json()}).then(function(saved){closeModal();if(!id&&saved&&saved.id){saved._new=true;S.tasks.push(saved);render()}else{load()}}).catch(function(e){alert('Error saving task: '+e.message);console.error('saveTask error:',e)});
 }
 function updAppSel(){
   var s=document.getElementById('fApp');var v=s.value;
