@@ -67,5 +67,5 @@ jobs:
             --project=${{ env.PROJECT_ID }} \
             --region=${{ env.REGION }} \
             --format="value(status.url)")
-          echo "🚀 Deployed to: $URL"
-          echo "### 🚀 Deployed \`${{ steps.svc.outputs.tag }}\` → $URL" >> "$GITHUB_SUMMARY"
+          echo "Deployed to: $URL"
+          echo "### Deployed ${{ steps.svc.outputs.tag }} to $URL" >> "$GITHUB_STEP_SUMMARY"
