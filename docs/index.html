@@ -51,6 +51,8 @@ body{background:#0f172a;color:#e2e8f0}
 <p class="text-xs text-slate-400">181 Rufus questions mapped against barilla.com/en-gb content · Spaghetti Category</p>
 </div></div>
 <div class="flex items-center gap-3">
+<a href="#methodology" class="text-xs text-slate-400 hover:text-blue-400 transition">Methodology</a>
+<a href="#actions" class="text-xs text-slate-400 hover:text-blue-400 transition">Actions</a>
 <span class="badge badge-info">Amazon UK</span>
 <span class="text-xs text-slate-500">30 Mar 2026</span>
 </div></div></header>
@@ -65,6 +67,130 @@ body{background:#0f172a;color:#e2e8f0}
 <div><div class="text-2xl font-bold text-blue-400">5</div><div class="text-xs text-slate-400">L1 Topics</div></div>
 <div><div class="text-2xl font-bold text-purple-400">17%</div><div class="text-xs text-slate-400">Coverage Rate</div></div>
 </div></div>
+
+<!-- METHODOLOGY -->
+<div id="methodology" class="max-w-7xl mx-auto px-6 pt-8">
+<div class="bg-gradient-to-br from-slate-800/80 to-slate-800/40 rounded-2xl border border-white/5 overflow-hidden">
+<div class="p-6 cursor-pointer flex items-center gap-4 select-none" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="text-3xl">🔬</div>
+<div class="flex-1">
+<h2 class="text-white font-bold text-base">Methodology — How This Map Was Built</h2>
+<p class="text-xs text-slate-400 mt-1">4-step process: Rufus question harvesting → content auditing → gap mapping → t-SNE visualisation</p>
+</div>
+<svg class="expand-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+</div>
+<div class="sub-qs border-t border-white/5">
+<div class="p-6 space-y-6">
+
+<!-- Step 1 -->
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400 font-bold text-sm flex-shrink-0">1</div>
+<div>
+<h3 class="text-sm font-bold text-white">Rufus Question Harvesting</h3>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">We queried Amazon Rufus (Amazon's AI shopping assistant) on Amazon.co.uk with the seed query <span class="text-blue-400 font-mono">"spaghetti"</span>. Rufus returned 5 top-level (L1) questions — these are the main themes shoppers explore. Each L1 branched into L2 follow-ups, and each L2 into L3 deep-dives, yielding a hierarchical tree of <strong class="text-white">181 unique consumer questions</strong> across 3 levels.</p>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-medium">5 L1 seed questions</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-medium">~30 L2 follow-ups</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-medium">~146 L3 deep-dives</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-medium">181 total</span>
+</div>
+</div>
+</div>
+
+<!-- Step 2 -->
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-emerald-600/20 flex items-center justify-center text-emerald-400 font-bold text-sm flex-shrink-0">2</div>
+<div>
+<h3 class="text-sm font-bold text-white">Barilla UK Content Audit</h3>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">We scraped and manually reviewed the entire <span class="text-emerald-400 font-mono">barilla.com/en-gb</span> website, cataloguing all available content assets across 6 content sources:</p>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+<div class="bg-slate-900/50 rounded-lg p-2.5 border border-white/5">
+<div class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Spaghetti PDP</div>
+<div class="text-xs text-slate-300">Product detail page — cook time, water ratio, heritage</div>
+</div>
+<div class="bg-slate-900/50 rounded-lg p-2.5 border border-white/5">
+<div class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Protein+ Campaign</div>
+<div class="text-xs text-slate-300">20g protein/100g, 3 SKUs, consumer research, dedicated recipes</div>
+</div>
+<div class="bg-slate-900/50 rounded-lg p-2.5 border border-white/5">
+<div class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Passive Cooking</div>
+<div class="text-xs text-slate-300">Sustainability campaign, timing guide PDF, Passive Cooker device</div>
+</div>
+<div class="bg-slate-900/50 rounded-lg p-2.5 border border-white/5">
+<div class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Recipe Hub</div>
+<div class="text-xs text-slate-300">83 spaghetti recipes, filterable by product, no time labels</div>
+</div>
+<div class="bg-slate-900/50 rounded-lg p-2.5 border border-white/5">
+<div class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Red Sauces</div>
+<div class="text-xs text-slate-300">8 sauce products — Italian tomatoes, no preservatives</div>
+</div>
+<div class="bg-slate-900/50 rounded-lg p-2.5 border border-white/5">
+<div class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Pesto Range</div>
+<div class="text-xs text-slate-300">3 SKUs — Genovese, Rosso, Basilico e Rucola</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Step 3 -->
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-amber-600/20 flex items-center justify-center text-amber-400 font-bold text-sm flex-shrink-0">3</div>
+<div>
+<h3 class="text-sm font-bold text-white">Gap Classification & Scoring</h3>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">Each of the 181 Rufus questions was manually assessed against Barilla UK content and classified into one of three statuses:</p>
+<div class="flex flex-wrap gap-3 mt-2">
+<div class="flex items-center gap-2 bg-green-500/10 rounded-lg px-3 py-2 border border-green-500/20">
+<span class="text-sm">✅</span>
+<div>
+<div class="text-xs font-semibold text-green-400">Covered</div>
+<div class="text-[10px] text-slate-400">Barilla UK website directly answers this question with dedicated content</div>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-500/20">
+<span class="text-sm">🟡</span>
+<div>
+<div class="text-xs font-semibold text-amber-400">Partial</div>
+<div class="text-[10px] text-slate-400">Some relevant content exists but doesn't fully address the question</div>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-red-500/10 rounded-lg px-3 py-2 border border-red-500/20">
+<span class="text-sm">❌</span>
+<div>
+<div class="text-xs font-semibold text-red-400">Gap</div>
+<div class="text-[10px] text-slate-400">No relevant content exists — Rufus cannot recommend Barilla for this query</div>
+</div>
+</div>
+</div>
+<p class="text-xs text-slate-400 mt-2 leading-relaxed"><strong class="text-white">Priority flagging:</strong> Questions marked 🔥 are high-impact gaps where (a) the question is a L1 or L2 level (higher visibility), (b) there is existing content that could be expanded, or (c) the topic represents high consumer demand with zero content.</p>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed"><strong class="text-white">Coverage Rate formula:</strong> <span class="font-mono text-slate-300">(Covered + Partial × 0.5) ÷ Total × 100</span>. Partial answers earn half credit. Current rate: <span class="text-purple-400 font-bold">17%</span>.</p>
+</div>
+</div>
+
+<!-- Step 4 -->
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-xl bg-violet-600/20 flex items-center justify-center text-violet-400 font-bold text-sm flex-shrink-0">4</div>
+<div>
+<h3 class="text-sm font-bold text-white">t-SNE Semantic Visualisation</h3>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">All 181 questions were embedded as vectors using OpenAI <span class="text-violet-400 font-mono">text-embedding-3-small</span> (1536 dimensions), then projected to 2D using t-SNE (perplexity=15). Questions that are <strong class="text-white">semantically similar cluster together</strong> on the scatter map. This reveals that most red clusters (gaps) appear in cooking tips and sauce pairing zones — exactly where Barilla UK has the weakest content.</p>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed"><strong class="text-white">Why this matters for Rufus:</strong> Amazon Rufus uses semantic understanding to match customer queries to brand content. If Barilla's website doesn't contain content semantically relevant to these questions, Rufus will recommend competitors who do. Each green dot is a question where Barilla wins in Rufus; each red dot is a question going to competitors.</p>
+</div>
+</div>
+
+<!-- Limitations -->
+<div class="mt-4 bg-slate-900/40 rounded-xl p-4 border border-white/5">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">⚠️ Limitations & Notes</h4>
+<ul class="text-xs text-slate-500 space-y-1">
+<li>• Rufus questions were harvested on <strong class="text-slate-400">29–30 Mar 2026</strong>. Rufus question trees can change over time as Amazon updates its AI.</li>
+<li>• Content audit covers <strong class="text-slate-400">barilla.com/en-gb</strong> only — not Amazon product listing content (A+ pages, bullet points). A+ content could partially cover some gaps.</li>
+<li>• Some L3 questions (konjac noodles, ancient grains) are outside Barilla's product scope and are labelled <strong class="text-slate-400">N/A</strong> — they still appear in the gap count but are not recommended for action.</li>
+<li>• Priority flags are editorial judgement based on consumer demand signals and content feasibility, not quantitative traffic data.</li>
+</ul>
+</div>
+
+</div>
+</div>
+</div>
+</div>
 
 <!-- SCATTER MAP -->
 <div class="max-w-7xl mx-auto px-6 pt-8">
@@ -1828,20 +1954,275 @@ body{background:#0f172a;color:#e2e8f0}
 <div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
 </div></div>
 
-<div class="mt-6 bg-slate-800/50 rounded-xl p-5 border border-white/5">
+<div class="mt-6 bg-slate-800/50 rounded-xl p-5 border border-white/5" id="actions">
 <h4 class="text-sm font-bold text-blue-400 mb-3">💡 Top 10 Recommended Actions for Barilla UK</h4>
-<ol class="text-xs text-slate-300 space-y-2 list-decimal list-inside">
-<li><strong class="text-white">Create a Pasta Cooking Tips Hub</strong> — cooking times, portion sizes, water ratios, al dente guide, how to fix overcooked pasta, storage tips. <span class="text-green-400">Addresses 8+ gap questions.</span></li>
-<li><strong class="text-white">Add Time Labels to All 83 Recipes</strong> — tag with prep/cook time, enable "under 15 min", "30 min", "weeknight" filters. <span class="text-green-400">Converts 6 partial → covered.</span></li>
-<li><strong class="text-white">Build Interactive Sauce × Shape Pairing Guide</strong> — map all 20+ shapes to recommended sauces. <span class="text-green-400">Addresses 5+ high-visibility questions.</span></li>
-<li><strong class="text-white">Launch One-Pot Recipe Collection</strong> — huge consumer demand, zero content. 5-10 one-pot spaghetti recipes would cover 6+ Rufus questions. <span class="text-green-400">Quick win.</span></li>
-<li><strong class="text-white">"Hack Your Jarred Sauce" Content Series</strong> — how to elevate Barilla sauces with herbs, protein, veggies. Addresses 'improve jarred sauce', 'enhance', 'quick homemade'. <span class="text-green-400">High commercial value.</span></li>
-<li><strong class="text-white">Fresh vs Dried Pasta Education</strong> — explain benefits of dried (Barilla's core), storage life, convenience, nutrition. <span class="text-green-400">Addresses 3 gap questions.</span></li>
-<li><strong class="text-white">Per-Person Portion Size Guide</strong> — visual guide: 75-100g per adult, how to measure without scales. <span class="text-green-400">Addresses multiple portion/guide questions.</span></li>
-<li><strong class="text-white">Protein+ Cooking Guide & Pairings</strong> — specific cooking tips, methods, and expanded pairing content for the Protein+ line. <span class="text-green-400">Leverages existing product.</span></li>
-<li><strong class="text-white">Leftover & Meal Prep Content</strong> — reheating, storage in fridge/freezer, batch cooking. No content exists. <span class="text-green-400">Addresses 5+ questions.</span></li>
-<li><strong class="text-white">Italian Heritage & Regional Storytelling</strong> — Trastevere tradition, regional sauce origins, why Italian tomatoes matter. Builds brand authority on Rufus. <span class="text-green-400">Differentiator.</span></li>
-</ol>
+<p class="text-xs text-slate-400 mb-4">Prioritised content actions to improve Amazon Rufus coverage. Each action maps to specific Rufus questions, with estimated impact on coverage rate.</p>
+
+<!-- Effort / Impact Matrix -->
+<div class="bg-slate-900/50 rounded-xl p-5 border border-white/5 mb-5">
+<h5 class="text-xs font-bold text-white uppercase tracking-wider mb-3">📊 Effort vs Impact Matrix</h5>
+<div class="relative" style="height:280px">
+<!-- Axes -->
+<div class="absolute left-8 top-0 bottom-6 w-px bg-slate-600"></div>
+<div class="absolute left-8 bottom-6 right-0 h-px bg-slate-600"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 text-[9px] text-slate-500 font-medium -rotate-90 origin-center" style="left:-4px">IMPACT ↑</div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-[9px] text-slate-500 font-medium">EFFORT →</div>
+<!-- Quadrant labels -->
+<div class="absolute text-[9px] text-green-500/40 font-bold uppercase" style="left:12%;top:8%">Quick Wins</div>
+<div class="absolute text-[9px] text-blue-500/40 font-bold uppercase" style="right:8%;top:8%">Strategic Bets</div>
+<div class="absolute text-[9px] text-slate-500/40 font-bold uppercase" style="left:12%;bottom:10%">Low Priority</div>
+<div class="absolute text-[9px] text-amber-500/40 font-bold uppercase" style="right:8%;bottom:10%">Nice-to-Have</div>
+<!-- Quadrant dividers -->
+<div class="absolute top-0 bottom-6 bg-slate-700/30" style="left:54%;width:1px"></div>
+<div class="absolute left-8 right-0 bg-slate-700/30" style="top:50%;height:1px"></div>
+<!-- Dots: positioned as (effort%, impact%) from bottom-left -->
+<div class="absolute w-7 h-7 rounded-full bg-green-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-green-500/30 cursor-help" style="left:18%;bottom:calc(6px + 80%)" title="Action 2: Add Time Labels to Recipes — Low effort, high impact"><span>2</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-green-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-green-500/30 cursor-help" style="left:25%;bottom:calc(6px + 75%)" title="Action 7: Per-Person Portion Guide — Low effort, high impact"><span>7</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-green-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-green-500/30 cursor-help" style="left:22%;bottom:calc(6px + 70%)" title="Action 6: Fresh vs Dried Education — Low effort, high impact"><span>6</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-blue-500/30 cursor-help" style="left:58%;bottom:calc(6px + 85%)" title="Action 1: Pasta Cooking Tips Hub — Medium effort, highest impact"><span>1</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-blue-500/30 cursor-help" style="left:65%;bottom:calc(6px + 82%)" title="Action 3: Sauce × Shape Pairing Guide — Medium effort, high impact"><span>3</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-blue-500/30 cursor-help" style="left:50%;bottom:calc(6px + 72%)" title="Action 4: One-Pot Recipe Collection — Medium effort, high impact"><span>4</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-green-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-green-500/30 cursor-help" style="left:30%;bottom:calc(6px + 65%)" title="Action 5: Hack Your Jarred Sauce — Low effort, good impact"><span>5</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-amber-500/30 cursor-help" style="left:42%;bottom:calc(6px + 55%)" title="Action 8: Protein+ Cooking Guide — Low-medium effort, moderate impact"><span>8</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-amber-500/30 cursor-help" style="left:52%;bottom:calc(6px + 50%)" title="Action 9: Leftover & Meal Prep — Medium effort, moderate impact"><span>9</span></div>
+<div class="absolute w-7 h-7 rounded-full bg-violet-500 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-violet-500/30 cursor-help" style="left:72%;bottom:calc(6px + 60%)" title="Action 10: Italian Heritage Storytelling — Higher effort, brand-building"><span>10</span></div>
+</div>
+<div class="flex flex-wrap gap-2 mt-3">
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium">🟢 Quick Wins (low effort, high impact)</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">🔵 Strategic Bets (more effort, highest impact)</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-medium">🟡 Build Over Time (medium priority)</span>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-400 font-medium">🟣 Brand Differentiator</span>
+</div>
+</div>
+
+<!-- Detailed Action Cards -->
+<div class="space-y-4">
+
+<!-- Action 1 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-blue-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">1</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Create a Pasta Cooking Tips Hub</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">Strategic Bet</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">A comprehensive "How to Cook Pasta" guide covering: cooking times by shape, portion sizes per person, water-to-pasta ratios, achieving al dente, how to fix overcooked pasta, preventing sticking, reheating leftovers, and storage tips. This single piece of content could address <strong class="text-white">8–12 Rufus gap questions</strong> and become a top-ranking resource for Rufus.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">8+ gaps addressed</span>
+<span class="badge badge-partial">3 partial → covered</span>
+<span class="badge badge-info">~5pp coverage gain</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Pasta portion sizes guide · How to prevent pasta sticking · How to reheat leftover pasta · How to fix overcooked pasta · Storage tips for cooked pasta · Al dente cooking times guide · Essential pasta cooking tips · Best pasta cooking water ratios</div>
+</div>
+</div>
+</div>
+
+<!-- Action 2 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-green-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">2</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Add Time Labels to All 83 Recipes</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium">Quick Win</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">Tag every recipe with prep time, cook time, and total time. Add filters: "Under 15 min", "Under 30 min", "Weeknight meals". This is a <strong class="text-white">metadata update to existing content</strong> — no new content needed. Immediately converts 6+ partial answers to covered.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-partial">6 partial → covered</span>
+<span class="badge badge-info">~3pp coverage gain</span>
+<span class="badge badge-yes">No new content needed</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Quick weeknight pasta recipes · Quick 10-minute pasta recipes · Quick 15-minute sauce recipes · 30-minute pasta meal ideas · Quick pasta dinner ideas · Quick recipe ideas</div>
+</div>
+</div>
+</div>
+
+<!-- Action 3 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-blue-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">3</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Build Interactive Sauce × Shape Pairing Guide</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">Strategic Bet</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">An interactive page mapping all 20+ Barilla shapes to recommended sauces (and vice versa). Include: why certain shapes hold certain sauces (e.g. ridged for cream, long for oil-based), cream vs tomato vs pesto recommendations. Barilla's existing PDPs mention sauces individually but there's no unified resource.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">5+ gaps addressed</span>
+<span class="badge badge-partial">4 partial → covered</span>
+<span class="badge badge-info">~4pp coverage gain</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Best sauce for different pasta shapes · Best sauces for each pasta type · Best pasta shapes for each sauce · Best shapes for cream sauces · Sauce and pasta pairing guide · Sauce pairing techniques</div>
+</div>
+</div>
+</div>
+
+<!-- Action 4 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-blue-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">4</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Launch One-Pot Recipe Collection</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 font-medium">Strategic Bet</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">There are <strong class="text-white">6 Rufus questions about one-pot pasta</strong> and Barilla has zero content. This is a massive consumer demand signal. Create 5–10 one-pot spaghetti recipes (e.g. one-pot spaghetti Bolognese, one-pot tomato basil, one-pot creamy garlic). Include liquid ratios, tips for one-pot cooking, vegetarian options.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">6 gaps addressed</span>
+<span class="badge badge-info">~3pp coverage gain</span>
+<span class="badge badge-priority">High demand signal</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> One-pot pasta recipes · Quick one-pot pasta recipes · One-pot pasta recipe ideas · Best one-pot pasta tips · Vegetarian one-pot ideas · How much liquid for one-pot pasta?</div>
+</div>
+</div>
+</div>
+
+<!-- Action 5 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-green-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">5</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">"Hack Your Jarred Sauce" Content Series</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium">Quick Win</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">Content teaching consumers how to elevate Barilla jarred sauces with fresh herbs, protein, roasted veggies, cream, or cheese. This is <strong class="text-white">high commercial value</strong> — it drives both sauce sales and positions Barilla as the "base" for home cooking. Addresses "how to improve jarred sauce flavour" which is a heavily-asked Rufus question.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">4 gaps addressed</span>
+<span class="badge badge-info">~2pp coverage gain</span>
+<span class="badge badge-yes">Drives sauce sales</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> How to improve jarred sauce flavour · Best jarred sauces to enhance · Quick homemade sauce recipes · Simple homemade sauce recipe</div>
+</div>
+</div>
+</div>
+
+<!-- Action 6 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-green-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">6</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Fresh vs Dried Pasta Education Page</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium">Quick Win</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">A single educational page explaining the differences between fresh and dried pasta: nutrition, shelf life, convenience, cooking methods, taste, and when to use each. Positions Barilla's dried pasta as the <strong class="text-white">reliable, pantry-friendly choice</strong>. Also covers "best pasta shapes for quick cooking" by listing cook times.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">3 gaps addressed</span>
+<span class="badge badge-info">~1.5pp coverage gain</span>
+<span class="badge badge-yes">Brand positioning</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Fresh vs dried pasta differences · Fresh vs dried pasta guide · Best pasta shapes for quick cooking</div>
+</div>
+</div>
+</div>
+
+<!-- Action 7 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-green-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">7</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Visual Per-Person Portion Size Guide</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-medium">Quick Win</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">A visual guide showing portion sizes per person (75g light, 100g standard, 125g hearty), how to measure without scales (fist-size, handful), and scaling for families (2/4/6 servings). The PDP already mentions 100g/1L water but doesn't frame it per person. A simple infographic solves multiple questions.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">2 gaps addressed</span>
+<span class="badge badge-partial">1 partial → covered</span>
+<span class="badge badge-info">~1pp coverage gain</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Pasta portion sizes guide · Portion size guidelines · Which size for meal prep?</div>
+</div>
+</div>
+</div>
+
+<!-- Action 8 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-amber-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">8</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Protein+ Cooking Guide & Expanded Pairings</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-medium">Build Over Time</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">Protein+ has a campaign page but lacks specific cooking guidance. Add: optimal cooking times for legume-protein pasta, how it differs from regular, best sauces for wholegrain/protein pasta, beginner tips. <strong class="text-white">Leverages existing product</strong> and strengthens Protein+ positioning against competitor high-protein brands.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">4 gaps addressed</span>
+<span class="badge badge-partial">2 partial → covered</span>
+<span class="badge badge-info">~2pp coverage gain</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Best sauces for wholegrain pasta · Cooking tips for legume pasta · Protein pasta cooking methods · How to cook whole grain pasta properly · Best protein pasta for beginners</div>
+</div>
+</div>
+</div>
+
+<!-- Action 9 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-amber-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-amber-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">9</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Leftover & Meal Prep Content</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-medium">Build Over Time</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">Content covering: how to reheat pasta (microwave, stovetop, oven), storage in fridge (2–3 days) and freezer (up to 2 months), batch cooking sauce for the week, and meal prep ideas. No content exists on the entire Barilla UK site for any of these topics. Addresses the "practical kitchen" question cluster.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-no">5 gaps addressed</span>
+<span class="badge badge-info">~2pp coverage gain</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> How to reheat leftover pasta · Storage tips for cooked pasta · Bulk cooking sauce tips · Batch cooking sauce methods · Which size for meal prep? · How to store homemade sauce</div>
+</div>
+</div>
+</div>
+
+<!-- Action 10 -->
+<div class="bg-slate-900/50 rounded-xl p-4 border border-violet-500/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-violet-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">10</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<h5 class="text-sm font-bold text-white">Italian Heritage & Regional Sauce Storytelling</h5>
+<span class="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-400 font-medium">Brand Differentiator</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed">Rich editorial content about: the Trastevere tradition and Roman spaghetti culture, regional Italian sauce varieties (Napoli, Bologna, Genova), why sun-ripened Italian tomatoes matter, Barilla's 1877 heritage. This builds <strong class="text-white">brand authority and emotional differentiation</strong> on Rufus — something competitors cannot easily replicate.</p>
+<div class="flex flex-wrap gap-1.5 mt-2">
+<span class="badge badge-partial">3 partial → covered</span>
+<span class="badge badge-no">2 gaps addressed</span>
+<span class="badge badge-yes">Brand authority</span>
+</div>
+<div class="mt-2 text-[10px] text-slate-500"><strong>Rufus questions solved:</strong> Regional Italian sauce varieties · Best Italian imports available · Italian vs British sauce brands · Best tomatoes for sauce making · Homemade vs jarred sauce quality</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- Impact Summary -->
+<div class="mt-5 bg-gradient-to-r from-green-900/20 to-blue-900/20 rounded-xl p-4 border border-green-500/20">
+<h5 class="text-xs font-bold text-white uppercase tracking-wider mb-2">📈 Projected Impact Summary</h5>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="text-center">
+<div class="text-lg font-bold text-green-400">~48</div>
+<div class="text-[10px] text-slate-400">Gaps addressed</div>
+</div>
+<div class="text-center">
+<div class="text-lg font-bold text-amber-400">~19</div>
+<div class="text-[10px] text-slate-400">Partial → Covered</div>
+</div>
+<div class="text-center">
+<div class="text-lg font-bold text-purple-400">17% → ~40%</div>
+<div class="text-[10px] text-slate-400">Coverage Rate gain</div>
+</div>
+<div class="text-center">
+<div class="text-lg font-bold text-blue-400">10</div>
+<div class="text-[10px] text-slate-400">Content pieces to create</div>
+</div>
+</div>
+<p class="text-[10px] text-slate-500 mt-3">Note: Some Rufus questions (konjac noodles, ancient grains, spiralizers etc.) are outside Barilla's product scope and are excluded from impact projections. The 40% target is achievable within the brand's remit. Full 100% is not realistic or desirable — brands should focus on relevant, high-intent questions.</p>
+</div>
+
 </div>
 </div>
 
@@ -1849,7 +2230,7 @@ body{background:#0f172a;color:#e2e8f0}
 <h3 class="text-base font-bold text-white mb-4">📋 Barilla UK Website Content Inventory (barilla.com/en-gb)</h3>
 <div class="grid md:grid-cols-3 gap-6 text-sm">
 <div>
-<h4 class="font-semibold text-blue-400 mb-2">�� Pasta Products</h4>
+<h4 class="font-semibold text-blue-400 mb-2">📦 Pasta Products</h4>
 <ul class="space-y-1 text-slate-400 text-xs">
 <li>• <strong class="text-slate-300">Spaghetti N°5</strong> — 500g, 10 min cook, durum wheat semolina, rough texture, low GI</li>
 <li>• Classic Blue Box: Bavette, Capellini, Conchiglie, Fusilli, Penne Rigate, Farfalle, Rigatoni, Linguine, Tagliatelle + 15 more</li>
