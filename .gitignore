@@ -22,3 +22,7 @@ dist/
 build/
 *.egg-info/
 .eggs/
+
+# API keys — never commit
+api_keys.json
+*.env
