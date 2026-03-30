@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barilla UK × Rufus Spaghetti — Content Gap Map</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{font-family:'Inter',sans-serif}
+body{background:#0f172a;color:#e2e8f0}
+.topic-card{transition:all .2s;border:1px solid rgba(255,255,255,.06)}
+.topic-card:hover{border-color:rgba(59,130,246,.4);transform:translateY(-1px)}
+.q-row{transition:background .15s;cursor:default}
+.q-row:hover{background:rgba(59,130,246,.08)}
+.coverage-bar{height:6px;border-radius:3px;background:#1e293b;overflow:hidden}
+.coverage-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-yes{background:rgba(34,197,94,.15);color:#4ade80}
+.badge-no{background:rgba(239,68,68,.15);color:#f87171}
+.badge-partial{background:rgba(251,191,36,.15);color:#fbbf24}
+.badge-info{background:rgba(59,130,246,.15);color:#60a5fa}
+.badge-priority{background:rgba(239,68,68,.2);color:#f87171}
+.filter-btn{transition:all .15s}
+.filter-btn.active{background:#3b82f6!important;color:white!important}
+.glow{box-shadow:0 0 40px rgba(59,130,246,.1)}
+.expand-icon{transition:transform .2s}
+.expanded .expand-icon{transform:rotate(90deg)}
+.sub-qs{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.expanded .sub-qs{max-height:9999px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeIn .4s ease forwards}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot-covered{background:#22c55e}
+.dot-partial{background:#eab308}
+.dot-gap{background:#ef4444}
+.scatter-dot{position:absolute;width:10px;height:10px;border-radius:50%;cursor:pointer;transition:all .15s;border:1.5px solid rgba(0,0,0,.3)}
+.scatter-dot:hover{transform:scale(2);z-index:100;box-shadow:0 0 12px rgba(59,130,246,.5)}
+.scatter-tooltip{position:fixed;background:#1e293b;color:#e2e8f0;padding:8px 12px;border-radius:8px;font-size:12px;max-width:320px;border:1px solid rgba(255,255,255,.1);pointer-events:none;z-index:1000;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- HEADER -->
+<header class="border-b border-white/5 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg">B</div>
+<div>
+<h1 class="text-lg font-bold text-white">Barilla UK × Rufus Content Gap Map</h1>
+<p class="text-xs text-slate-400">181 Rufus questions mapped against barilla.com/en-gb content · Spaghetti Category</p>
+</div></div>
+<div class="flex items-center gap-3">
+<span class="badge badge-info">Amazon UK</span>
+<span class="text-xs text-slate-500">30 Mar 2026</span>
+</div></div></header>
+
+<!-- STATS -->
+<div class="border-b border-white/5 bg-slate-900/50">
+<div class="max-w-7xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+<div><div class="text-2xl font-bold text-white">181</div><div class="text-xs text-slate-400">Total Questions</div></div>
+<div><div class="text-2xl font-bold text-green-400">13</div><div class="text-xs text-slate-400">Covered</div></div>
+<div><div class="text-2xl font-bold text-amber-400">35</div><div class="text-xs text-slate-400">Partial</div></div>
+<div><div class="text-2xl font-bold text-red-400">133</div><div class="text-xs text-slate-400">Content Gaps</div></div>
+<div><div class="text-2xl font-bold text-blue-400">5</div><div class="text-xs text-slate-400">L1 Topics</div></div>
+<div><div class="text-2xl font-bold text-purple-400">17%</div><div class="text-xs text-slate-400">Coverage Rate</div></div>
+</div></div>
+
+<!-- SCATTER MAP -->
+<div class="max-w-7xl mx-auto px-6 pt-8">
+<div class="bg-slate-800/50 rounded-2xl p-6 border border-white/5 glow">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 class="text-base font-bold text-white">🗺️ Question Landscape (t-SNE)</h3>
+<p class="text-xs text-slate-400 mt-1">Each dot = 1 Rufus question. Position shows semantic similarity. Colour = Barilla UK content coverage.</p>
+</div>
+<div class="flex items-center gap-4 text-xs">
+<span class="flex items-center gap-1.5"><span class="dot dot-covered"></span> Covered</span>
+<span class="flex items-center gap-1.5"><span class="dot dot-partial"></span> Partial</span>
+<span class="flex items-center gap-1.5"><span class="dot dot-gap"></span> Gap</span>
+</div>
+</div>
+<div id="scatterBox" class="relative bg-slate-900/50 rounded-xl" style="height:420px;overflow:hidden">
+<div class="scatter-dot" style="left:91.4%;top:42.4%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="0"></div>
+<div class="scatter-dot" style="left:71.5%;top:45.2%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="1"></div>
+<div class="scatter-dot" style="left:101.8%;top:90.2%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="2"></div>
+<div class="scatter-dot" style="left:74.4%;top:41.8%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="3"></div>
+<div class="scatter-dot" style="left:112.6%;top:79.2%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="4"></div>
+<div class="scatter-dot" style="left:87.5%;top:88.1%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="5"></div>
+<div class="scatter-dot" style="left:63.8%;top:20.8%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="6"></div>
+<div class="scatter-dot" style="left:60.2%;top:29.4%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="7"></div>
+<div class="scatter-dot" style="left:86.4%;top:22.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="8"></div>
+<div class="scatter-dot" style="left:67.7%;top:16.4%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="9"></div>
+<div class="scatter-dot" style="left:57.9%;top:20.6%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="10"></div>
+<div class="scatter-dot" style="left:94.4%;top:38.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="11"></div>
+<div class="scatter-dot" style="left:97.0%;top:39.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="12"></div>
+<div class="scatter-dot" style="left:98.3%;top:34.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="13"></div>
+<div class="scatter-dot" style="left:91.0%;top:33.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="14"></div>
+<div class="scatter-dot" style="left:99.4%;top:30.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="15"></div>
+<div class="scatter-dot" style="left:103.8%;top:51.0%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="16"></div>
+<div class="scatter-dot" style="left:96.9%;top:52.7%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="17"></div>
+<div class="scatter-dot" style="left:110.0%;top:58.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="18"></div>
+<div class="scatter-dot" style="left:91.1%;top:20.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="19"></div>
+<div class="scatter-dot" style="left:108.8%;top:48.2%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="20"></div>
+<div class="scatter-dot" style="left:85.7%;top:59.1%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="21"></div>
+<div class="scatter-dot" style="left:84.6%;top:62.5%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="22"></div>
+<div class="scatter-dot" style="left:91.9%;top:59.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="23"></div>
+<div class="scatter-dot" style="left:82.1%;top:60.8%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="24"></div>
+<div class="scatter-dot" style="left:96.8%;top:61.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="25"></div>
+<div class="scatter-dot" style="left:89.1%;top:65.5%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="26"></div>
+<div class="scatter-dot" style="left:76.9%;top:40.7%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="27"></div>
+<div class="scatter-dot" style="left:95.9%;top:59.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="28"></div>
+<div class="scatter-dot" style="left:70.3%;top:34.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="29"></div>
+<div class="scatter-dot" style="left:53.4%;top:15.3%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="30"></div>
+<div class="scatter-dot" style="left:59.4%;top:36.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="31"></div>
+<div class="scatter-dot" style="left:89.9%;top:57.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="32"></div>
+<div class="scatter-dot" style="left:89.2%;top:55.4%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="33"></div>
+<div class="scatter-dot" style="left:101.4%;top:63.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="34"></div>
+<div class="scatter-dot" style="left:83.9%;top:72.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="35"></div>
+<div class="scatter-dot" style="left:69.9%;top:25.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="36"></div>
+<div class="scatter-dot" style="left:89.6%;top:66.8%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="37"></div>
+<div class="scatter-dot" style="left:91.2%;top:63.9%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="38"></div>
+<div class="scatter-dot" style="left:98.1%;top:64.5%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="39"></div>
+<div class="scatter-dot" style="left:82.2%;top:74.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="40"></div>
+<div class="scatter-dot" style="left:75.1%;top:37.1%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="41"></div>
+<div class="scatter-dot" style="left:105.1%;top:47.2%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="42"></div>
+<div class="scatter-dot" style="left:96.1%;top:51.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="43"></div>
+<div class="scatter-dot" style="left:72.3%;top:39.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="44"></div>
+<div class="scatter-dot" style="left:102.8%;top:73.2%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="45"></div>
+<div class="scatter-dot" style="left:109.0%;top:56.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="46"></div>
+<div class="scatter-dot" style="left:94.2%;top:18.7%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="47"></div>
+<div class="scatter-dot" style="left:102.2%;top:50.3%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="48"></div>
+<div class="scatter-dot" style="left:73.3%;top:69.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="49"></div>
+<div class="scatter-dot" style="left:114.1%;top:21.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="50"></div>
+<div class="scatter-dot" style="left:85.9%;top:65.2%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="51"></div>
+<div class="scatter-dot" style="left:74.8%;top:34.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="52"></div>
+<div class="scatter-dot" style="left:94.5%;top:19.9%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="53"></div>
+<div class="scatter-dot" style="left:101.1%;top:20.4%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="54"></div>
+<div class="scatter-dot" style="left:88.3%;top:21.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="55"></div>
+<div class="scatter-dot" style="left:106.8%;top:52.2%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="56"></div>
+<div class="scatter-dot" style="left:113.5%;top:78.7%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="57"></div>
+<div class="scatter-dot" style="left:111.2%;top:57.7%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="58"></div>
+<div class="scatter-dot" style="left:107.4%;top:59.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="59"></div>
+<div class="scatter-dot" style="left:115.0%;top:58.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="60"></div>
+<div class="scatter-dot" style="left:112.5%;top:61.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="61"></div>
+<div class="scatter-dot" style="left:44.4%;top:21.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="62"></div>
+<div class="scatter-dot" style="left:91.8%;top:45.4%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="63"></div>
+<div class="scatter-dot" style="left:113.4%;top:54.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="64"></div>
+<div class="scatter-dot" style="left:117.8%;top:65.8%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="65"></div>
+<div class="scatter-dot" style="left:84.9%;top:88.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="66"></div>
+<div class="scatter-dot" style="left:40.1%;top:57.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="67"></div>
+<div class="scatter-dot" style="left:105.1%;top:86.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="68"></div>
+<div class="scatter-dot" style="left:104.0%;top:73.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="69"></div>
+<div class="scatter-dot" style="left:119.0%;top:67.0%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="70"></div>
+<div class="scatter-dot" style="left:105.9%;top:67.7%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="71"></div>
+<div class="scatter-dot" style="left:99.9%;top:91.6%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="72"></div>
+<div class="scatter-dot" style="left:68.1%;top:28.6%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="73"></div>
+<div class="scatter-dot" style="left:93.1%;top:76.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="74"></div>
+<div class="scatter-dot" style="left:92.8%;top:75.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="75"></div>
+<div class="scatter-dot" style="left:93.4%;top:79.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="76"></div>
+<div class="scatter-dot" style="left:100.7%;top:68.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="77"></div>
+<div class="scatter-dot" style="left:86.7%;top:69.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="78"></div>
+<div class="scatter-dot" style="left:99.9%;top:62.0%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="79"></div>
+<div class="scatter-dot" style="left:120.0%;top:65.5%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="80"></div>
+<div class="scatter-dot" style="left:104.2%;top:69.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="81"></div>
+<div class="scatter-dot" style="left:69.7%;top:29.2%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="82"></div>
+<div class="scatter-dot" style="left:102.3%;top:21.2%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="83"></div>
+<div class="scatter-dot" style="left:84.2%;top:38.0%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="84"></div>
+<div class="scatter-dot" style="left:81.0%;top:45.5%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="85"></div>
+<div class="scatter-dot" style="left:76.7%;top:51.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="86"></div>
+<div class="scatter-dot" style="left:77.9%;top:44.5%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="87"></div>
+<div class="scatter-dot" style="left:107.2%;top:48.6%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="88"></div>
+<div class="scatter-dot" style="left:101.4%;top:58.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="89"></div>
+<div class="scatter-dot" style="left:71.4%;top:55.0%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="90"></div>
+<div class="scatter-dot" style="left:73.2%;top:54.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="91"></div>
+<div class="scatter-dot" style="left:51.9%;top:47.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="92"></div>
+<div class="scatter-dot" style="left:72.4%;top:56.6%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="93"></div>
+<div class="scatter-dot" style="left:68.6%;top:55.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="94"></div>
+<div class="scatter-dot" style="left:44.9%;top:40.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="95"></div>
+<div class="scatter-dot" style="left:52.5%;top:36.0%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="96"></div>
+<div class="scatter-dot" style="left:56.3%;top:34.9%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="97"></div>
+<div class="scatter-dot" style="left:59.7%;top:21.2%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="98"></div>
+<div class="scatter-dot" style="left:54.9%;top:34.4%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="99"></div>
+<div class="scatter-dot" style="left:56.4%;top:25.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="100"></div>
+<div class="scatter-dot" style="left:68.2%;top:31.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="101"></div>
+<div class="scatter-dot" style="left:99.4%;top:43.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="102"></div>
+<div class="scatter-dot" style="left:44.4%;top:34.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="103"></div>
+<div class="scatter-dot" style="left:45.7%;top:32.4%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="104"></div>
+<div class="scatter-dot" style="left:98.6%;top:41.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="105"></div>
+<div class="scatter-dot" style="left:53.9%;top:50.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="106"></div>
+<div class="scatter-dot" style="left:40.1%;top:53.4%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="107"></div>
+<div class="scatter-dot" style="left:47.6%;top:67.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="108"></div>
+<div class="scatter-dot" style="left:77.5%;top:32.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="109"></div>
+<div class="scatter-dot" style="left:53.1%;top:43.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="110"></div>
+<div class="scatter-dot" style="left:61.9%;top:47.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="111"></div>
+<div class="scatter-dot" style="left:78.4%;top:66.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="112"></div>
+<div class="scatter-dot" style="left:38.8%;top:33.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="113"></div>
+<div class="scatter-dot" style="left:59.8%;top:10.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="114"></div>
+<div class="scatter-dot" style="left:34.0%;top:46.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="115"></div>
+<div class="scatter-dot" style="left:45.2%;top:41.7%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="116"></div>
+<div class="scatter-dot" style="left:60.1%;top:41.4%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="117"></div>
+<div class="scatter-dot" style="left:50.0%;top:39.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="118"></div>
+<div class="scatter-dot" style="left:84.6%;top:34.9%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="119"></div>
+<div class="scatter-dot" style="left:76.6%;top:45.7%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="120"></div>
+<div class="scatter-dot" style="left:59.0%;top:41.5%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="121"></div>
+<div class="scatter-dot" style="left:39.2%;top:35.9%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="122"></div>
+<div class="scatter-dot" style="left:71.9%;top:43.7%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="123"></div>
+<div class="scatter-dot" style="left:45.0%;top:55.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="124"></div>
+<div class="scatter-dot" style="left:55.8%;top:15.9%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="125"></div>
+<div class="scatter-dot" style="left:73.0%;top:31.3%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="126"></div>
+<div class="scatter-dot" style="left:68.8%;top:45.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="127"></div>
+<div class="scatter-dot" style="left:78.2%;top:30.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="128"></div>
+<div class="scatter-dot" style="left:103.1%;top:90.5%;background:#22c55e;width:9px;height:9px;opacity:1.0" data-idx="129"></div>
+<div class="scatter-dot" style="left:87.6%;top:89.5%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="130"></div>
+<div class="scatter-dot" style="left:84.0%;top:34.0%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="131"></div>
+<div class="scatter-dot" style="left:86.6%;top:30.4%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="132"></div>
+<div class="scatter-dot" style="left:51.2%;top:45.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="133"></div>
+<div class="scatter-dot" style="left:87.2%;top:33.6%;background:#eab308;width:12px;height:12px;opacity:1.0" data-idx="134"></div>
+<div class="scatter-dot" style="left:40.3%;top:41.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="135"></div>
+<div class="scatter-dot" style="left:78.1%;top:46.4%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="136"></div>
+<div class="scatter-dot" style="left:60.5%;top:59.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="137"></div>
+<div class="scatter-dot" style="left:45.5%;top:65.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="138"></div>
+<div class="scatter-dot" style="left:62.2%;top:50.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="139"></div>
+<div class="scatter-dot" style="left:33.9%;top:68.1%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="140"></div>
+<div class="scatter-dot" style="left:59.5%;top:59.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="141"></div>
+<div class="scatter-dot" style="left:77.5%;top:65.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="142"></div>
+<div class="scatter-dot" style="left:60.1%;top:63.4%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="143"></div>
+<div class="scatter-dot" style="left:33.0%;top:47.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="144"></div>
+<div class="scatter-dot" style="left:32.6%;top:66.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="145"></div>
+<div class="scatter-dot" style="left:44.0%;top:65.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="146"></div>
+<div class="scatter-dot" style="left:42.9%;top:56.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="147"></div>
+<div class="scatter-dot" style="left:54.7%;top:79.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="148"></div>
+<div class="scatter-dot" style="left:47.2%;top:48.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="149"></div>
+<div class="scatter-dot" style="left:105.5%;top:92.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="150"></div>
+<div class="scatter-dot" style="left:63.4%;top:49.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="151"></div>
+<div class="scatter-dot" style="left:110.9%;top:24.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="152"></div>
+<div class="scatter-dot" style="left:76.1%;top:67.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="153"></div>
+<div class="scatter-dot" style="left:63.3%;top:12.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="154"></div>
+<div class="scatter-dot" style="left:93.6%;top:65.8%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="155"></div>
+<div class="scatter-dot" style="left:33.9%;top:68.1%;background:#eab308;width:9px;height:9px;opacity:1.0" data-idx="156"></div>
+<div class="scatter-dot" style="left:61.4%;top:21.5%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="157"></div>
+<div class="scatter-dot" style="left:64.0%;top:40.1%;background:#ef4444;width:12px;height:12px;opacity:0.6" data-idx="158"></div>
+<div class="scatter-dot" style="left:102.0%;top:26.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="159"></div>
+<div class="scatter-dot" style="left:57.8%;top:25.3%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="160"></div>
+<div class="scatter-dot" style="left:112.2%;top:24.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="161"></div>
+<div class="scatter-dot" style="left:111.4%;top:27.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="162"></div>
+<div class="scatter-dot" style="left:116.0%;top:28.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="163"></div>
+<div class="scatter-dot" style="left:113.1%;top:29.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="164"></div>
+<div class="scatter-dot" style="left:106.8%;top:23.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="165"></div>
+<div class="scatter-dot" style="left:53.5%;top:79.7%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="166"></div>
+<div class="scatter-dot" style="left:55.8%;top:51.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="167"></div>
+<div class="scatter-dot" style="left:30.0%;top:50.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="168"></div>
+<div class="scatter-dot" style="left:54.7%;top:77.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="169"></div>
+<div class="scatter-dot" style="left:52.4%;top:76.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="170"></div>
+<div class="scatter-dot" style="left:63.5%;top:9.9%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="171"></div>
+<div class="scatter-dot" style="left:66.8%;top:13.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="172"></div>
+<div class="scatter-dot" style="left:62.0%;top:12.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="173"></div>
+<div class="scatter-dot" style="left:65.1%;top:27.5%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="174"></div>
+<div class="scatter-dot" style="left:61.9%;top:7.1%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="175"></div>
+<div class="scatter-dot" style="left:46.3%;top:57.2%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="176"></div>
+<div class="scatter-dot" style="left:99.9%;top:27.0%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="177"></div>
+<div class="scatter-dot" style="left:48.5%;top:56.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="178"></div>
+<div class="scatter-dot" style="left:48.1%;top:60.6%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="179"></div>
+<div class="scatter-dot" style="left:45.0%;top:67.8%;background:#ef4444;width:9px;height:9px;opacity:0.6" data-idx="180"></div>
+</div>
+</div>
+</div>
+<div class="scatter-tooltip" id="scatterTip"></div>
+
+<!-- FILTERS -->
+<div class="max-w-7xl mx-auto px-6 pt-6">
+<div class="bg-slate-800/30 rounded-xl px-4 py-3 flex flex-wrap items-center gap-2 border border-white/5">
+<span class="text-xs text-slate-500 mr-2">Filter:</span>
+<button class="filter-btn active px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300" data-filter="all">All (181)</button><button class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300" data-filter="covered">✅ Covered (13)</button><button class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300" data-filter="partial">🟡 Partial (35)</button><button class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300" data-filter="gap">❌ Gap (133)</button><button class="filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300" data-filter="priority">🔥 Priority (41)</button>
+<div class="ml-auto">
+<input type="text" id="searchInput" placeholder="Search questions..." class="bg-slate-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 w-56 focus:outline-none focus:border-blue-500">
+</div>
+</div>
+</div>
+
+<!-- TOPIC CARDS -->
+<div class="max-w-7xl mx-auto px-6 py-6" id="topicCards">
+
+<div class="topic-card bg-slate-800/50 rounded-2xl mb-5 overflow-hidden anim" style="animation-delay:0.0s">
+<div class="p-5 cursor-pointer flex items-center gap-4 select-none" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="text-3xl">🧄</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="text-white font-bold text-sm">Ingredient Pairings</h2>
+</div>
+<p class="text-xs text-slate-400 mt-0.5 truncate">What ingredients pair well with different spaghetti dishes?</p>
+<div class="flex items-center gap-4 mt-2">
+<div class="coverage-bar flex-1 max-w-xs"><div class="coverage-fill" style="width:21%;background:#f59e0b"></div></div>
+<span class="text-xs font-semibold text-amber-400">21%</span>
+<span class="badge badge-yes">2 ✅</span>
+<span class="badge badge-partial">5 🟡</span>
+<span class="badge badge-no">14 ❌</span>
+<span class="text-xs text-slate-500">21 qs</span>
+</div>
+</div>
+<svg class="expand-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+</div>
+<div class="sub-qs border-t border-white/5"><div class="divide-y divide-white/5">
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:20px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L1</span><span class="text-sm text-white font-semibold">What ingredients pair well with different spaghetti dishes?</span></div>
+<div class="text-xs text-slate-400 mt-1">83 recipes on site but no dedicated 'pairing guide'. PDP says 'goes perfectly with all sauces'.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best pasta shapes for each sauce</span></div>
+<div class="text-xs text-slate-400 mt-1">PDP mentions Puttanesca/tomato pairing. No comprehensive shape→sauce guide.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Cooking times for different shapes</span></div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooking timing guide PDF covers all shapes. Each PDP has cook time.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Passive Cooking</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best sauces for each pasta type</span></div>
+<div class="text-xs text-slate-400 mt-1">Recipe hub filterable by product but no summary guide.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Fresh vs dried pasta differences</span></div>
+<div class="text-xs text-slate-400 mt-1">No content on fresh vs dried. Barilla sells only dried — big opportunity to educate.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Pasta portion sizes guide</span></div>
+<div class="text-xs text-slate-400 mt-1">No portion guide. PDP mentions 100g/1L water/7g salt but not per-person.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">How to make homemade pasta sauce</span></div>
+<div class="text-xs text-slate-400 mt-1">Recipes exist but no 'from scratch sauce tutorial'.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Different sauce variations to try</span></div>
+<div class="text-xs text-slate-400 mt-1">8 red sauces + 3 pestos listed with full descriptions.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best herbs for pasta sauces</span></div>
+<div class="text-xs text-slate-400 mt-1">No herb guide content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to store homemade sauce</span></div>
+<div class="text-xs text-slate-400 mt-1">No storage advice content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick 15-minute sauce recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">No time-labelled quick recipes.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Wine pairing with spaghetti dishes</span></div>
+<div class="text-xs text-slate-400 mt-1">No wine pairing content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best wine glasses for pasta dinner</span></div>
+<div class="text-xs text-slate-400 mt-1">Out of scope.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How much wine to serve per person</span></div>
+<div class="text-xs text-slate-400 mt-1">Out of scope.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Italian wine regions explained</span></div>
+<div class="text-xs text-slate-400 mt-1">No Italian lifestyle content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Wine storage tips for beginners</span></div>
+<div class="text-xs text-slate-400 mt-1">Out of scope.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Quick weeknight pasta recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">83 recipes but not tagged by 'quick weeknight'. No time labels.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best pasta shapes for quick cooking</span></div>
+<div class="text-xs text-slate-400 mt-1">No cooking speed comparison content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">One-pot pasta recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">No one-pot recipe category. Huge demand.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Pantry pasta ingredient essentials</span></div>
+<div class="text-xs text-slate-400 mt-1">No pantry guide content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">30-minute pasta meal ideas</span></div>
+<div class="text-xs text-slate-400 mt-1">No time-based recipe filtering.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+</div></div></div>
+
+<div class="topic-card bg-slate-800/50 rounded-2xl mb-5 overflow-hidden anim" style="animation-delay:0.08s">
+<div class="p-5 cursor-pointer flex items-center gap-4 select-none" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="text-3xl">🌾</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="text-white font-bold text-sm">Whole Grain & Protein</h2> <span class="badge badge-info ml-2">Barilla mentioned in Rufus</span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5 truncate">Which spaghetti brands offer whole grain or high fibre options?</p>
+<div class="flex items-center gap-4 mt-2">
+<div class="coverage-bar flex-1 max-w-xs"><div class="coverage-fill" style="width:26%;background:#f59e0b"></div></div>
+<span class="text-xs font-semibold text-amber-400">26%</span>
+<span class="badge badge-yes">4 ✅</span>
+<span class="badge badge-partial">3 🟡</span>
+<span class="badge badge-no">14 ❌</span>
+<span class="text-xs text-slate-500">21 qs</span>
+</div>
+</div>
+<svg class="expand-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+</div>
+<div class="sub-qs border-t border-white/5"><div class="divide-y divide-white/5">
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:20px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L1</span><span class="text-sm text-white font-semibold">Which spaghetti brands offer whole grain or high fibre options?</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ range: 20g protein/100g, plant-based, 3 shapes.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Whole grain vs regular pasta nutrition</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ compares protein (20g vs 12-14g/100g). No whole grain fibre comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best whole grain pasta for beginners</span></div>
+<div class="text-xs text-slate-400 mt-1">No whole grain education content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Does whole grain taste different?</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ claims 'the pasta taste you love' with consumer research.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Cooking tips for whole grain pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No whole grain cooking guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">High protein pasta alternatives</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ is exactly this — 20g/100g, plant-based, bronze die.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best sauces for wholegrain pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No pairing advice for Protein+ or wholegrain.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to cook whole grain pasta properly</span></div>
+<div class="text-xs text-slate-400 mt-1">No specific cooking instructions for variants.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best cheese to pair with these sauces</span></div>
+<div class="text-xs text-slate-400 mt-1">Recipes mention cheese but no pairing guide.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Simple homemade pesto recipe</span></div>
+<div class="text-xs text-slate-400 mt-1">Barilla sells 3 pestos but no homemade recipe.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Spicy sauce alternatives for mild palates</span></div>
+<div class="text-xs text-slate-400 mt-1">No spice-level guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Ancient grain pasta alternatives</span></div>
+<div class="text-xs text-slate-400 mt-1">No ancient grain products in UK range.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best ancient grain for beginners</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Cooking tips for buckwheat pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quinoa vs chickpea pasta comparison</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Sauces that pair with spelt</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">High protein pasta options</span></div>
+<div class="text-xs text-slate-400 mt-1">Full Protein+ campaign: 20g/100g, pea protein + semolina, 3 shapes.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best protein pasta for beginners</span></div>
+<div class="text-xs text-slate-400 mt-1">Campaign page exists but no 'beginner guide' specifically.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Cooking tips for legume pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No specific cooking tips for pea protein pasta.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Compare edamame vs chickpea protein</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Sauces that pair with protein pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ page has dedicated recipes.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+</div></div></div>
+
+<div class="topic-card bg-slate-800/50 rounded-2xl mb-5 overflow-hidden anim" style="animation-delay:0.16s">
+<div class="p-5 cursor-pointer flex items-center gap-4 select-none" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="text-3xl">⏱️</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="text-white font-bold text-sm">Quick Weeknight Meals</h2>
+</div>
+<p class="text-xs text-slate-400 mt-0.5 truncate">Are there any quick and easy spaghetti meal ideas for busy weeknights?</p>
+<div class="flex items-center gap-4 mt-2">
+<div class="coverage-bar flex-1 max-w-xs"><div class="coverage-fill" style="width:12%;background:#ef4444"></div></div>
+<span class="text-xs font-semibold text-red-400">12%</span>
+<span class="badge badge-yes">1 ✅</span>
+<span class="badge badge-partial">3 🟡</span>
+<span class="badge badge-no">17 ❌</span>
+<span class="text-xs text-slate-500">21 qs</span>
+</div>
+</div>
+<svg class="expand-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+</div>
+<div class="sub-qs border-t border-white/5"><div class="divide-y divide-white/5">
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:20px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L1</span><span class="text-sm text-white font-semibold">Are there any quick and easy spaghetti meal ideas for busy weeknights?</span></div>
+<div class="text-xs text-slate-400 mt-1">83 recipes but not categorised by prep time.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best pasta shapes for quick cooking</span></div>
+<div class="text-xs text-slate-400 mt-1">No cooking speed comparison content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best sauces for angel hair pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">Capellini N°1 exists but no sauce pairing guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to prevent thin pasta breaking</span></div>
+<div class="text-xs text-slate-400 mt-1">No cooking technique content for delicate pasta.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick one-pot pasta recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">No one-pot category.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Store cupboard pasta essentials</span></div>
+<div class="text-xs text-slate-400 mt-1">No pantry/storecupboard content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Healthy weeknight pasta alternatives</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ as healthier + Open Recipes vegan options. No 'healthy weeknight' hub.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best spiralizer vegetables for beginners</span></div>
+<div class="text-xs text-slate-400 mt-1">Out of scope.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to cook shirataki noodles properly</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Protein pasta vs regular pasta nutrition</span></div>
+<div class="text-xs text-slate-400 mt-1">Direct comparison on Protein+: 20g vs 12-14g protein/100g, 354 kcal.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Protein+ Campaign</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick sauce pairings for healthy pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No quick/healthy pairing content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Store cupboard pasta essentials</span></div>
+<div class="text-xs text-slate-400 mt-1">No pantry/storecupboard content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best pasta storage containers</span></div>
+<div class="text-xs text-slate-400 mt-1">No storage guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Herb and spice pasta essentials</span></div>
+<div class="text-xs text-slate-400 mt-1">No pantry/spice content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick 10-minute pasta recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">Spaghetti cooks in 10 min but no '10-minute meal' labels.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Fresh vs dried pasta guide</span></div>
+<div class="text-xs text-slate-400 mt-1">No educational content about fresh vs dried.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">One-pot pasta recipe ideas</span></div>
+<div class="text-xs text-slate-400 mt-1">No one-pot category.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best one-pot pasta tips</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Vegetarian one-pot ideas</span></div>
+<div class="text-xs text-slate-400 mt-1">Open Recipes has vegan options but not one-pot format.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How much liquid for one-pot pasta?</span></div>
+<div class="text-xs text-slate-400 mt-1">Passive cooking mentions 1L/100g but not for one-pot.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick protein additions</span></div>
+<div class="text-xs text-slate-400 mt-1">No content on adding protein to pasta.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+</div></div></div>
+
+<div class="topic-card bg-slate-800/50 rounded-2xl mb-5 overflow-hidden anim" style="animation-delay:0.24s">
+<div class="p-5 cursor-pointer flex items-center gap-4 select-none" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="text-3xl">🍳</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="text-white font-bold text-sm">Cooking Tools & Tips</h2>
+</div>
+<p class="text-xs text-slate-400 mt-0.5 truncate">What cooking tools or appliances are recommended for preparing spaghetti?</p>
+<div class="flex items-center gap-4 mt-2">
+<div class="coverage-bar flex-1 max-w-xs"><div class="coverage-fill" style="width:29%;background:#f59e0b"></div></div>
+<span class="text-xs font-semibold text-amber-400">29%</span>
+<span class="badge badge-yes">4 ✅</span>
+<span class="badge badge-partial">4 🟡</span>
+<span class="badge badge-no">13 ❌</span>
+<span class="text-xs text-slate-500">21 qs</span>
+</div>
+</div>
+<svg class="expand-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+</div>
+<div class="sub-qs border-t border-white/5"><div class="divide-y divide-white/5">
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:20px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L1</span><span class="text-sm text-white font-semibold">What cooking tools or appliances are recommended for preparing spaghetti?</span></div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooker device exists. Basic cooking instructions on PDP.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Passive Cooking</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best pasta pot sizes for families</span></div>
+<div class="text-xs text-slate-400 mt-1">No cookware content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Pasta cooking water ratios</span></div>
+<div class="text-xs text-slate-400 mt-1">PDP: '100g pasta = 1L water + 7g salt'.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Which size for meal prep?</span></div>
+<div class="text-xs text-slate-400 mt-1">No meal prep content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best brands for durability</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Induction vs gas cooking pots</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">How to prevent pasta sticking</span></div>
+<div class="text-xs text-slate-400 mt-1">No troubleshooting content. Huge opportunity.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best pasta cooking water ratios</span></div>
+<div class="text-xs text-slate-400 mt-1">100g → 1L water + 7g salt. On PDP.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to reheat leftover pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No reheating advice.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Al dente cooking times guide</span></div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooking timing guide + PDP times. Spaghetti = 10 min.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Passive Cooking</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Sauce pairing techniques</span></div>
+<div class="text-xs text-slate-400 mt-1">PDP mentions Puttanesca, tomato-basil. No comprehensive guide.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Manual vs electric pasta makers</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A — Barilla sells dried.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best manual pasta makers under £50</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Electric vs KitchenAid attachments</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Pasta maker maintenance tips</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Which makes better quality pasta?</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Essential pasta cooking tips</span></div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooking method documented. Basic tips on PDP.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Passive Cooking</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best pasta water ratios</span></div>
+<div class="text-xs text-slate-400 mt-1">100g = 1L water + 7g salt.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to fix overcooked pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No troubleshooting content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Sauce pairing guide</span></div>
+<div class="text-xs text-slate-400 mt-1">Individual PDPs mention sauces. Recipe hub filterable.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Storage tips for cooked pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">No leftover storage guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+</div></div></div>
+
+<div class="topic-card bg-slate-800/50 rounded-2xl mb-5 overflow-hidden anim" style="animation-delay:0.32s">
+<div class="p-5 cursor-pointer flex items-center gap-4 select-none" onclick="this.parentElement.classList.toggle('expanded')">
+<div class="text-3xl">🫙</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="text-white font-bold text-sm">Popular UK Sauces</h2> <span class="badge badge-info ml-2">Barilla mentioned in Rufus</span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5 truncate">Which spaghetti sauces are popular among British consumers?</p>
+<div class="flex items-center gap-4 mt-2">
+<div class="coverage-bar flex-1 max-w-xs"><div class="coverage-fill" style="width:12%;background:#ef4444"></div></div>
+<span class="text-xs font-semibold text-red-400">12%</span>
+<span class="badge badge-yes">2 ✅</span>
+<span class="badge badge-partial">20 🟡</span>
+<span class="badge badge-no">75 ❌</span>
+<span class="text-xs text-slate-500">97 qs</span>
+</div>
+</div>
+<svg class="expand-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+</div>
+<div class="sub-qs border-t border-white/5"><div class="divide-y divide-white/5">
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:20px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L1</span><span class="text-sm text-white font-semibold">Which spaghetti sauces are popular among British consumers?</span></div>
+<div class="text-xs text-slate-400 mt-1">8 sauce products listed. No UK consumer preference/trends editorial.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best pasta sauce for families</span></div>
+<div class="text-xs text-slate-400 mt-1">No family-oriented content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best budget pasta sauces under £1</span></div>
+<div class="text-xs text-slate-400 mt-1">No pricing content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Healthiest pasta sauce options</span></div>
+<div class="text-xs text-slate-400 mt-1">No preservatives/colorants claim. No nutritional comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick pasta dinner ideas</span></div>
+<div class="text-xs text-slate-400 mt-1">83 recipes but not filtered by speed.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Pasta bake recipe suggestions</span></div>
+<div class="text-xs text-slate-400 mt-1">No bake recipes visible.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Vegan pasta sauce options</span></div>
+<div class="text-xs text-slate-400 mt-1">Open Recipes: Vegan Carbonara, Vegan Pesto.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best budget vegan pasta sauces</span></div>
+<div class="text-xs text-slate-400 mt-1">No pricing content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Organic vs regular pasta sauce comparison</span></div>
+<div class="text-xs text-slate-400 mt-1">No organic positioning.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Homemade vegan pasta sauce recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">Vegan recipes exist but positioned around Barilla products.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Gluten-free vegan sauce options</span></div>
+<div class="text-xs text-slate-400 mt-1">No GF content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Premium vs budget sauce comparison</span></div>
+<div class="text-xs text-slate-400 mt-1">No comparison content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Homemade vs jarred sauce quality</span></div>
+<div class="text-xs text-slate-400 mt-1">Quality emphasis (Italian tomatoes, no preservatives) but no homemade comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best jarred sauces to enhance</span></div>
+<div class="text-xs text-slate-400 mt-1">No 'hack your jarred sauce' content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick homemade sauce recipes</span></div>
+<div class="text-xs text-slate-400 mt-1">No quick sauce recipes.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">How to improve jarred sauce flavour</span></div>
+<div class="text-xs text-slate-400 mt-1">Huge Rufus opportunity — not addressed.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Bulk cooking sauce tips</span></div>
+<div class="text-xs text-slate-400 mt-1">No batch cooking content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Truffle sauce pairing suggestions</span></div>
+<div class="text-xs text-slate-400 mt-1">No truffle products in UK.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best truffle pasta recipes</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Compare different truffle sauce brands</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Truffle oil vs truffle sauce</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Wine recommendations for truffle pasta</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best organic pasta sauce brands</span></div>
+<div class="text-xs text-slate-400 mt-1">No organic positioning.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Compare Biona vs Bonsan quality</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Organic vs conventional taste difference</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best organic pasta pairings</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Budget organic sauce options</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Low-carb sauce recommendations</span></div>
+<div class="text-xs text-slate-400 mt-1">No low-carb content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best low-carb pasta alternatives</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Compare Rao's vs Yo Mama's</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Keto-friendly recipe ideas</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Sugar content comparison chart</span></div>
+<div class="text-xs text-slate-400 mt-1">No nutritional comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Premium vs budget sauce taste test</span></div>
+<div class="text-xs text-slate-400 mt-1">Consumer research for Protein+ exists. Positioned as quality mid-range.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best mid-range sauce recommendations</span></div>
+<div class="text-xs text-slate-400 mt-1">Barilla positions as quality Italian. No explicit price-tier guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Homemade sauce cost comparison</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Italian vs British sauce brands</span></div>
+<div class="text-xs text-slate-400 mt-1">Barilla = Italian import since 1877. No editorial comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Healthiest pasta sauce options</span></div>
+<div class="text-xs text-slate-400 mt-1">No preservatives/colorants claim. No nutritional comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best mid-range sauce recommendations</span></div>
+<div class="text-xs text-slate-400 mt-1">Barilla positions as quality Italian. No explicit price-tier guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Compare Barilla vs Loyd Grossman</span></div>
+<div class="text-xs text-slate-400 mt-1">No competitor comparison (expected).</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best sauce for different pasta shapes</span></div>
+<div class="text-xs text-slate-400 mt-1">Individual PDPs mention sauces but no cross-shape guide.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Organic mid-range alternatives</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Quick recipe ideas</span></div>
+<div class="text-xs text-slate-400 mt-1">83 recipes but no speed labels.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Recipe Hub</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Sauce and pasta pairing guide</span></div>
+<div class="text-xs text-slate-400 mt-1">PDP mentions Puttanesca. Recipe hub filterable.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best shapes for cream sauces</span></div>
+<div class="text-xs text-slate-400 mt-1">No cream sauce pairing.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Gluten-free pasta pairings</span></div>
+<div class="text-xs text-slate-400 mt-1">No GF in UK range.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="covered" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">✅</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Cooking time differences</span></div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooking timing guide covers shapes.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Passive Cooking</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Portion size guidelines</span></div>
+<div class="text-xs text-slate-400 mt-1">PDP: 100g/1L. No per-person guide.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Italian vs British sauce brands</span></div>
+<div class="text-xs text-slate-400 mt-1">Barilla = Italian import since 1877. No editorial comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best Italian imports available</span></div>
+<div class="text-xs text-slate-400 mt-1">Barilla IS Italian import but no editorial.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Organic sauce comparisons</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Regional Italian sauce varieties</span></div>
+<div class="text-xs text-slate-400 mt-1">Spaghetti PDP mentions Trastevere/Rome. Minimal storytelling.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Spaghetti PDP</span><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Value for money analysis</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Healthiest pasta sauce options</span></div>
+<div class="text-xs text-slate-400 mt-1">No preservatives/colorants claim. No nutritional comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best sauce for diabetics</span></div>
+<div class="text-xs text-slate-400 mt-1">No health-condition content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Organic vs conventional nutrition</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Low carb sauce options</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Homemade vs shop-bought health</span></div>
+<div class="text-xs text-slate-400 mt-1">'No preservatives, no colorants' claim. No explicit health comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best sauce for diabetics</span></div>
+<div class="text-xs text-slate-400 mt-1">No health-condition content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Low carb pasta alternatives</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Diabetic-friendly meal planning</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Reading nutrition labels</span></div>
+<div class="text-xs text-slate-400 mt-1">No nutritional education.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Homemade vs shop-bought for diabetes</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Organic vs conventional nutrition</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best value organic brands</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Antioxidant benefits explained</span></div>
+<div class="text-xs text-slate-400 mt-1">No health/nutrition education.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Pesticide residue testing</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Processing method differences</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Low carb sauce options</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Konjac noodle preparation tips</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best low carb vegetables for pasta</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Keto-friendly sauce recipes</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Protein pasta cooking methods</span></div>
+<div class="text-xs text-slate-400 mt-1">Protein+ has no specific cooking method guidance.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="partial" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">🟡</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Homemade vs shop-bought health</span></div>
+<div class="text-xs text-slate-400 mt-1">'No preservatives, no colorants' claim. No explicit health comparison.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-info">Red Sauces</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Simple homemade sauce recipe</span></div>
+<div class="text-xs text-slate-400 mt-1">No from-scratch sauce content.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="true" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best tomatoes for sauce making</span></div>
+<div class="text-xs text-slate-400 mt-1">Uses Italian tomatoes but no consumer education.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"><span class="badge badge-priority">🔥 Priority</span></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Preservative-free storage tips</span></div>
+<div class="text-xs text-slate-400 mt-1">Sauces are preservative-free but no storage advice.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Batch cooking sauce methods</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Konjac noodle cooking tips</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best sauces for konjac noodles</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Konjac vs shirataki differences</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Make konjac taste like pasta</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Storage tips for konjac noodles</span></div>
+<div class="text-xs text-slate-400 mt-1">N/A.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Antioxidant benefits explained</span></div>
+<div class="text-xs text-slate-400 mt-1">No health/nutrition education.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best antioxidant-rich sauce brands</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Lycopene absorption tips</span></div>
+<div class="text-xs text-slate-400 mt-1">Tomato sauces are lycopene-rich but no education.</div>
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Antioxidant-boosting ingredients</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Fresh vs processed antioxidants</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Keto meal planning with sauces</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best keto sauce storage tips</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Homemade keto sauce recipes</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Macro tracking for sauces</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Budget keto meal planning</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:36px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L2</span><span class="text-sm text-white font-medium">Best organic ingredient sources</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Best storage methods for herbs</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Seasonal organic ingredient availability</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Growing your own organic herbs</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+<div class="q-row px-5 py-2.5 flex items-start gap-3" data-status="gap" data-priority="false" style="padding-left:52px">
+<span class="text-sm mt-0.5 flex-shrink-0">❌</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2"><span class="text-[10px] text-slate-500 font-mono">L3</span><span class="text-sm text-white ">Organic vs conventional nutritional differences</span></div>
+
+<div class="flex flex-wrap gap-1.5 mt-1"></div>
+</div></div>
+</div></div></div>
+
+<div class="mt-4 bg-gradient-to-br from-red-900/20 to-amber-900/20 rounded-2xl p-6 border border-red-500/20">
+<h3 class="text-lg font-bold text-white mb-1">🔥 Top Priority Content Gaps</h3>
+<p class="text-xs text-slate-400 mb-4">Questions Rufus asks that Barilla UK website doesn't address — highest impact for Amazon Rufus optimisation</p>
+<div class="grid md:grid-cols-2 gap-3">
+<div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 What ingredients pair well with different spaghetti dishes?</div>
+<div class="text-xs text-slate-400 mt-1">83 recipes on site but no dedicated 'pairing guide'. PDP says 'goes perfectly with all sauces'.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L1</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Are there any quick and easy spaghetti meal ideas for busy weeknights?</div>
+<div class="text-xs text-slate-400 mt-1">83 recipes but not categorised by prep time.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L1</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 What cooking tools or appliances are recommended for preparing spaghetti?</div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooker device exists. Basic cooking instructions on PDP.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L1</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Which spaghetti sauces are popular among British consumers?</div>
+<div class="text-xs text-slate-400 mt-1">8 sauce products listed. No UK consumer preference/trends editorial.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L1</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Quick weeknight pasta recipes</div>
+<div class="text-xs text-slate-400 mt-1">83 recipes but not tagged by 'quick weeknight'. No time labels.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Best sauces for wholegrain pasta</div>
+<div class="text-xs text-slate-400 mt-1">No pairing advice for Protein+ or wholegrain.</div>
+<div class="text-[10px] text-slate-500 mt-1">Whole Grain & Protein · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Best pasta shapes for quick cooking</div>
+<div class="text-xs text-slate-400 mt-1">No cooking speed comparison content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Store cupboard pasta essentials</div>
+<div class="text-xs text-slate-400 mt-1">No pantry/storecupboard content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ One-pot pasta recipe ideas</div>
+<div class="text-xs text-slate-400 mt-1">No one-pot category.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ How to prevent pasta sticking</div>
+<div class="text-xs text-slate-400 mt-1">No troubleshooting content. Huge opportunity.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Essential pasta cooking tips</div>
+<div class="text-xs text-slate-400 mt-1">Passive Cooking method documented. Basic tips on PDP.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Best pasta sauce for families</div>
+<div class="text-xs text-slate-400 mt-1">No family-oriented content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Sauce and pasta pairing guide</div>
+<div class="text-xs text-slate-400 mt-1">PDP mentions Puttanesca. Recipe hub filterable.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L2</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Fresh vs dried pasta differences</div>
+<div class="text-xs text-slate-400 mt-1">No content on fresh vs dried. Barilla sells only dried — big opportunity to educate.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Pasta portion sizes guide</div>
+<div class="text-xs text-slate-400 mt-1">No portion guide. PDP mentions 100g/1L water/7g salt but not per-person.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Quick 15-minute sauce recipes</div>
+<div class="text-xs text-slate-400 mt-1">No time-labelled quick recipes.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Best pasta shapes for quick cooking</div>
+<div class="text-xs text-slate-400 mt-1">No cooking speed comparison content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ One-pot pasta recipes</div>
+<div class="text-xs text-slate-400 mt-1">No one-pot recipe category. Huge demand.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ 30-minute pasta meal ideas</div>
+<div class="text-xs text-slate-400 mt-1">No time-based recipe filtering.</div>
+<div class="text-[10px] text-slate-500 mt-1">Ingredient Pairings · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Simple homemade pesto recipe</div>
+<div class="text-xs text-slate-400 mt-1">Barilla sells 3 pestos but no homemade recipe.</div>
+<div class="text-[10px] text-slate-500 mt-1">Whole Grain & Protein · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Cooking tips for legume pasta</div>
+<div class="text-xs text-slate-400 mt-1">No specific cooking tips for pea protein pasta.</div>
+<div class="text-[10px] text-slate-500 mt-1">Whole Grain & Protein · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ How to prevent thin pasta breaking</div>
+<div class="text-xs text-slate-400 mt-1">No cooking technique content for delicate pasta.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Quick one-pot pasta recipes</div>
+<div class="text-xs text-slate-400 mt-1">No one-pot category.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Store cupboard pasta essentials</div>
+<div class="text-xs text-slate-400 mt-1">No pantry/storecupboard content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Quick 10-minute pasta recipes</div>
+<div class="text-xs text-slate-400 mt-1">Spaghetti cooks in 10 min but no '10-minute meal' labels.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Fresh vs dried pasta guide</div>
+<div class="text-xs text-slate-400 mt-1">No educational content about fresh vs dried.</div>
+<div class="text-[10px] text-slate-500 mt-1">Quick Weeknight Meals · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ How to reheat leftover pasta</div>
+<div class="text-xs text-slate-400 mt-1">No reheating advice.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ How to fix overcooked pasta</div>
+<div class="text-xs text-slate-400 mt-1">No troubleshooting content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Sauce pairing guide</div>
+<div class="text-xs text-slate-400 mt-1">Individual PDPs mention sauces. Recipe hub filterable.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Storage tips for cooked pasta</div>
+<div class="text-xs text-slate-400 mt-1">No leftover storage guidance.</div>
+<div class="text-[10px] text-slate-500 mt-1">Cooking Tools & Tips · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Best jarred sauces to enhance</div>
+<div class="text-xs text-slate-400 mt-1">No 'hack your jarred sauce' content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Quick homemade sauce recipes</div>
+<div class="text-xs text-slate-400 mt-1">No quick sauce recipes.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ How to improve jarred sauce flavour</div>
+<div class="text-xs text-slate-400 mt-1">Huge Rufus opportunity — not addressed.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Compare Barilla vs Loyd Grossman</div>
+<div class="text-xs text-slate-400 mt-1">No competitor comparison (expected).</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Best sauce for different pasta shapes</div>
+<div class="text-xs text-slate-400 mt-1">Individual PDPs mention sauces but no cross-shape guide.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Portion size guidelines</div>
+<div class="text-xs text-slate-400 mt-1">PDP: 100g/1L. No per-person guide.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">🟡 Regional Italian sauce varieties</div>
+<div class="text-xs text-slate-400 mt-1">Spaghetti PDP mentions Trastevere/Rome. Minimal storytelling.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Reading nutrition labels</div>
+<div class="text-xs text-slate-400 mt-1">No nutritional education.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Protein pasta cooking methods</div>
+<div class="text-xs text-slate-400 mt-1">Protein+ has no specific cooking method guidance.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Simple homemade sauce recipe</div>
+<div class="text-xs text-slate-400 mt-1">No from-scratch sauce content.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div><div class="bg-slate-800/50 rounded-lg p-3 border border-white/5">
+<div class="text-sm text-white font-medium">❌ Best tomatoes for sauce making</div>
+<div class="text-xs text-slate-400 mt-1">Uses Italian tomatoes but no consumer education.</div>
+<div class="text-[10px] text-slate-500 mt-1">Popular UK Sauces · L3</div>
+</div></div>
+
+<div class="mt-6 bg-slate-800/50 rounded-xl p-5 border border-white/5">
+<h4 class="text-sm font-bold text-blue-400 mb-3">💡 Top 10 Recommended Actions for Barilla UK</h4>
+<ol class="text-xs text-slate-300 space-y-2 list-decimal list-inside">
+<li><strong class="text-white">Create a Pasta Cooking Tips Hub</strong> — cooking times, portion sizes, water ratios, al dente guide, how to fix overcooked pasta, storage tips. <span class="text-green-400">Addresses 8+ gap questions.</span></li>
+<li><strong class="text-white">Add Time Labels to All 83 Recipes</strong> — tag with prep/cook time, enable "under 15 min", "30 min", "weeknight" filters. <span class="text-green-400">Converts 6 partial → covered.</span></li>
+<li><strong class="text-white">Build Interactive Sauce × Shape Pairing Guide</strong> — map all 20+ shapes to recommended sauces. <span class="text-green-400">Addresses 5+ high-visibility questions.</span></li>
+<li><strong class="text-white">Launch One-Pot Recipe Collection</strong> — huge consumer demand, zero content. 5-10 one-pot spaghetti recipes would cover 6+ Rufus questions. <span class="text-green-400">Quick win.</span></li>
+<li><strong class="text-white">"Hack Your Jarred Sauce" Content Series</strong> — how to elevate Barilla sauces with herbs, protein, veggies. Addresses 'improve jarred sauce', 'enhance', 'quick homemade'. <span class="text-green-400">High commercial value.</span></li>
+<li><strong class="text-white">Fresh vs Dried Pasta Education</strong> — explain benefits of dried (Barilla's core), storage life, convenience, nutrition. <span class="text-green-400">Addresses 3 gap questions.</span></li>
+<li><strong class="text-white">Per-Person Portion Size Guide</strong> — visual guide: 75-100g per adult, how to measure without scales. <span class="text-green-400">Addresses multiple portion/guide questions.</span></li>
+<li><strong class="text-white">Protein+ Cooking Guide & Pairings</strong> — specific cooking tips, methods, and expanded pairing content for the Protein+ line. <span class="text-green-400">Leverages existing product.</span></li>
+<li><strong class="text-white">Leftover & Meal Prep Content</strong> — reheating, storage in fridge/freezer, batch cooking. No content exists. <span class="text-green-400">Addresses 5+ questions.</span></li>
+<li><strong class="text-white">Italian Heritage & Regional Storytelling</strong> — Trastevere tradition, regional sauce origins, why Italian tomatoes matter. Builds brand authority on Rufus. <span class="text-green-400">Differentiator.</span></li>
+</ol>
+</div>
+</div>
+
+<div class="mt-8 bg-slate-800/50 rounded-2xl p-6 border border-white/5 mb-12">
+<h3 class="text-base font-bold text-white mb-4">📋 Barilla UK Website Content Inventory (barilla.com/en-gb)</h3>
+<div class="grid md:grid-cols-3 gap-6 text-sm">
+<div>
+<h4 class="font-semibold text-blue-400 mb-2">�� Pasta Products</h4>
+<ul class="space-y-1 text-slate-400 text-xs">
+<li>• <strong class="text-slate-300">Spaghetti N°5</strong> — 500g, 10 min cook, durum wheat semolina, rough texture, low GI</li>
+<li>• Classic Blue Box: Bavette, Capellini, Conchiglie, Fusilli, Penne Rigate, Farfalle, Rigatoni, Linguine, Tagliatelle + 15 more</li>
+<li class="text-amber-400 font-medium mt-2">• <strong>Protein+</strong>: Fusilli, Spaghetti, Penne — 20g protein/100g, pea protein + semolina, bronze die</li>
+</ul>
+</div>
+<div>
+<h4 class="font-semibold text-red-400 mb-2">🫙 Sauces & Pesto</h4>
+<ul class="space-y-1 text-slate-400 text-xs">
+<li><strong class="text-slate-300">Red Sauces:</strong> Arrabbiata, Basilico, Bolognese Base, Napoletana, Olive, Pomodoro, Ragù Bolognese, Ricotta</li>
+<li><strong class="text-slate-300">Pesto:</strong> Genovese, Rosso, Basilico e Rucola — Parmigiano Reggiano PDO</li>
+<li class="text-slate-500 mt-1">Italian sunflower-ripened tomatoes, no colorants/preservatives</li>
+</ul>
+</div>
+<div>
+<h4 class="font-semibold text-green-400 mb-2">🌿 Campaigns & Content</h4>
+<ul class="space-y-1 text-slate-400 text-xs">
+<li>• <strong class="text-slate-300">Passive Cooking</strong> — 80% less CO₂e, 2 min active + lid on, timing guide</li>
+<li>• <strong class="text-slate-300">Open Recipes</strong> — Vegan, Halal, Kosher, Lactose-Free Carbonara etc.</li>
+<li>• <strong class="text-slate-300">Tastes Like Family</strong> — brand campaign</li>
+<li>• <strong class="text-slate-300">83 spaghetti recipes</strong> on recipe hub</li>
+<li>• <strong class="text-slate-300">Heritage</strong> — since 1877, Italian passion</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const QD = [{"q": "What ingredients pair well with different spaghetti dishes?", "l1": "Ingredient Pairings", "lv": 1, "s": "partial", "n": "83 recipes on site but no dedicated 'pairing guide'. PDP says 'goes perfectly with all sauces'.", "p": true}, {"q": "Best pasta shapes for each sauce", "l1": "Ingredient Pairings", "lv": 2, "s": "partial", "n": "PDP mentions Puttanesca/tomato pairing. No comprehensive shape→sauce guide.", "p": false}, {"q": "Cooking times for different shapes", "l1": "Ingredient Pairings", "lv": 3, "s": "covered", "n": "Passive Cooking timing guide PDF covers all shapes. Each PDP has cook time.", "p": false}, {"q": "Best sauces for each pasta type", "l1": "Ingredient Pairings", "lv": 3, "s": "partial", "n": "Recipe hub filterable by product but no summary guide.", "p": false}, {"q": "Fresh vs dried pasta differences", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No content on fresh vs dried. Barilla sells only dried — big opportunity to educate.", "p": true}, {"q": "Pasta portion sizes guide", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No portion guide. PDP mentions 100g/1L water/7g salt but not per-person.", "p": true}, {"q": "How to make homemade pasta sauce", "l1": "Ingredient Pairings", "lv": 2, "s": "partial", "n": "Recipes exist but no 'from scratch sauce tutorial'.", "p": false}, {"q": "Different sauce variations to try", "l1": "Ingredient Pairings", "lv": 3, "s": "covered", "n": "8 red sauces + 3 pestos listed with full descriptions.", "p": false}, {"q": "Best herbs for pasta sauces", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No herb guide content.", "p": false}, {"q": "How to store homemade sauce", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No storage advice content.", "p": false}, {"q": "Quick 15-minute sauce recipes", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No time-labelled quick recipes.", "p": true}, {"q": "Wine pairing with spaghetti dishes", "l1": "Ingredient Pairings", "lv": 2, "s": "gap", "n": "No wine pairing content.", "p": false}, {"q": "Best wine glasses for pasta dinner", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "Out of scope.", "p": false}, {"q": "How much wine to serve per person", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "Out of scope.", "p": false}, {"q": "Italian wine regions explained", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No Italian lifestyle content.", "p": false}, {"q": "Wine storage tips for beginners", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "Out of scope.", "p": false}, {"q": "Quick weeknight pasta recipes", "l1": "Ingredient Pairings", "lv": 2, "s": "partial", "n": "83 recipes but not tagged by 'quick weeknight'. No time labels.", "p": true}, {"q": "Best pasta shapes for quick cooking", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No cooking speed comparison content.", "p": true}, {"q": "One-pot pasta recipes", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No one-pot recipe category. Huge demand.", "p": true}, {"q": "Pantry pasta ingredient essentials", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No pantry guide content.", "p": false}, {"q": "30-minute pasta meal ideas", "l1": "Ingredient Pairings", "lv": 3, "s": "gap", "n": "No time-based recipe filtering.", "p": true}, {"q": "Which spaghetti brands offer whole grain or high fibre options?", "l1": "Whole Grain & Protein", "lv": 1, "s": "covered", "n": "Protein+ range: 20g protein/100g, plant-based, 3 shapes.", "p": false}, {"q": "Whole grain vs regular pasta nutrition", "l1": "Whole Grain & Protein", "lv": 2, "s": "partial", "n": "Protein+ compares protein (20g vs 12-14g/100g). No whole grain fibre comparison.", "p": false}, {"q": "Best whole grain pasta for beginners", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "No whole grain education content.", "p": false}, {"q": "Does whole grain taste different?", "l1": "Whole Grain & Protein", "lv": 3, "s": "partial", "n": "Protein+ claims 'the pasta taste you love' with consumer research.", "p": false}, {"q": "Cooking tips for whole grain pasta", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "No whole grain cooking guidance.", "p": false}, {"q": "High protein pasta alternatives", "l1": "Whole Grain & Protein", "lv": 3, "s": "covered", "n": "Protein+ is exactly this — 20g/100g, plant-based, bronze die.", "p": false}, {"q": "Best sauces for wholegrain pasta", "l1": "Whole Grain & Protein", "lv": 2, "s": "gap", "n": "No pairing advice for Protein+ or wholegrain.", "p": true}, {"q": "How to cook whole grain pasta properly", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "No specific cooking instructions for variants.", "p": false}, {"q": "Best cheese to pair with these sauces", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "Recipes mention cheese but no pairing guide.", "p": false}, {"q": "Simple homemade pesto recipe", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "Barilla sells 3 pestos but no homemade recipe.", "p": true}, {"q": "Spicy sauce alternatives for mild palates", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "No spice-level guidance.", "p": false}, {"q": "Ancient grain pasta alternatives", "l1": "Whole Grain & Protein", "lv": 2, "s": "gap", "n": "No ancient grain products in UK range.", "p": false}, {"q": "Best ancient grain for beginners", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Cooking tips for buckwheat pasta", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Quinoa vs chickpea pasta comparison", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Sauces that pair with spelt", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "High protein pasta options", "l1": "Whole Grain & Protein", "lv": 2, "s": "covered", "n": "Full Protein+ campaign: 20g/100g, pea protein + semolina, 3 shapes.", "p": false}, {"q": "Best protein pasta for beginners", "l1": "Whole Grain & Protein", "lv": 3, "s": "partial", "n": "Campaign page exists but no 'beginner guide' specifically.", "p": false}, {"q": "Cooking tips for legume pasta", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "No specific cooking tips for pea protein pasta.", "p": true}, {"q": "Compare edamame vs chickpea protein", "l1": "Whole Grain & Protein", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Sauces that pair with protein pasta", "l1": "Whole Grain & Protein", "lv": 3, "s": "covered", "n": "Protein+ page has dedicated recipes.", "p": false}, {"q": "Are there any quick and easy spaghetti meal ideas for busy weeknights?", "l1": "Quick Weeknight Meals", "lv": 1, "s": "partial", "n": "83 recipes but not categorised by prep time.", "p": true}, {"q": "Best pasta shapes for quick cooking", "l1": "Quick Weeknight Meals", "lv": 2, "s": "gap", "n": "No cooking speed comparison content.", "p": true}, {"q": "Best sauces for angel hair pasta", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "Capellini N°1 exists but no sauce pairing guidance.", "p": false}, {"q": "How to prevent thin pasta breaking", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No cooking technique content for delicate pasta.", "p": true}, {"q": "Quick one-pot pasta recipes", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No one-pot category.", "p": true}, {"q": "Store cupboard pasta essentials", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No pantry/storecupboard content.", "p": true}, {"q": "Healthy weeknight pasta alternatives", "l1": "Quick Weeknight Meals", "lv": 2, "s": "partial", "n": "Protein+ as healthier + Open Recipes vegan options. No 'healthy weeknight' hub.", "p": false}, {"q": "Best spiralizer vegetables for beginners", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "Out of scope.", "p": false}, {"q": "How to cook shirataki noodles properly", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Protein pasta vs regular pasta nutrition", "l1": "Quick Weeknight Meals", "lv": 3, "s": "covered", "n": "Direct comparison on Protein+: 20g vs 12-14g protein/100g, 354 kcal.", "p": false}, {"q": "Quick sauce pairings for healthy pasta", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No quick/healthy pairing content.", "p": false}, {"q": "Store cupboard pasta essentials", "l1": "Quick Weeknight Meals", "lv": 2, "s": "gap", "n": "No pantry/storecupboard content.", "p": true}, {"q": "Best pasta storage containers", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No storage guidance.", "p": false}, {"q": "Herb and spice pasta essentials", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No pantry/spice content.", "p": false}, {"q": "Quick 10-minute pasta recipes", "l1": "Quick Weeknight Meals", "lv": 3, "s": "partial", "n": "Spaghetti cooks in 10 min but no '10-minute meal' labels.", "p": true}, {"q": "Fresh vs dried pasta guide", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No educational content about fresh vs dried.", "p": true}, {"q": "One-pot pasta recipe ideas", "l1": "Quick Weeknight Meals", "lv": 2, "s": "gap", "n": "No one-pot category.", "p": true}, {"q": "Best one-pot pasta tips", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Vegetarian one-pot ideas", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "Open Recipes has vegan options but not one-pot format.", "p": false}, {"q": "How much liquid for one-pot pasta?", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "Passive cooking mentions 1L/100g but not for one-pot.", "p": false}, {"q": "Quick protein additions", "l1": "Quick Weeknight Meals", "lv": 3, "s": "gap", "n": "No content on adding protein to pasta.", "p": false}, {"q": "What cooking tools or appliances are recommended for preparing spaghetti?", "l1": "Cooking Tools & Tips", "lv": 1, "s": "partial", "n": "Passive Cooker device exists. Basic cooking instructions on PDP.", "p": true}, {"q": "Best pasta pot sizes for families", "l1": "Cooking Tools & Tips", "lv": 2, "s": "gap", "n": "No cookware content.", "p": false}, {"q": "Pasta cooking water ratios", "l1": "Cooking Tools & Tips", "lv": 3, "s": "covered", "n": "PDP: '100g pasta = 1L water + 7g salt'.", "p": false}, {"q": "Which size for meal prep?", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "No meal prep content.", "p": false}, {"q": "Best brands for durability", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Induction vs gas cooking pots", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "How to prevent pasta sticking", "l1": "Cooking Tools & Tips", "lv": 2, "s": "gap", "n": "No troubleshooting content. Huge opportunity.", "p": true}, {"q": "Best pasta cooking water ratios", "l1": "Cooking Tools & Tips", "lv": 3, "s": "covered", "n": "100g → 1L water + 7g salt. On PDP.", "p": false}, {"q": "How to reheat leftover pasta", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "No reheating advice.", "p": true}, {"q": "Al dente cooking times guide", "l1": "Cooking Tools & Tips", "lv": 3, "s": "covered", "n": "Passive Cooking timing guide + PDP times. Spaghetti = 10 min.", "p": false}, {"q": "Sauce pairing techniques", "l1": "Cooking Tools & Tips", "lv": 3, "s": "partial", "n": "PDP mentions Puttanesca, tomato-basil. No comprehensive guide.", "p": false}, {"q": "Manual vs electric pasta makers", "l1": "Cooking Tools & Tips", "lv": 2, "s": "gap", "n": "N/A — Barilla sells dried.", "p": false}, {"q": "Best manual pasta makers under £50", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Electric vs KitchenAid attachments", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Pasta maker maintenance tips", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Which makes better quality pasta?", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Essential pasta cooking tips", "l1": "Cooking Tools & Tips", "lv": 2, "s": "partial", "n": "Passive Cooking method documented. Basic tips on PDP.", "p": true}, {"q": "Best pasta water ratios", "l1": "Cooking Tools & Tips", "lv": 3, "s": "covered", "n": "100g = 1L water + 7g salt.", "p": false}, {"q": "How to fix overcooked pasta", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "No troubleshooting content.", "p": true}, {"q": "Sauce pairing guide", "l1": "Cooking Tools & Tips", "lv": 3, "s": "partial", "n": "Individual PDPs mention sauces. Recipe hub filterable.", "p": true}, {"q": "Storage tips for cooked pasta", "l1": "Cooking Tools & Tips", "lv": 3, "s": "gap", "n": "No leftover storage guidance.", "p": true}, {"q": "Which spaghetti sauces are popular among British consumers?", "l1": "Popular UK Sauces", "lv": 1, "s": "partial", "n": "8 sauce products listed. No UK consumer preference/trends editorial.", "p": true}, {"q": "Best pasta sauce for families", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No family-oriented content.", "p": true}, {"q": "Best budget pasta sauces under £1", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No pricing content.", "p": false}, {"q": "Healthiest pasta sauce options", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "No preservatives/colorants claim. No nutritional comparison.", "p": false}, {"q": "Quick pasta dinner ideas", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "83 recipes but not filtered by speed.", "p": false}, {"q": "Pasta bake recipe suggestions", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No bake recipes visible.", "p": false}, {"q": "Vegan pasta sauce options", "l1": "Popular UK Sauces", "lv": 2, "s": "covered", "n": "Open Recipes: Vegan Carbonara, Vegan Pesto.", "p": false}, {"q": "Best budget vegan pasta sauces", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No pricing content.", "p": false}, {"q": "Organic vs regular pasta sauce comparison", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No organic positioning.", "p": false}, {"q": "Homemade vegan pasta sauce recipes", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "Vegan recipes exist but positioned around Barilla products.", "p": false}, {"q": "Gluten-free vegan sauce options", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No GF content.", "p": false}, {"q": "Premium vs budget sauce comparison", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No comparison content.", "p": false}, {"q": "Homemade vs jarred sauce quality", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "Quality emphasis (Italian tomatoes, no preservatives) but no homemade comparison.", "p": false}, {"q": "Best jarred sauces to enhance", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No 'hack your jarred sauce' content.", "p": true}, {"q": "Quick homemade sauce recipes", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No quick sauce recipes.", "p": true}, {"q": "How to improve jarred sauce flavour", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "Huge Rufus opportunity — not addressed.", "p": true}, {"q": "Bulk cooking sauce tips", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No batch cooking content.", "p": false}, {"q": "Truffle sauce pairing suggestions", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No truffle products in UK.", "p": false}, {"q": "Best truffle pasta recipes", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Compare different truffle sauce brands", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Truffle oil vs truffle sauce", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Wine recommendations for truffle pasta", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Best organic pasta sauce brands", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No organic positioning.", "p": false}, {"q": "Compare Biona vs Bonsan quality", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Organic vs conventional taste difference", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Best organic pasta pairings", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Budget organic sauce options", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Low-carb sauce recommendations", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No low-carb content.", "p": false}, {"q": "Best low-carb pasta alternatives", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Compare Rao's vs Yo Mama's", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Keto-friendly recipe ideas", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Sugar content comparison chart", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No nutritional comparison.", "p": false}, {"q": "Premium vs budget sauce taste test", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "Consumer research for Protein+ exists. Positioned as quality mid-range.", "p": false}, {"q": "Best mid-range sauce recommendations", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "Barilla positions as quality Italian. No explicit price-tier guidance.", "p": false}, {"q": "Homemade sauce cost comparison", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Italian vs British sauce brands", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "Barilla = Italian import since 1877. No editorial comparison.", "p": false}, {"q": "Healthiest pasta sauce options", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "No preservatives/colorants claim. No nutritional comparison.", "p": false}, {"q": "Best mid-range sauce recommendations", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "Barilla positions as quality Italian. No explicit price-tier guidance.", "p": false}, {"q": "Compare Barilla vs Loyd Grossman", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No competitor comparison (expected).", "p": true}, {"q": "Best sauce for different pasta shapes", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "Individual PDPs mention sauces but no cross-shape guide.", "p": true}, {"q": "Organic mid-range alternatives", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Quick recipe ideas", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "83 recipes but no speed labels.", "p": false}, {"q": "Sauce and pasta pairing guide", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "PDP mentions Puttanesca. Recipe hub filterable.", "p": true}, {"q": "Best shapes for cream sauces", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No cream sauce pairing.", "p": false}, {"q": "Gluten-free pasta pairings", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No GF in UK range.", "p": false}, {"q": "Cooking time differences", "l1": "Popular UK Sauces", "lv": 3, "s": "covered", "n": "Passive Cooking timing guide covers shapes.", "p": false}, {"q": "Portion size guidelines", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "PDP: 100g/1L. No per-person guide.", "p": true}, {"q": "Italian vs British sauce brands", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "Barilla = Italian import since 1877. No editorial comparison.", "p": false}, {"q": "Best Italian imports available", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "Barilla IS Italian import but no editorial.", "p": false}, {"q": "Organic sauce comparisons", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Regional Italian sauce varieties", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "Spaghetti PDP mentions Trastevere/Rome. Minimal storytelling.", "p": true}, {"q": "Value for money analysis", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Healthiest pasta sauce options", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "No preservatives/colorants claim. No nutritional comparison.", "p": false}, {"q": "Best sauce for diabetics", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No health-condition content.", "p": false}, {"q": "Organic vs conventional nutrition", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Low carb sauce options", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Homemade vs shop-bought health", "l1": "Popular UK Sauces", "lv": 3, "s": "partial", "n": "'No preservatives, no colorants' claim. No explicit health comparison.", "p": false}, {"q": "Best sauce for diabetics", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No health-condition content.", "p": false}, {"q": "Low carb pasta alternatives", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Diabetic-friendly meal planning", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Reading nutrition labels", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No nutritional education.", "p": true}, {"q": "Homemade vs shop-bought for diabetes", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Organic vs conventional nutrition", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "", "p": false}, {"q": "Best value organic brands", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Antioxidant benefits explained", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No health/nutrition education.", "p": false}, {"q": "Pesticide residue testing", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Processing method differences", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Low carb sauce options", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "", "p": false}, {"q": "Konjac noodle preparation tips", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Best low carb vegetables for pasta", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Keto-friendly sauce recipes", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Protein pasta cooking methods", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "Protein+ has no specific cooking method guidance.", "p": true}, {"q": "Homemade vs shop-bought health", "l1": "Popular UK Sauces", "lv": 2, "s": "partial", "n": "'No preservatives, no colorants' claim. No explicit health comparison.", "p": false}, {"q": "Simple homemade sauce recipe", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "No from-scratch sauce content.", "p": true}, {"q": "Best tomatoes for sauce making", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "Uses Italian tomatoes but no consumer education.", "p": true}, {"q": "Preservative-free storage tips", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "Sauces are preservative-free but no storage advice.", "p": false}, {"q": "Batch cooking sauce methods", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Konjac noodle cooking tips", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "N/A.", "p": false}, {"q": "Best sauces for konjac noodles", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Konjac vs shirataki differences", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Make konjac taste like pasta", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Storage tips for konjac noodles", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "N/A.", "p": false}, {"q": "Antioxidant benefits explained", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "No health/nutrition education.", "p": false}, {"q": "Best antioxidant-rich sauce brands", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Lycopene absorption tips", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "Tomato sauces are lycopene-rich but no education.", "p": false}, {"q": "Antioxidant-boosting ingredients", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Fresh vs processed antioxidants", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Keto meal planning with sauces", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "", "p": false}, {"q": "Best keto sauce storage tips", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Homemade keto sauce recipes", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Macro tracking for sauces", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Budget keto meal planning", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Best organic ingredient sources", "l1": "Popular UK Sauces", "lv": 2, "s": "gap", "n": "", "p": false}, {"q": "Best storage methods for herbs", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Seasonal organic ingredient availability", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Growing your own organic herbs", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}, {"q": "Organic vs conventional nutritional differences", "l1": "Popular UK Sauces", "lv": 3, "s": "gap", "n": "", "p": false}];
+
+// Scatter tooltips
+const tip = document.getElementById('scatterTip');
+document.querySelectorAll('.scatter-dot').forEach(dot => {
+  dot.addEventListener('mouseenter', e => {
+    const d = QD[+dot.dataset.idx];
+    const si = d.s === 'covered' ? '✅' : d.s === 'partial' ? '🟡' : '❌';
+    tip.innerHTML = '<div class="font-semibold text-white">' + si + ' ' + d.q + '</div>'
+      + (d.n ? '<div class="text-slate-400 mt-1">' + d.n + '</div>' : '')
+      + '<div class="text-slate-500 mt-1 text-[10px]">' + d.l1 + ' · L' + d.lv + (d.p ? ' · 🔥 Priority' : '') + '</div>';
+    tip.style.display = 'block';
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top = (e.clientY - 10) + 'px';
+  });
+  dot.addEventListener('mousemove', e => {
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top = (e.clientY - 10) + 'px';
+  });
+  dot.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+});
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.q-row').forEach(row => {
+      const s = row.dataset.status;
+      const p = row.dataset.priority === 'true';
+      let show = true;
+      if (f === 'covered') show = s === 'covered';
+      else if (f === 'partial') show = s === 'partial';
+      else if (f === 'gap') show = s === 'gap';
+      else if (f === 'priority') show = p;
+      row.style.display = show ? '' : 'none';
+    });
+    // Also filter scatter dots
+    document.querySelectorAll('.scatter-dot').forEach(dot => {
+      const d = QD[+dot.dataset.idx];
+      let show = true;
+      if (f === 'covered') show = d.s === 'covered';
+      else if (f === 'partial') show = d.s === 'partial';
+      else if (f === 'gap') show = d.s === 'gap';
+      else if (f === 'priority') show = d.p;
+      dot.style.display = show ? '' : 'none';
+    });
+  });
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  const v = e.target.value.toLowerCase();
+  document.querySelectorAll('.q-row').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(v) ? '' : 'none';
+  });
+});
+</script>
+</body></html>
