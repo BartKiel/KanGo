@@ -26,3 +26,6 @@ build/
 # API keys — never commit
 api_keys.json
 *.env
+
+# Chrome Runner — local profile data
+plugins/chrome_runner/profiles/

@@ -1,0 +1,58 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# KanGo Chrome Runner – Plugin Registry
+# ═══════════════════════════════════════════════════════════════════════════
+# Each entry defines a Chrome extension that the runner can load.
+# Paths are relative to ~/Documents/Coding_space-Python/
+#
+# Fields:
+#   name          – human-readable name
+#   path          – relative path to the unpacked extension folder
+#   description   – what the plugin does
+#   start_url     – URL Chrome should navigate to after launch (optional)
+#   profile       – Chrome profile name to use (shared between runs)
+#   enabled       – whether this plugin appears in the launcher
+# ═══════════════════════════════════════════════════════════════════════════
+
+default_profile: stratosx_harvest
+
+plugins:
+
+  sov_listener:
+    name: "Rufus SoV Listener"
+    path: "rufus_sov_listener/chrome_extension"
+    description: "Deep-explore Amazon Rufus AI: questions tree + product recommendations + media harvest"
+    start_url: "https://www.amazon.com"
+    profile: stratosx_harvest
+    enabled: true
+
+  pill_harvester:
+    name: "Rufus Pill Harvester"
+    path: "rufus_pill_harvester/chrome_extension"
+    description: "Lightweight Rufus pill collector – L1 & L2 suggestion pills as keywords"
+    start_url: "https://www.amazon.com"
+    profile: stratosx_harvest
+    enabled: true
+
+  pdp_harvester:
+    name: "Amazon PDP Harvester"
+    path: "amazon_harvest/chrome_extension"
+    description: "Harvest Amazon PDP data: text, images, videos, Rufus AI responses"
+    start_url: "https://www.amazon.com"
+    profile: stratosx_harvest
+    enabled: true
+
+  question_harvester:
+    name: "Rufus Question Harvester"
+    path: "rufus_harvester/chrome_extension"
+    description: "Harvests Amazon Rufus AI product recommendations from question suggestions"
+    start_url: "https://www.amazon.com"
+    profile: stratosx_harvest
+    enabled: true
+
+  ai_listener:
+    name: "StratosX AI Listener"
+    path: "rufus_qa_plugin"
+    description: "Batch-collect Amazon Rufus Q&A with AI Vision, multi-ASIN, custom questions"
+    start_url: "https://www.amazon.com"
+    profile: stratosx_harvest
+    enabled: true

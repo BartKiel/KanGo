@@ -12,3 +12,4 @@ outputs/
 *.xlsx
 *.pptx
 *.pdf
+plugins/chrome_runner/profiles/
